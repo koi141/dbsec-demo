@@ -13,7 +13,7 @@ author = 'koin3z'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ['sphinxcontrib.seqdiag']
 
 templates_path = ['_templates']
 exclude_patterns = []
