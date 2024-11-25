@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
@@ -42,12 +43,18 @@
     <script src="_static/documentation_options.js?v=1cf7f4d9"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script src="_static/translations.js?v=4755f45a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="next" title="1. TDEデモ手順" href="demo/tde.html" />
+    <link rel="next" title="1. Oracle Database 23ai FREEのセットアップ" href="setup/db23ai.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -139,9 +146,13 @@
 </button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">setup:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="demo/tde.html">1. TDEデモ手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup/db23ai.html">1. Oracle Database 23ai FREEのセットアップ</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="tde/setup.html">1. TDE セットアップ</a></li>
 </ul>
 
     </div>
@@ -290,9 +301,23 @@
 <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
 documentation for details.</p>
 <div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">setup:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup/db23ai.html">1. Oracle Database 23ai FREEのセットアップ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup/db23ai.html#db23ai">1.1. DB23aiをインストールする</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup/db23ai.html#id1">1.2. サンプルスキーマをダウンロードする</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup/db23ai.html#id2">1.3. サンプルスキーマを作成する</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo/tde.html">1. TDEデモ手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tde/setup.html">1. TDE セットアップ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tde/setup.html#id1">1.1. 初期化パラメータの確認</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -309,11 +334,11 @@ documentation for details.</p>
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="demo/tde.html"
+       href="setup/db23ai.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title"><span class="section-number">1. </span>TDEデモ手順</p>
+        <p class="prev-next-title"><span class="section-number">1. </span>Oracle Database 23ai FREEのセットアップ</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

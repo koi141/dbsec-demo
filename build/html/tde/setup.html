@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>1. TDEデモ手順 &#8212; dbsec-demo  ドキュメント</title>
+    <title>1. TDE セットアップ &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
@@ -42,12 +43,18 @@
     <script src="../_static/documentation_options.js?v=1cf7f4d9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script src="../_static/translations.js?v=4755f45a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'demo/tde';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tde/setup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="prev" title="dbsec-demo" href="../index.html" />
+    <link rel="prev" title="1. Oracle Database 23ai FREEのセットアップ" href="../setup/db23ai.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -137,9 +144,13 @@
 </button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">setup:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../setup/db23ai.html">1. Oracle Database 23ai FREEのセットアップ</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. TDEデモ手順</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. TDE セットアップ</a></li>
 </ul>
 
     </div>
@@ -194,7 +205,7 @@
       
       
       
-      <li><a href="../_sources/demo/tde.rst" target="_blank"
+      <li><a href="../_sources/tde/setup.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -257,7 +268,9 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="検索" aria-label="検索" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -268,11 +281,19 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>TDEデモ手順</h1>
+    <h1>TDE セットアップ</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> 目次 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.1. 初期化パラメータの確認</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -283,46 +304,41 @@
                 <article class="bd-article">
                   
   <section id="tde">
-<h1><span class="section-number">1. </span>TDEデモ手順<a class="headerlink" href="#tde" title="Link to this heading">#</a></h1>
-<div class="line-block">
-<div class="line">試しに、こんな感じのページを</div>
-<div class="line">作ってみる！</div>
-</div>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>ID</p></th>
-<th class="head"><p>Value</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>3</p></td>
-<td><p>データ3</p></td>
-</tr>
-<tr class="row-odd"><td><p>4</p></td>
-<td><p>データ4</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Name</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>A</p></td>
-<td><p>browsers in each client</p></td>
-</tr>
-<tr class="row-odd"><td><p>B</p></td>
-<td><p>web server</p></td>
-</tr>
-<tr class="row-even"><td><p>C</p></td>
-<td><p>database server</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<h1><span class="section-number">1. </span>TDE セットアップ<a class="headerlink" href="#tde" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2><span class="section-number">1.1. </span>初期化パラメータの確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>TDEに関連する初期化パラメータは2つあります。</p>
+<ul class="simple">
+<li><dl class="field-list simple">
+<dt class="field-odd">wallet_root<span class="colon">:</span></dt>
+<dd class="field-odd"><p>暗号化キー（TDEキー）や証明書などを保存する場所を指定</p>
+<ul>
+<li><dl class="field-list simple">
+<dt class="field-odd">url<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.oracle.com/cd/F82042_01/refrn/WALLET_ROOT.html">https://docs.oracle.com/cd/F82042_01/refrn/WALLET_ROOT.html</a></p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">tde_configuration<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TDEの設定を定義</p>
+<ul>
+<li><dl class="field-list simple">
+<dt class="field-odd">url<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.oracle.com/cd/F82042_01/refrn/TDE_CONFIGURATION.html">https://docs.oracle.com/cd/F82042_01/refrn/TDE_CONFIGURATION.html</a></p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
 </section>
 
 
@@ -337,12 +353,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="../setup/db23ai.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">dbsec-demo</p>
+        <p class="prev-next-title"><span class="section-number">1. </span>Oracle Database 23ai FREEのセットアップ</p>
       </div>
     </a>
 </div>
@@ -351,6 +367,22 @@
             </div>
             
             
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 目次
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.1. 初期化パラメータの確認</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
