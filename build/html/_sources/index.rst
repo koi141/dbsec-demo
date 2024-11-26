@@ -15,10 +15,17 @@ documentation for details.
    :caption: 環境準備:
 
    /setup/db23ai
+   /setup/sampleSchema
 
 .. toctree::
    :maxdepth: 2
-   :caption: TDEデモ:
+   :caption: TDE:
    
    /tde/setup
    /tde/tde_demo
+
+.. toctree::
+   :maxdepth: 2
+   :caption: NNE:
+   
+   /nne/setup

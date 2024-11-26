@@ -192,9 +192,15 @@ CDBから以下のコマンドを実行します。
    "WRL_TYPE","WRL_PARAMETER","STATUS","WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
    "FILE","/opt/oracle/admin/FREE/wallet/tde/","OPEN_NO_MASTER_KEY","PASSWORD","SINGLE","NONE","UNDEFINED",1
 
-続いてマスター暗号鍵を作成します。今回はFREEPDB1専用の暗号化鍵を作ることにします。
 
-.. code:: sql
+****************************
+マスター暗号鍵の作成
+****************************
+
+続いてマスター暗号鍵を作成します。今回は統合モードでCDB、PDBを一括で含めた暗号化鍵を作ることにします。
+
+.. code-block:: sql
+   :caption: CDBで実行 (syskmユーザーまたはsysユーザー)
 
    SQL> administer key management set key using tag 'v1.0_MEK_AllContainer' identified by OracleKM123# with backup container = ALL;
 
@@ -205,16 +211,24 @@ CDBから以下のコマンドを実行します。
 .. code-block:: sql
    :caption: PDBで実行 (sysユーザー)
 
+   -- PDBから正しくウォレットを認識できているかを確認
    SQL> select * from v$encryption_wallet;
-   "WRL_TYPE","WRL_PARAMETER"                     ,"STATUS","WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
-   "FILE"    ,"/opt/oracle/admin/FREE/wallet/tde/","OPEN"  ,"PASSWORD"   ,"SINGLE"      ,"NONE"         ,"NO"             ,1
+   "WRL_TYPE","WRL_PARAMETER","STATUS","WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
+   "FILE"    ,               ,"OPEN"  ,"PASSWORD"   ,"SINGLE"      ,"UNITED"       ,"NO"             ,3
 
-   SQL> select key_id, tag, creation_time, key_use, keystore_type from v$encryption_keys;
-   "KEY_ID"                                              ,"TAG"                       ,"CREATION_TIME"                      ,"KEY_USE"   ,"KEYSTORE_TYPE"
-   "AbleCmnmC0+Wv6AyUyyuD3gAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","v1.0_MEK_AllContainer"     ,"25-NOV-24 08.10.04.772659 AM +00:00","TDE IN PDB","SOFTWARE KEYSTORE"
+   -- PDBから正しくマスター暗号鍵を認識できているかを確認（都合上KEY_IDは短縮しています）
+   SQL> select key_id, tag, creator, user, key_use, keystore_type, activating_dbname from v$encryption_keys;
+   "KEY_ID"      ,"TAG"                  , "CREATOR","USER","KEY_USE"   ,"KEYSTORE_TYPE"    ,"ACTIVATING_DBNAME"
+   "AU1kv...AAAA","v1.0_MEK_AllContainer", "SYSKM"  ,"SYS" ,"TDE IN PDB","SOFTWARE KEYSTORE","FREE"
 
 
-: `V$ENCRYPTION_WALLET <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html>`__ : ウォレットの状態とTDEウォレットの場所に関する情報を表示
+:CREATOR: マスター・キーを作成したユーザー
+:USER: マスター・キーをアクティブ化したユーザー
+
+では、次の手順から実際に表領域を暗号化してみます
+
+
+: `V$ENCRYPTION_WALLET <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html>`__ : ウォレットの状態とTDEウォレットの場所に関する情報を表示  
 : `V$ENCRYPTION_KEYS <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html>`__ : マスターキーの説明属性を表示
 
 

@@ -304,6 +304,7 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">キーストアの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">マスター暗号鍵の作成</a></li>
 </ul>
             </nav>
         </div>
@@ -421,8 +422,8 @@ walletディレクトリは作成されていませんので、事前にその�
 <p>暗号化鍵を格納するためのキーストアを作成します。
 キーストアのマスター鍵管理はSYSKM権限以上が必要です。</p>
 <p>こちらのキーストア操作はSYSユーザーでも可能ですが、キーストア操作の専用ユーザーとしてsyskmユーザーが用意されていますので、こちらを使用しても構いません。</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="n">oracleユーザーでSYSKMとして接続</span>
 <span class="err">$</span><span class="w"> </span><span class="n">sqlplus</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">syskm</span>
 
@@ -442,8 +443,8 @@ walletディレクトリは作成されていませんので、事前にその�
 <p>キーストアを作成します。デフォルトではPKCS#12ベースのキーストレージファイルに保存されます。
 <a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/ADMINISTER-KEY-MANAGEMENT.html">https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/ADMINISTER-KEY-MANAGEMENT.html</a></p>
 <p>CDBから以下のコマンドを実行します。</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">administer</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">management</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">keystore</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">OracleKM123</span><span class="o">#</span><span class="p">;</span>
 
 <span class="n">keystore</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
@@ -459,8 +460,8 @@ walletディレクトリは作成されていませんので、事前にその�
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">V$ENCRYPTION_WALLETビュー</span></code> からも確認することができます。</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
 <span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="w">                     </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
@@ -476,25 +477,42 @@ walletディレクトリは作成されていませんので、事前にその�
 </pre></div>
 </div>
 </div>
-<p>続いてマスター暗号鍵を作成します。今回はFREEPDB1専用の暗号化鍵を作ることにします。</p>
+</section>
+<section id="id6">
+<h2>マスター暗号鍵の作成<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<p>続いてマスター暗号鍵を作成します。今回は統合モードでCDB、PDBを一括で含めた暗号化鍵を作ることにします。</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザーまたはsysユーザー)</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">administer</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">management</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="s1">&#39;v1.0_MEK_AllContainer&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">OracleKM123</span><span class="o">#</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">backup</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ALL</span><span class="p">;</span>
 
 <span class="n">keystore</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
 </pre></div>
 </div>
+</div>
 <p><code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">tag</span></code> 句は無くても問題ないですが、管理のために付けておくとよいかと思います。</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
-<span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="w">                     </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
-<span class="ss">&quot;FILE&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;/opt/oracle/admin/FREE/wallet/tde/&quot;</span><span class="p">,</span><span class="ss">&quot;OPEN&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;PASSWORD&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;SINGLE&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;NONE&quot;</span><span class="w">         </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w">             </span><span class="p">,</span><span class="mi">1</span>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- PDBから正しくウォレットを認識できているかを確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
+<span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;FILE&quot;</span><span class="w">    </span><span class="p">,</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;OPEN&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;PASSWORD&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;SINGLE&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;UNITED&quot;</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w">             </span><span class="p">,</span><span class="mi">3</span>
 
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">key_id</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">creation_time</span><span class="p">,</span><span class="w"> </span><span class="n">key_use</span><span class="p">,</span><span class="w"> </span><span class="n">keystore_type</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_keys</span><span class="p">;</span>
-<span class="ss">&quot;KEY_ID&quot;</span><span class="w">                                              </span><span class="p">,</span><span class="ss">&quot;TAG&quot;</span><span class="w">                       </span><span class="p">,</span><span class="ss">&quot;CREATION_TIME&quot;</span><span class="w">                      </span><span class="p">,</span><span class="ss">&quot;KEY_USE&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;KEYSTORE_TYPE&quot;</span>
-<span class="ss">&quot;AbleCmnmC0+Wv6AyUyyuD3gAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;</span><span class="p">,</span><span class="ss">&quot;v1.0_MEK_AllContainer&quot;</span><span class="w">     </span><span class="p">,</span><span class="ss">&quot;25-NOV-24 08.10.04.772659 AM +00:00&quot;</span><span class="p">,</span><span class="ss">&quot;TDE IN PDB&quot;</span><span class="p">,</span><span class="ss">&quot;SOFTWARE KEYSTORE&quot;</span>
+<span class="c1">-- PDBから正しくマスター暗号鍵を認識できているかを確認（都合上KEY_IDは短縮しています）</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">key_id</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">creator</span><span class="p">,</span><span class="w"> </span><span class="k">user</span><span class="p">,</span><span class="w"> </span><span class="n">key_use</span><span class="p">,</span><span class="w"> </span><span class="n">keystore_type</span><span class="p">,</span><span class="w"> </span><span class="n">activating_dbname</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_keys</span><span class="p">;</span>
+<span class="ss">&quot;KEY_ID&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;TAG&quot;</span><span class="w">                  </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;CREATOR&quot;</span><span class="p">,</span><span class="ss">&quot;USER&quot;</span><span class="p">,</span><span class="ss">&quot;KEY_USE&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;KEYSTORE_TYPE&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;ACTIVATING_DBNAME&quot;</span>
+<span class="ss">&quot;AU1kv...AAAA&quot;</span><span class="p">,</span><span class="ss">&quot;v1.0_MEK_AllContainer&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;SYSKM&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;SYS&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;TDE IN PDB&quot;</span><span class="p">,</span><span class="ss">&quot;SOFTWARE KEYSTORE&quot;</span><span class="p">,</span><span class="ss">&quot;FREE&quot;</span>
 </pre></div>
 </div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">CREATOR<span class="colon">:</span></dt>
+<dd class="field-odd"><p>マスター・キーを作成したユーザー</p>
+</dd>
+<dt class="field-even">USER<span class="colon">:</span></dt>
+<dd class="field-even"><p>マスター・キーをアクティブ化したユーザー</p>
+</dd>
+</dl>
+<p>では、次の手順から実際に表領域を暗号化してみます</p>
 <p>: <a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html">V$ENCRYPTION_WALLET</a> : ウォレットの状態とTDEウォレットの場所に関する情報を表示
 : <a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html">V$ENCRYPTION_KEYS</a> : マスターキーの説明属性を表示</p>
 </section>
@@ -557,6 +575,7 @@ walletディレクトリは作成されていませんので、事前にその�
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">キーストアの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">マスター暗号鍵の作成</a></li>
 </ul>
   </nav></div>
 
