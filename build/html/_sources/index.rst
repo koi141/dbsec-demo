@@ -12,14 +12,13 @@ documentation for details.
 
 .. toctree::
    :maxdepth: 2
-   :caption: setup:
-   :numbered:
+   :caption: 環境準備:
 
    /setup/db23ai
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-   :numbered:
+   :caption: TDEデモ:
    
    /tde/setup
+   /tde/tde_demo

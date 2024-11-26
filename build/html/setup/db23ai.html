@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>1. Oracle Database 23ai FREEのセットアップ &#8212; dbsec-demo  ドキュメント</title>
+    <title>Oracle Database 23ai FREEのセットアップ &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'setup/db23ai';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. TDEデモ手順" href="../demo/tde.html" />
+    <link rel="next" title="TDE セットアップ" href="../tde/setup.html" />
     <link rel="prev" title="dbsec-demo" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -145,13 +145,13 @@
 </button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">setup:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">環境準備:</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Oracle Database 23ai FREEのセットアップ</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Oracle Database 23ai FREEのセットアップ</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">TDEデモ:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../demo/tde.html">1. TDEデモ手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tde/setup.html">TDE セットアップ</a></li>
 </ul>
 
     </div>
@@ -292,9 +292,10 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#db23ai">1.1. DB23aiをインストールする</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.2. サンプルスキーマをダウンロードする</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1.3. サンプルスキーマを作成する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#db23ai">DB23aiをインストールする</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">サンプルスキーマをダウンロードする</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">サンプルスキーマを作成する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">日本語対応させる</a></li>
 </ul>
             </nav>
         </div>
@@ -307,14 +308,14 @@
                 <article class="bd-article">
                   
   <section id="oracle-database-23ai-free">
-<h1><span class="section-number">1. </span>Oracle Database 23ai FREEのセットアップ<a class="headerlink" href="#oracle-database-23ai-free" title="Link to this heading">#</a></h1>
+<h1>Oracle Database 23ai FREEのセットアップ<a class="headerlink" href="#oracle-database-23ai-free" title="Link to this heading">#</a></h1>
 <p><strong>やること</strong></p>
 <ul class="simple">
 <li><p>DB23aiをインストールする&amp;DBを作成する</p></li>
 <li><p>サンプルスキーマ（HR）を作成する</p></li>
 </ul>
 <section id="db23ai">
-<h2><span class="section-number">1.1. </span>DB23aiをインストールする<a class="headerlink" href="#db23ai" title="Link to this heading">#</a></h2>
+<h2>DB23aiをインストールする<a class="headerlink" href="#db23ai" title="Link to this heading">#</a></h2>
 <p>23aiの提供形式は大きく分けて以下の3つです。</p>
 <ul class="simple">
 <li><p>コンテナ（docker, podman）</p></li>
@@ -326,7 +327,7 @@
 ご参考にしてみてください。OCIチュートリアルを参考にした場合、表領域の作成手順は不要ですので、その前の手順までを行ってください。</p>
 </section>
 <section id="id1">
-<h2><span class="section-number">1.2. </span>サンプルスキーマをダウンロードする<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>サンプルスキーマをダウンロードする<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>本デモで使用するためのHRスキーマを作成します。</p>
 <p>サンプルスキーマとしてGitHubで公開されています <a class="reference external" href="https://github.com/oracle-samples/db-sample-schemas/archive/refs/tags/v23.3.zip">こちら</a> を使用します。</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/oracle-samples/db-sample-schemas/archive/refs/tags/v23.3.zip
@@ -342,7 +343,7 @@
 <p>なお、サンプルスキーマの詳細は <a class="reference external" href="https://docs.oracle.com/cd/F82042_01/comsc/schema-diagrams.html">こちら</a> で示されています。</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">1.3. </span>サンプルスキーマを作成する<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>サンプルスキーマを作成する<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>HRスキーマを作成するため、DBに接続します。</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># oracleユーザーにスイッチ</span>
 $<span class="w"> </span>sudo<span class="w"> </span>su<span class="w"> </span>-<span class="w"> </span>oracle
@@ -391,6 +392,33 @@ $<span class="w"> </span>sqlplus<span class="w"> </span>/<span class="w"> </span
 </pre></div>
 </div>
 </section>
+<section id="id3">
+<h2>日本語対応させる<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">gv$nls_parameters</span><span class="p">;</span>
+<span class="ss">&quot;INST_ID&quot;</span><span class="p">,</span><span class="ss">&quot;PARAMETER&quot;</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_LANGUAGE&quot;</span><span class="w">     </span><span class="p">,</span><span class="ss">&quot;AMERICAN&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_TERRITORY&quot;</span><span class="p">,</span><span class="ss">&quot;AMERICA&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_CURRENCY&quot;</span><span class="p">,</span><span class="ss">&quot;$&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_ISO_CURRENCY&quot;</span><span class="p">,</span><span class="ss">&quot;AMERICA&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_NUMERIC_CHARACTERS&quot;</span><span class="p">,</span><span class="ss">&quot;.,&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_CALENDAR&quot;</span><span class="p">,</span><span class="ss">&quot;GREGORIAN&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_DATE_FORMAT&quot;</span><span class="p">,</span><span class="ss">&quot;DD-MON-RR&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_DATE_LANGUAGE&quot;</span><span class="p">,</span><span class="ss">&quot;AMERICAN&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_CHARACTERSET&quot;</span><span class="p">,</span><span class="ss">&quot;AL32UTF8&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_SORT&quot;</span><span class="p">,</span><span class="ss">&quot;BINARY&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_TIME_FORMAT&quot;</span><span class="p">,</span><span class="ss">&quot;HH.MI.SSXFF AM&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;NLS_TIMESTAMP_FORMAT&quot;</span><span class="p">,</span><span class="ss">&quot;DD-MON-RR HH.MI.SSXFF AM&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_TIME_TZ_FORMAT&quot;</span><span class="p">,</span><span class="ss">&quot;HH.MI.SSXFF AM TZR&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_TIMESTAMP_TZ_FORMAT&quot;</span><span class="p">,</span><span class="ss">&quot;DD-MON-RR HH.MI.SSXFF AM TZR&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_DUAL_CURRENCY&quot;</span><span class="p">,</span><span class="ss">&quot;$&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_NCHAR_CHARACTERSET&quot;</span><span class="p">,</span><span class="ss">&quot;AL16UTF16&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_COMP&quot;</span><span class="p">,</span><span class="ss">&quot;BINARY&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_LENGTH_SEMANTICS&quot;</span><span class="p">,</span><span class="ss">&quot;BYTE&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="mi">1</span><span class="p">,</span><span class="ss">&quot;NLS_NCHAR_CONV_EXCP&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span><span class="p">,</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>19 rows selected.</p>
+</section>
 </section>
 
 
@@ -414,11 +442,11 @@ $<span class="w"> </span>sqlplus<span class="w"> </span>/<span class="w"> </span
       </div>
     </a>
     <a class="right-next"
-       href="../demo/tde.html"
+       href="../tde/setup.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title"><span class="section-number">1. </span>TDEデモ手順</p>
+        <p class="prev-next-title">TDE セットアップ</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -439,9 +467,10 @@ $<span class="w"> </span>sqlplus<span class="w"> </span>/<span class="w"> </span
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#db23ai">1.1. DB23aiをインストールする</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.2. サンプルスキーマをダウンロードする</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1.3. サンプルスキーマを作成する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#db23ai">DB23aiをインストールする</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">サンプルスキーマをダウンロードする</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">サンプルスキーマを作成する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">日本語対応させる</a></li>
 </ul>
   </nav></div>
 
