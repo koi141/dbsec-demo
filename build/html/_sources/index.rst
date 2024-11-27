@@ -29,3 +29,11 @@ documentation for details.
    :caption: NNE:
    
    /nne/setup
+   /nne/confirm
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Data Redaction:
+   
+   /redact/setup
+   /redact/caution

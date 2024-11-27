@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ネイティブ・ネットワーク暗号化 &#8212; dbsec-demo  ドキュメント</title>
+    <title>Data Redactionの注意点 &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -51,10 +51,9 @@
     <script src="../_static/translations.js?v=4755f45a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'nne/setup';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'redact/caution';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="prev" title="TDE 暗号化デモ" href="../tde/tde_demo.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -106,6 +105,8 @@
       
       
       
+        
+      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -155,8 +156,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../tde/tde_demo.html">TDE 暗号化デモ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">NNE:</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">ネイティブ・ネットワーク暗号化</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nne/setup.html">ネイティブ・ネットワーク暗号化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nne/confirm.html">通信の暗号化を確認する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Redaction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Data Redactionを試す</a></li>
 </ul>
 
     </div>
@@ -211,7 +217,7 @@
       
       
       
-      <li><a href="../_sources/nne/setup.rst" target="_blank"
+      <li><a href="../_sources/redact/caution.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -287,7 +293,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>ネイティブ・ネットワーク暗号化</h1>
+    <h1>Data Redactionの注意点</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -297,8 +303,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">セットアップ</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wireshark">wiresharkのインストール</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where">where句で推測を行う</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">副問い合わせで使用した場合</a></li>
 </ul>
             </nav>
         </div>
@@ -310,26 +316,18 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="id1">
-<h1>ネイティブ・ネットワーク暗号化<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>ネットワークの暗号化を確認します。</p>
-<p>暗号化された通信を確認するため、何らかのクライアントソフトが必要になります。</p>
-<p>Oracle DBに接続するためのクライアントとしては</p>
-<ul class="simple">
-<li><p>SQL Developer</p></li>
-<li><p>SQL*Plus</p></li>
-</ul>
-<p>がありますが、ここではSQL*Plusを使用することにします。</p>
-<p>SQL DeveloperはVS codeの拡張機能としても提供されていますので、是非ご利用ください。</p>
-<section id="id2">
-<h2>セットアップ<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>SQL*</p>
+  <section id="data-redaction">
+<h1>Data Redactionの注意点<a class="headerlink" href="#data-redaction" title="Link to this heading">#</a></h1>
+<p>Data Redactionはあくまで、データを隠すための機能であり、アクセス制御機能ではありません。</p>
+<section id="where">
+<h2>where句で推測を行う<a class="headerlink" href="#where" title="Link to this heading">#</a></h2>
+<p>between句などを使えばStevenのsalaryの推測がたつのは明らかです。</p>
 </section>
-<section id="wireshark">
-<h2>wiresharkのインストール<a class="headerlink" href="#wireshark" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>dnf<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>wireshark
-</pre></div>
-</div>
+<section id="id1">
+<h2>副問い合わせで使用した場合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>と、リダクションされた値の平均をとると0になるので、結果が異なってほしいですが、リダクションされていないHRと結果が同じであることが分かります。</p>
+<p>select first_name, salary + 1000 as money, commission_pct from hr.employees where salary &gt; 10000;</p>
+<p>あくまでData Redactionはデータを隠すための機能であり、アクセス制御機能としてではないことに注意してください。</p>
 </section>
 </section>
 
@@ -344,15 +342,6 @@
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="../tde/tde_demo.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">TDE 暗号化デモ</p>
-      </div>
-    </a>
 </div>
                 </footer>
               
@@ -370,8 +359,8 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">セットアップ</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wireshark">wiresharkのインストール</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where">where句で推測を行う</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">副問い合わせで使用した場合</a></li>
 </ul>
   </nav></div>
 

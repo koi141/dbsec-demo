@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ネイティブ・ネットワーク暗号化 &#8212; dbsec-demo  ドキュメント</title>
+    <title>Data Redactionを試す &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -51,10 +51,9 @@
     <script src="../_static/translations.js?v=4755f45a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'nne/setup';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'redact/demo';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="prev" title="TDE 暗号化デモ" href="../tde/tde_demo.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -106,6 +105,8 @@
       
       
       
+        
+      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -155,8 +156,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../tde/tde_demo.html">TDE 暗号化デモ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">NNE:</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">ネイティブ・ネットワーク暗号化</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nne/setup.html">ネイティブ・ネットワーク暗号化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nne/confirm.html">通信の暗号化を確認する</a></li>
 </ul>
 
     </div>
@@ -211,7 +213,7 @@
       
       
       
-      <li><a href="../_sources/nne/setup.rst" target="_blank"
+      <li><a href="../_sources/redact/demo.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -287,7 +289,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>ネイティブ・ネットワーク暗号化</h1>
+    <h1>Data Redactionを試す</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -297,8 +299,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">セットアップ</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wireshark">wiresharkのインストール</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">SALES_APPユーザーを作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">リダクションポリシーを作成する</a></li>
 </ul>
             </nav>
         </div>
@@ -310,26 +312,92 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="id1">
-<h1>ネイティブ・ネットワーク暗号化<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>ネットワークの暗号化を確認します。</p>
-<p>暗号化された通信を確認するため、何らかのクライアントソフトが必要になります。</p>
-<p>Oracle DBに接続するためのクライアントとしては</p>
-<ul class="simple">
-<li><p>SQL Developer</p></li>
-<li><p>SQL*Plus</p></li>
-</ul>
-<p>がありますが、ここではSQL*Plusを使用することにします。</p>
-<p>SQL DeveloperはVS codeの拡張機能としても提供されていますので、是非ご利用ください。</p>
-<section id="id2">
-<h2>セットアップ<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>SQL*</p>
-</section>
-<section id="wireshark">
-<h2>wiresharkのインストール<a class="headerlink" href="#wireshark" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>dnf<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>wireshark
+  <section id="data-redaction">
+<h1>Data Redactionを試す<a class="headerlink" href="#data-redaction" title="Link to this heading">#</a></h1>
+<section id="sales-app">
+<h2>SALES_APPユーザーを作成<a class="headerlink" href="#sales-app" title="Link to this heading">#</a></h2>
+<p>HRユーザーと結果を比較するため、マスキングされたデータを返すユーザーとしてSALES_APPユーザーを作成します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">SALES_APP</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span>
 </pre></div>
 </div>
+</section>
+<section id="id1">
+<h2>リダクションポリシーを作成する<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>SALES_APPユーザーには salary列とcommission_pct列をマスキングするポリシーを作成します。</p>
+<p>一度の関数の実行で、一つの列にしか適用できないため、salary列とcommission_pct列に適用するポリシーは別途実行していきます。</p>
+<dl>
+<dt>BEGIN</dt><dd><dl class="simple">
+<dt>DBMS_REDACT.ADD_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
+object_name =&gt; 'EMPLOYEES',
+column_name =&gt; 'SALARY',
+policy_name =&gt; 'POL_REDCT_EMPLOYEES_SALARY',
+function_type =&gt; DBMS_REDACTION.CONSTANT,
+function_parameters =&gt; 0,
+expression =&gt; 'SYS_CONTEXT(''USERENV'', ''SESSION_USER'') = ''SALES_APP'''</p>
+</dd>
+</dl>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">BEGIN</span>
+<span class="mi">2</span><span class="w">     </span><span class="n">DBMS_REDACT</span><span class="p">.</span><span class="n">ADD_POLICY</span><span class="p">(</span>
+<span class="mi">3</span><span class="w">             </span><span class="n">object_schema</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="mi">4</span><span class="w">             </span><span class="n">object_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;EMPLOYEES&#39;</span><span class="p">,</span>
+<span class="mi">5</span><span class="w">             </span><span class="k">column_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SALARY&#39;</span><span class="p">,</span>
+<span class="mi">6</span><span class="w">             </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;POL_REDCT_EMPLOYEES_SALARY&#39;</span><span class="p">,</span>
+<span class="mi">7</span><span class="w">             </span><span class="n">function_type</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_REDACT</span><span class="p">.</span><span class="k">FULL</span><span class="p">,</span>
+<span class="mi">8</span><span class="w">             </span><span class="n">expression</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SYS_CONTEXT(&#39;&#39;USERENV&#39;&#39;, &#39;&#39;SESSION_USER&#39;&#39;) = &#39;&#39;SALES_APP&#39;&#39;&#39;</span>
+<span class="mi">9</span><span class="w">     </span><span class="p">);</span>
+<span class="mi">10</span><span class="w">  </span><span class="k">END</span><span class="p">;</span>
+<span class="mi">11</span><span class="w">  </span><span class="o">/</span>
+
+<span class="n">PL</span><span class="o">/</span><span class="k">SQL</span><span class="w"> </span><span class="k">procedure</span><span class="w"> </span><span class="n">successfully</span><span class="w"> </span><span class="n">completed</span><span class="p">.</span>
+
+<span class="c1">-- ポリシーの作成を確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">redaction_policies</span><span class="p">;</span>
+<span class="ss">&quot;OBJECT_OWNER&quot;</span><span class="p">,</span><span class="ss">&quot;OBJECT_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;POLICY_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;EXPRESSION&quot;</span><span class="p">,</span><span class="ss">&quot;ENABLE&quot;</span><span class="p">,</span><span class="ss">&quot;POLICY_DESCRIPTION&quot;</span>
+<span class="ss">&quot;HR&quot;</span><span class="p">,</span><span class="ss">&quot;EMPLOYEES&quot;</span><span class="p">,</span><span class="ss">&quot;POL_REDCT_EMPLOYEES_SALARY&quot;</span><span class="p">,</span><span class="ss">&quot;SYS_CONTEXT(&#39;USERENV&#39;, &#39;SESSION_USER&#39;) = &#39;SALES_APP&#39;&quot;</span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="p">,</span>
+</pre></div>
+</div>
+<dl>
+<dt>BEGIN</dt><dd><dl class="simple">
+<dt>DBMS_REDACT.ALTER_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
+object_name =&gt; 'EMPLOYEES',
+policy_name =&gt; 'POL_REDCT_EMPLOYEES_SALARY',
+action =&gt; DBMS_REDACT.ADD_COLUMN,
+column_name =&gt; 'COMMISSION_PCT',
+function_type =&gt; DBMS_REDACT.FULL</p>
+</dd>
+</dl>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+<dl>
+<dt>SQL&gt; BEGIN</dt><dd><blockquote>
+<div><p>2     DBMS_REDACT.ALTER_POLICY(
+3             object_schema =&gt; 'HR',
+4             object_name =&gt; 'EMPLOYEES',
+5             policy_name =&gt; 'POL_REDCT_EMPLOYEES_SALARY',
+6             action =&gt; DBMS_REDACT.ADD_COLUMN,
+7             column_name =&gt; 'COMMISSION_PCT',
+8             function_type =&gt; DBMS_REDACT.FULL
+9     );</p>
+</div></blockquote>
+<p>10  END;
+11  /</p>
+</dd>
+</dl>
+<p>PL/SQL procedure successfully completed.</p>
+<p>-- ポリシーの作成を確認</p>
+<p>-- リダクション対象の列を確認
+SQL&gt; select OBJECT_OWNER, OBJECT_NAME, COLUMN_NAME, FUNCTION_TYPE from redaction_columns;
+&quot;OBJECT_OWNER&quot;,&quot;OBJECT_NAME&quot;,&quot;COLUMN_NAME&quot;,&quot;FUNCTION_TYPE&quot;
+&quot;HR&quot;,&quot;EMPLOYEES&quot;,&quot;SALARY&quot;,&quot;FULL REDACTION&quot;
+&quot;HR&quot;,&quot;EMPLOYEES&quot;,&quot;COMMISSION_PCT&quot;,&quot;FULL REDACTION&quot;</p>
 </section>
 </section>
 
@@ -344,15 +412,6 @@
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="../tde/tde_demo.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">TDE 暗号化デモ</p>
-      </div>
-    </a>
 </div>
                 </footer>
               
@@ -370,8 +429,8 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">セットアップ</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wireshark">wiresharkのインストール</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">SALES_APPユーザーを作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">リダクションポリシーを作成する</a></li>
 </ul>
   </nav></div>
 
