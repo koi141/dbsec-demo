@@ -10,7 +10,7 @@ Data Redactionはあくまで、データを隠すための機能であり、ア
 where句で推測を行う
 *****************************************
 
-.. cide-block:: sql
+.. code-block:: sql
     :caption: HRユーザー
 
     SQL> show user
@@ -39,7 +39,7 @@ where句で推測を行う
     15 rows selected.
 
 
-.. cide-block:: sql
+.. code-block:: sql
     :caption: HRユーザー
 
     SQL> show user
@@ -74,7 +74,7 @@ between句などを使えばStevenのsalaryの推測がたつのは明らかで�
 副問い合わせで使用した場合
 *****************************************
 
-.. cide-block:: sql
+.. code-block:: sql
     :caption: HRユーザー
 
     select first_name, salary from employees where salary > (select avg(salary) from employees);
@@ -101,7 +101,7 @@ between句などを使えばStevenのsalaryの推測がたつのは明らかで�
     51 rows selected.
 
 
-.. cide-block:: sql
+.. code-block:: sql
     :caption: SALES_APPユーザー
 
     SELECT employee_id, first_name, last_name, salary FROM hr.employees WHERE salary > (SELECT AVG(salary) FROM hr.employees);

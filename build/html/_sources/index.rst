@@ -6,9 +6,12 @@
 dbsec-demo
 ========================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+.. hint::
+
+   このデモ手順で示す実行結果は見やすくなるよう、整形または省略している箇所があります。
+   そのため実機での結果と多少異なる場合がありますので、ご了承ください。
+
+test
 
 .. toctree::
    :maxdepth: 2
