@@ -2,6 +2,12 @@
 1. TDEの準備
 ###########################
 
+**実施内容**
+
++ TDEに関連する初期化パラメータ設定する
++ キーストアおよびマスター暗号鍵を作成する
+
+
 ****************************
 初期化パラメータの確認
 ****************************
@@ -17,8 +23,8 @@ TDEに関連する初期化パラメータは2つあります。
 wallet_root
 ============================
 
+FREEPDB1に接続し、現在の値を確認します。
 
-pdbに接続し現在の値を確認します。（見やすくなるよう、結果を整形しています）
 
 .. code:: sql
 
@@ -30,14 +36,15 @@ pdbに接続し現在の値を確認します。（見やすくなるよう、�
    "INST_ID","NAME"       ,"VALUE","ISSYS_MODIFIABLE"
    1        ,"wallet_root",       ,"FALSE"
 
-デフォルト値はないため、何も設定されていないことが確認できます。  
-列の1つ ``ISSYS_MODIFIABLE`` は ``ALTER SYSTEM`` コマンドでパラメータを変更できるかを表しているため、 ``FALSE`` は設定の反映に再起動が必要なことを表しています。（つまり静的パラメータということです）
+デフォルトでは何も設定されていないことが確認できます。  
+``ISSYS_MODIFIABLE`` 列の値が ``FALSE`` であるため、設定の反映に再起動が必要になります。（つまり、静的パラメータであることを意味します。）
+
 
 
 tde_configuration
 ============================
 
-同様に現在の値を確認します。
+同様に、現在の値を確認します。
 
 .. code:: sql
 
@@ -45,8 +52,8 @@ tde_configuration
    "INST_ID","NAME"             ,"VALUE","ISSYS_MODIFIABLE"
    1        ,"tde_configuration",       ,"IMMEDIATE"
 
-こちらもデフォルト値はないため、何も設定されていないことが確認できます。
-``ISSYS_MODIFIABLE`` は ``IMMEDIATE`` ですので、即時反映される動的パラメータであることが分かります。
+こちらもデフォルト値はなく、何も設定されていないことが確認できます。  
+``ISSYS_MODIFIABLE`` は ``IMMEDIATE`` のため、この設定は即時反映される動的パラメータであることが分かります。
 
 
 
@@ -54,36 +61,35 @@ tde_configuration
 初期化パラメータの設定
 ****************************
 
-ではそれぞれのパラメータを設定していきます。
+それぞれのパラメータを設定していきます。
 
 wallet_root
 ============================
 
-TDEの暗号化キーはOracle Walletに保存されます。
-wallet_rootでこのWalletを格納するディレクトリのパスを指定します。
+TDEの暗号化キーはOracle Walletに保存されます。  
+``wallet_root`` でこのWalletを格納するディレクトリのパスを指定します。
 
-ディレクトリはどこでもよいのですが、ここでは ``/opt/oracle/admin/FREE/wallet`` を指定することにします。
-walletディレクトリは作成されていませんので、事前にそのディレクトリを準備しておきます。
+ディレクトリは任意の場所に指定できますが、ここでは ``/opt/oracle/admin/FREE/wallet`` を指定します。
+なお、walletディレクトリは作成されていませんので、このディレクトリは事前に作成しておきます。
 
 .. code:: bash
 
    $ mkdir -p /opt/oracle/admin/FREE/wallet
 
 
-CDBに接続し以下のコマンドでパラメータを設定します。PDBからの実行は許されていません。
+次にCDBに接続し、以下のコマンドでパラメータを設定します。 
+PDBから実行はできませんので、CDBから設定を行ってください。
 
 .. code:: sql
 
    SQL> alter system set wallet_root='/opt/oracle/admin/FREE/wallet' scope=spfile;
 
-   System altered.
-
-   -- 静的パラメータなので再起動するまで反映されていないことが分かる
+   -- 静的パラメータのため、再起動するまでは反映されない
    SQL> select inst_id, name, value, issys_modifiable from gv$parameter where name = 'wallet_root';
    "INST_ID","NAME"       ,"VALUE","ISSYS_MODIFIABLE"
    1        ,"wallet_root",       ,"FALSE"
 
-   -- 再起動する
+   -- 再起動
    SQL> shutdown immediate
    SQL> startup
 
@@ -96,33 +102,37 @@ CDBに接続し以下のコマンドでパラメータを設定します。PDB�
 tde_configuration
 ============================
 
-tde_configurationはTDEで使用されるキーストアの種類を設定します。
-19cより分離モードがサポートされ、PDBごとに固有のキーストアを使用することができるようになりました。
+``tde_configuration`` はTDEで使用されるキーストアの種類を設定します。  
+19cからは、分離モードがサポートされ、PDBごとに固有のキーストアを使用できるようになりました。
 
-| サポートされるキーストアは以下の通りです。
-| （参考： https://docs.oracle.com/cd/F82042_01/asoag/introduction-to-transparent-data-encryption.html ）
 
+サポートされるキーストアは以下の通りです。  
 .. image:: ../_static/tde/サポートされるキーストア.png
 
-なお、設定のためにはwallet_rootを有効にしておく必要があります。
+詳細は `こちら <https://docs.oracle.com/cd/F82042_01/asoag/introduction-to-transparent-data-encryption.html>`__ でご確認ください）
 
-有効化するとwallet_root配下にディレクトリが作成されます。
+
+
+有効化すると設定した値によって ``wallet_root`` 配下に以下のディレクトリが作成されます。なお、設定のためには ``wallet_root`` を有効にしておく必要があります。
 
 :FILE: ``<WALLET_ROOT>/tde``
 :Oracle Key Vault: ``<WALLET_ROOT>/okv``
 
-今回はデモですので、HSMなどの外部キーストアは使用せず、DBサーバーにキーストアを設置します。
+今回はデモ用として、DBサーバーにキーストアを設置します。
+
+
+以下のコマンドで ``tde_configuration`` を設定します。
 
 .. code:: sql
 
    SQL> alter system set tde_configuration='keystore_configuration=file' scope=both;
 
-   -- すぐに反映されていることが確認できる
+   -- すぐに反映されている
    SQL> select inst_id, name , value , issys_modifiable from gv$parameter where name = 'tde_configuration';
    "INST_ID","NAME"             ,"VALUE"                      ,"ISSYS_MODIFIABLE"
    1        ,"tde_configuration","keystore_configuration=file","IMMEDIATE"
 
-CDBで設定を行った場合、PDBはCDBから値を継承します。
+CDBで設定を行った場合、PDBはCDBからその値を継承します。
 
 
 
@@ -130,39 +140,18 @@ CDBで設定を行った場合、PDBはCDBから値を継承します。
 キーストアの作成
 ****************************
 
-暗号化鍵を格納するためのキーストアを作成します。
+暗号化鍵を格納するためのキーストアを作成します。  
 キーストアのマスター鍵管理はSYSKM権限以上が必要です。
 
-こちらのキーストア操作はSYSユーザーでも可能ですが、キーストア操作の専用ユーザーとしてsyskmユーザーが用意されていますので、こちらを使用しても構いません。
+こちらのキーストア操作はSYSユーザーでも可能ですが、キーストア操作の専用ユーザーとしてsyskmユーザーが用意されています。 
+
+以下のコマンドでキーストアを作成します。デフォルトではPKCS#12ベースのキーストレージファイルに保存されます。（参考:  `ADMINISTER KEY MANAGEMENT <https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/ADMINISTER-KEY-MANAGEMENT.html>`__ ）
 
 .. code-block:: sql
-   :caption: CDBで実行 (syskmユーザー)
-
-   # oracleユーザーでSYSKMとして接続
-   $ sqlplus / as syskm
-
-   SQL> show user
-   USER is "SYSKM"
-
-   -- SYSKMユーザーのもつ権限を確認
-   SQL> select * from session_privs;
-
-   PRIVILEGE
-   ----------------------------------------
-   SYSKM
-   ADMINISTER KEY MANAGEMENT
-
-キーストアを作成します。デフォルトではPKCS#12ベースのキーストレージファイルに保存されます。
-https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/ADMINISTER-KEY-MANAGEMENT.html
-
-CDBから以下のコマンドを実行します。
-
-.. code-block:: sql
-   :caption: CDBで実行 (syskmユーザー)
+   :caption: CDBで実行 (SYSユーザー or SYSKMユーザー)
 
    SQL> administer key management create keystore identified by OracleKM123#;
 
-   keystore altered.
 
 このコマンドを実行すると ``<wallet_root>/tde`` ディレクトリが作成され、その中に ``ewallet.p12`` が作成されます。
 
@@ -174,62 +163,70 @@ CDBから以下のコマンドを実行します。
    └── tde
       └── ewallet.p12
 
-``V$ENCRYPTION_WALLETビュー`` からも確認することができます。
+
+キーストアが正しく作成されたことは、 ``V$ENCRYPTION_WALLETビュー`` からも確認することができます。
 
 .. code-block:: sql
    :caption: CDBで実行 (syskmユーザー)
 
-   SQL> set markup csv on
    SQL> select * from v$encryption_wallet;
    "WRL_TYPE","WRL_PARAMETER"                     ,"STATUS","WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
    "FILE"    ,"/opt/oracle/admin/FREE/wallet/tde/","CLOSED","UNKNOWN"    ,"SINGLE"      ,"NONE"         ,"UNDEFINED"      ,1
 
-   -- キーストアがCLOSEDになっていますので、OPENにします。
+
+| こちらの結果からわかる通り、キーストアの状態がCLOSEDとなっています。この状態ではキーストアは使用できませんので、OPENにする必要があります。  
+| 次に、キーストアを OPEN にするためのコマンドを実行します。
+
+.. code-block:: sql
+
    SQL> administer key management set keystore open identified by OracleKM123#;
    
-   -- STATUS列がOPENになっていることを確認
+   -- STATUS列がOPENになったことを確認
    SQL> select * from v$encryption_wallet;
-   "WRL_TYPE","WRL_PARAMETER","STATUS","WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
-   "FILE","/opt/oracle/admin/FREE/wallet/tde/","OPEN_NO_MASTER_KEY","PASSWORD","SINGLE","NONE","UNDEFINED",1
+   "WRL_TYPE","WRL_PARAMETER"                     ,"STATUS"            ,"WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
+   "FILE"    ,"/opt/oracle/admin/FREE/wallet/tde/","OPEN_NO_MASTER_KEY","PASSWORD"   ,"SINGLE"      ,"NONE"         ,"UNDEFINED"      ,1
+
+このように、STATUS列がOPEN_NO_MASTER_KEYに変わり、キーストアが正常に開かれたことが確認できます。  
+これで、キーストアを使用して暗号化操作を行う準備が整いました。
 
 
 ****************************
 マスター暗号鍵の作成
 ****************************
 
-続いてマスター暗号鍵を作成します。今回は統合モードでCDB、PDBを一括で含めた暗号化鍵を作ることにします。
+続いてマスター暗号鍵を作成します。  
+今回はCDB、PDBを一括で暗号化するために統合モードで鍵を作成します。
 
 .. code-block:: sql
-   :caption: CDBで実行 (syskmユーザーまたはsysユーザー)
+   :caption: CDBで実行 (SYSユーザー or SYSKMユーザー)
 
    SQL> administer key management set key using tag 'v1.0_MEK_AllContainer' identified by OracleKM123# with backup container = ALL;
 
-   keystore altered.
 
-``using tag`` 句は無くても問題ないですが、管理のために付けておくとよいかと思います。
+| ``using tag`` 句は省略可能ですが、管理のために付けておくことをお勧めします。  
+| 次に、PDBでウォレットとマスター暗号鍵が正しく認識されているかを確認します。
 
 .. code-block:: sql
-   :caption: PDBで実行 (sysユーザー)
+   :caption: FREEPDB1で実行 (SYSユーザー)
 
-   -- PDBから正しくウォレットを認識できているかを確認
+   -- PDBでウォレットの状態を確認
    SQL> select * from v$encryption_wallet;
    "WRL_TYPE","WRL_PARAMETER","STATUS","WALLET_TYPE","WALLET_ORDER","KEYSTORE_MODE","FULLY_BACKED_UP","CON_ID"
    "FILE"    ,               ,"OPEN"  ,"PASSWORD"   ,"SINGLE"      ,"UNITED"       ,"NO"             ,3
 
-   -- PDBから正しくマスター暗号鍵を認識できているかを確認（都合上KEY_IDは短縮しています）
+   -- PDBでマスター暗号鍵を認識しているか確認
    SQL> select key_id, tag, creator, user, key_use, keystore_type, activating_dbname from v$encryption_keys;
    "KEY_ID"      ,"TAG"                  , "CREATOR","USER","KEY_USE"   ,"KEYSTORE_TYPE"    ,"ACTIVATING_DBNAME"
    "AU1kv...AAAA","v1.0_MEK_AllContainer", "SYSKM"  ,"SYS" ,"TDE IN PDB","SOFTWARE KEYSTORE","FREE"
 
 
-:CREATOR: マスター・キーを作成したユーザー
-:USER: マスター・キーをアクティブ化したユーザー
 
-では、次の手順から実際に表領域を暗号化してみます
+| **参考**
+| `V$ENCRYPTION_WALLET <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html>`__ : ウォレットの状態とTDEウォレットの場所に関する情報を表示  
+| `V$ENCRYPTION_KEYS <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html>`__ : マスターキーの説明属性を表示
 
+これで準備が整いましたので、次の手順から実際に表領域の暗号化を行っていきます。
 
-: `V$ENCRYPTION_WALLET <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html>`__ : ウォレットの状態とTDEウォレットの場所に関する情報を表示  
-: `V$ENCRYPTION_KEYS <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html>`__ : マスターキーの説明属性を表示
 
 
 

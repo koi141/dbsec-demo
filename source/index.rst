@@ -29,8 +29,8 @@ dbsec-demo
    :maxdepth: 2
    :caption: ネイティブ・ネットワーク暗号化:
    
-   /nne/setup
-   /nne/confirm
+   /nne/1_setup
+   /nne/2_encryption
 
 .. toctree::
    :maxdepth: 2
