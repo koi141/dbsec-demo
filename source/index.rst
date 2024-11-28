@@ -36,5 +36,6 @@ dbsec-demo
    :maxdepth: 2
    :caption: Data Redaction:
    
-   /redact/setup
-   /redact/caution
+   /redact/1_setup
+   /redact/2_redaction
+   /redact/3_note

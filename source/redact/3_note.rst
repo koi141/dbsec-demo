@@ -137,3 +137,9 @@ select first_name, salary + 1000 as money, commission_pct from hr.employees wher
 
 
 あくまでData Redactionはデータを隠すための機能であり、アクセス制御機能としてではないことに注意してください。
+
+
+    select first_name, salary, commission_pct from hr.employees where salary > 10000;
+
+    SELECT employee_id, first_name, last_name, salary FROM hr.employees 
+        WHERE salary > (SELECT AVG(salary) FROM hr.employees);
