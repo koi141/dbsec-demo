@@ -11,21 +11,19 @@ dbsec-demo
    このデモ手順では、実行結果の一部を見やすくするために整形や省略を行っています。
    そのため、実際の結果とは若干異なる場合がありますので、ご了承ください。
 
-test
-
 .. toctree::
    :maxdepth: 2
    :caption: 環境準備:
 
-   /demo_env_setup/db23ai
-   /demo_env_setup/sampleSchema
+   /env_setup/1_db23ai
+   /env_setup/2_sampleSchema
 
 .. toctree::
    :maxdepth: 2
    :caption: TDE（透過的データ暗号化）:
    
-   /tde/setup
-   /tde/tde_demo
+   /tde/1_setup
+   /tde/2_encryption
 
 .. toctree::
    :maxdepth: 2

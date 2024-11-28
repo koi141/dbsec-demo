@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="next" title="1. Oracle Database 23ai FREEの準備" href="demo_env_setup/db23ai.html" />
+    <link rel="next" title="1. Oracle Database 23ai FREEの準備" href="env_setup/1_db23ai.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -148,13 +148,13 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">環境準備:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="demo_env_setup/db23ai.html">1. Oracle Database 23ai FREEの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_env_setup/sampleSchema.html">サンプルスキーマ（HR）を作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env_setup/1_db23ai.html">1. Oracle Database 23ai FREEの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env_setup/2_sampleSchema.html">2. サンプルスキーマ（HR）を作成する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">TDE（透過的データ暗号化）:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="tde/setup.html">TDE セットアップ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tde/tde_demo.html">TDE 暗号化デモ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tde/1_setup.html">TDE 暗号化デモ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tde/2_encryption.html">TDE セットアップ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="nav bd-sidenav">
@@ -314,18 +314,16 @@
 <p>このデモ手順では、実行結果の一部を見やすくするために整形や省略を行っています。
 そのため、実際の結果とは若干異なる場合がありますので、ご了承ください。</p>
 </div>
-<p>test</p>
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">環境準備:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo_env_setup/db23ai.html">1. Oracle Database 23ai FREEの準備</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demo_env_setup/db23ai.html#db23ai">DB23aiをインストールする</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env_setup/1_db23ai.html">1. Oracle Database 23ai FREEの準備</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="env_setup/1_db23ai.html#db23ai">DB23aiをインストールする</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="demo_env_setup/sampleSchema.html">サンプルスキーマ（HR）を作成する</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demo_env_setup/sampleSchema.html#id1">サンプルスキーマのダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_env_setup/sampleSchema.html#id2">サンプルスキーマを作成する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_env_setup/sampleSchema.html#id3">日本語対応させる</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env_setup/2_sampleSchema.html">2. サンプルスキーマ（HR）を作成する</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="env_setup/2_sampleSchema.html#id1">サンプルスキーマのダウンロード</a></li>
+<li class="toctree-l2"><a class="reference internal" href="env_setup/2_sampleSchema.html#id2">サンプルスキーマを作成する</a></li>
 </ul>
 </li>
 </ul>
@@ -333,17 +331,17 @@
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">TDE（透過的データ暗号化）:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tde/setup.html">TDE セットアップ</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tde/setup.html#id1">初期化パラメータの確認</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tde/setup.html#id2">初期化パラメータの設定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tde/setup.html#id5">キーストアの作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tde/setup.html#id6">マスター暗号鍵の作成</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tde/1_setup.html">TDE 暗号化デモ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tde/1_setup.html#id1">データファイルの確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tde/1_setup.html#id2">表領域の暗号化を行う</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tde/1_setup.html#id3">暗号化された表領域を復号する</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tde/tde_demo.html">TDE 暗号化デモ</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tde/tde_demo.html#id1">データファイルの確認</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tde/tde_demo.html#id2">表領域の暗号化を行う</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tde/tde_demo.html#id3">暗号化された表領域を復号する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tde/2_encryption.html">TDE セットアップ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tde/2_encryption.html#id1">初期化パラメータの確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tde/2_encryption.html#id2">初期化パラメータの設定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tde/2_encryption.html#id5">キーストアの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tde/2_encryption.html#id6">マスター暗号鍵の作成</a></li>
 </ul>
 </li>
 </ul>
@@ -393,7 +391,7 @@
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="demo_env_setup/db23ai.html"
+       href="env_setup/1_db23ai.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
