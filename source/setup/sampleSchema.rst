@@ -53,7 +53,7 @@ HRスキーマを作成するため、DBに接続します。
 
 .. code-block:: sql
     :emphasize-lines: 8, 10
-
+    
     SQL> @/home/oracle/db-sample-schemas-23.3/human_resources/hr_install.sql
 
     Thank you for installing the Oracle Human Resources Sample Schema.
@@ -64,7 +64,7 @@ HRスキーマを作成するため、DBに接続します。
     Enter a password for the user HR: <HRユーザーのパスワードを入力>
 
     Enter a tablespace for HR [USERS]:  <HRユーザーのパスワードを再入力>
-    Do you want to overwrite the schema, if it already exists? [YES|no]: n
+    Do you want to overwrite the schema, if it already exists? [YES|no]: YES
     ******  Creating REGIONS table ....
     ...
 
