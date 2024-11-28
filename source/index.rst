@@ -8,8 +8,8 @@ dbsec-demo
 
 .. hint::
 
-   このデモ手順で示す実行結果は見やすくなるよう、整形または省略している箇所があります。
-   そのため実機での結果と多少異なる場合がありますので、ご了承ください。
+   このデモ手順では、実行結果の一部を見やすくするために整形や省略を行っています。
+   そのため、実際の結果とは若干異なる場合がありますので、ご了承ください。
 
 test
 
@@ -17,19 +17,19 @@ test
    :maxdepth: 2
    :caption: 環境準備:
 
-   /setup/db23ai
-   /setup/sampleSchema
+   /demo_env_setup/db23ai
+   /demo_env_setup/sampleSchema
 
 .. toctree::
    :maxdepth: 2
-   :caption: TDE:
+   :caption: TDE（透過的データ暗号化）:
    
    /tde/setup
    /tde/tde_demo
 
 .. toctree::
    :maxdepth: 2
-   :caption: NNE:
+   :caption: ネイティブ・ネットワーク暗号化:
    
    /nne/setup
    /nne/confirm
