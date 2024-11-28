@@ -51,11 +51,9 @@
     <script src="../_static/translations.js?v=4755f45a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'tde/2_encryption';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tde/2_encyption';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="ネイティブ・ネットワーク暗号化" href="../nne/setup.html" />
-    <link rel="prev" title="1. TDEの準備" href="1_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -107,6 +105,8 @@
       
       
       
+        
+      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -151,9 +151,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../env_setup/2_sampleSchema.html">2. サンプルスキーマ（HR）を作成する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">TDE（透過的データ暗号化）:</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. TDEの準備</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. TDE 表領域を暗号化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="nav bd-sidenav">
@@ -218,7 +217,7 @@
       
       
       
-      <li><a href="../_sources/tde/2_encryption.rst" target="_blank"
+      <li><a href="../_sources/tde/2_encyption.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -320,20 +319,16 @@
                   
   <section id="tde">
 <h1>2. TDE 表領域を暗号化する<a class="headerlink" href="#tde" title="Link to this heading">#</a></h1>
-<p><strong>実施内容</strong></p>
-<ul class="simple">
-<li><p>表領域に対して暗号化を行い、データファイルを暗号化</p></li>
-<li><p>OSコマンドでデータファイルを開き、データが暗号化されていることを確認する</p></li>
-</ul>
+<p>こちらの手順では表領域に対して暗号化を行い、データファイルを暗号化します。</p>
 <section id="id1">
 <h2>データファイルの確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>作成したHRスキーマを使用します。手順ではUSERS表領域に作成していますが、念のため、実際に確認を行います。</p>
+<p>作成したHRスキーマを使用します。手順ではUSERS表領域に作成していますが、念のために確認します。</p>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">FREEPDB1で実行 (SYSユーザー)</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="c1">-- 結果をcsv形式で出力</span>
+<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="c1">-- PDBにSYSユーザーで接続</span>
 <span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
 
-<span class="w"> </span><span class="c1">-- HRスキーマの表領域がUSERS表領域であることを確認</span>
+<span class="w"> </span><span class="c1">-- HRスキーマの表領域を確認</span>
 <span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">default_tablespace</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dba_users</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="s1">&#39;HR&#39;</span><span class="p">;</span>
 <span class="w"> </span><span class="ss">&quot;USERNAME&quot;</span><span class="p">,</span><span class="ss">&quot;DEFAULT_TABLESPACE&quot;</span>
 <span class="w"> </span><span class="ss">&quot;HR&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;USERS&quot;</span>
@@ -342,70 +337,77 @@
 <span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">tablespace_name</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dba_data_files</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">tablespace_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USERS&#39;</span><span class="p">;</span>
 <span class="w"> </span><span class="ss">&quot;TABLESPACE_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;FILE_NAME&quot;</span>
 <span class="w"> </span><span class="ss">&quot;USERS&quot;</span><span class="w">          </span><span class="p">,</span><span class="ss">&quot;/opt/oracle/oradata/FREE/FREEPDB1/users01.dbf&quot;</span>
+
+<span class="w"> </span><span class="c1">-- データファイルの中身を確認</span>
+<span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
+<span class="w"> </span><span class="err">}</span><span class="o">|</span><span class="err">{</span><span class="n">z</span>
+<span class="w"> </span><span class="n">VFREE</span>
+<span class="w"> </span><span class="n">USERS</span>
+<span class="w"> </span><span class="p">...</span>
+<span class="w"> </span><span class="n">CJOHNSON</span>
+<span class="w"> </span><span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960034</span>
+<span class="w"> </span><span class="n">SA_REP</span>
+<span class="w"> </span><span class="n">O</span><span class="w">       </span><span class="n">Kimberely</span>
+<span class="w"> </span><span class="k">Grant</span>
+<span class="w"> </span><span class="n">KGRANT</span>
+<span class="w"> </span><span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960033</span>
+<span class="w"> </span><span class="n">SA_REP</span>
+<span class="w"> </span><span class="n">Jack</span>
+<span class="w"> </span><span class="n">Livingston</span>
+<span class="w"> </span><span class="n">JLIVINGS</span>
+<span class="w"> </span><span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960032</span>
+<span class="w"> </span><span class="p">...</span>
 </pre></div>
 </div>
 </div>
-<p>OSコマンドでUSERS表領域のデータファイルの中身を確認します。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
-<span class="p">...</span>
-<span class="n">CJOHNSON</span>
-<span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960034</span>
-<span class="n">SA_REP</span>
-<span class="n">O</span><span class="w">       </span><span class="n">Kimberely</span>
-<span class="k">Grant</span>
-<span class="n">KGRANT</span>
-<span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960033</span>
-<span class="n">SA_REP</span>
-<span class="n">Jack</span>
-<span class="n">Livingston</span>
-<span class="n">JLIVINGS</span>
-<span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960032</span>
-<span class="p">...</span>
-</pre></div>
-</div>
-<p>このように、TDEで暗号化されていない場合、stringsコマンドでデータの内容が確認できてしまうことが分かります。</p>
+<p>このようにTDEで暗号化されていないと、stringsコマンドでデータの中身が見えてしまうことが分かります。</p>
 </section>
 <section id="id2">
 <h2>表領域の暗号化を行う<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>次に、HRスキーマが格納されるUSERS表領域を暗号化します。</p>
+<p>HR表領域の暗号化を行います。</p>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">FREEPDB1で実行 (SYSユーザー)</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- 実行時間を計測</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">timing</span><span class="w"> </span><span class="k">on</span>
 
-<span class="c1">-- USERS表領域を暗号化</span>
+<span class="c1">-- HRスキーマを暗号化</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">encryption</span><span class="w"> </span><span class="n">online</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="s1">&#39;AES256&#39;</span><span class="w"> </span><span class="n">encrypt</span><span class="p">;</span>
 
 <span class="n">Tablespace</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
 
 <span class="n">Elapsed</span><span class="p">:</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">.</span><span class="mi">02</span>
-</pre></div>
-</div>
-</div>
-<p>暗号化が完了しましたので、先ほどと同様のOSコマンドでデータファイルの中身を確認します。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
+
+<span class="c1">-- データファイルの暗号化を確認する</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
 <span class="p">...</span>
 <span class="n">mK</span><span class="o">=</span><span class="p">.</span>
 <span class="n">qM$</span><span class="p">;</span>
-<span class="o">/</span><span class="n">eUr</span>
+<span class="o">/</span><span class="p">[</span><span class="n">Ur</span>
 <span class="n">N5Y9N</span>
 <span class="n">ZSaKE</span>
 <span class="n">y</span><span class="o">!</span><span class="n">Ac</span>
 <span class="n">oH</span><span class="o">/</span><span class="n">P</span>
-<span class="o">&lt;</span><span class="n">ar3</span><span class="p">:</span><span class="n">oii</span>
+<span class="o">&lt;</span><span class="n">a</span><span class="p">)</span><span class="mi">3</span><span class="p">:</span><span class="n">oii</span>
 <span class="o">/`</span><span class="n">_S</span>
 <span class="err">}</span><span class="n">l</span><span class="w"> </span><span class="n">d</span><span class="o">%</span>
 <span class="p">...</span>
-</pre></div>
-</div>
-<p>このように、データファイルが暗号化され、内容が解読できない形式に変わったことを確認できます。
-また、SQLクエリが問題なく実行されることも確認します。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">jobs</span><span class="p">;</span>
+
+<span class="c1">-- SQLは問題なく実行されることを確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">jobs</span><span class="p">;</span>
 <span class="ss">&quot;JOB_ID&quot;</span><span class="p">,</span><span class="ss">&quot;JOB_TITLE&quot;</span><span class="p">,</span><span class="ss">&quot;MIN_SALARY&quot;</span><span class="p">,</span><span class="ss">&quot;MAX_SALARY&quot;</span>
 <span class="ss">&quot;AD_PRES&quot;</span><span class="p">,</span><span class="ss">&quot;President&quot;</span><span class="p">,</span><span class="mi">20080</span><span class="p">,</span><span class="mi">40000</span>
 <span class="ss">&quot;AD_VP&quot;</span><span class="p">,</span><span class="ss">&quot;Administration Vice President&quot;</span><span class="p">,</span><span class="mi">15000</span><span class="p">,</span><span class="mi">30000</span>
 <span class="ss">&quot;AD_ASST&quot;</span><span class="p">,</span><span class="ss">&quot;Administration Assistant&quot;</span><span class="p">,</span><span class="mi">3000</span><span class="p">,</span><span class="mi">6000</span>
-<span class="p">...</span>
+<span class="ss">&quot;FI_MGR&quot;</span><span class="p">,</span><span class="ss">&quot;Finance Manager&quot;</span><span class="p">,</span><span class="mi">8200</span><span class="p">,</span><span class="mi">16000</span>
+<span class="ss">&quot;FI_ACCOUNT&quot;</span><span class="p">,</span><span class="ss">&quot;Accountant&quot;</span><span class="p">,</span><span class="mi">4200</span><span class="p">,</span><span class="mi">9000</span>
+<span class="ss">&quot;AC_MGR&quot;</span><span class="p">,</span><span class="ss">&quot;Accounting Manager&quot;</span><span class="p">,</span><span class="mi">8200</span><span class="p">,</span><span class="mi">16000</span>
+<span class="ss">&quot;AC_ACCOUNT&quot;</span><span class="p">,</span><span class="ss">&quot;Public Accountant&quot;</span><span class="p">,</span><span class="mi">4200</span><span class="p">,</span><span class="mi">9000</span>
+<span class="ss">&quot;SA_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Sales Manager&quot;</span><span class="p">,</span><span class="mi">10000</span><span class="p">,</span><span class="mi">20080</span>
+<span class="ss">&quot;SA_REP&quot;</span><span class="p">,</span><span class="ss">&quot;Sales Representative&quot;</span><span class="p">,</span><span class="mi">6000</span><span class="p">,</span><span class="mi">12008</span>
+<span class="ss">&quot;PU_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Purchasing Manager&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">,</span><span class="mi">15000</span>
+<span class="ss">&quot;PU_CLERK&quot;</span><span class="p">,</span><span class="ss">&quot;Purchasing Clerk&quot;</span><span class="p">,</span><span class="mi">2500</span><span class="p">,</span><span class="mi">5500</span>
+<span class="ss">&quot;ST_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Stock Manager&quot;</span><span class="p">,</span><span class="mi">5500</span><span class="p">,</span><span class="mi">8500</span>
+<span class="ss">&quot;ST_CLERK&quot;</span><span class="p">,</span><span class="ss">&quot;Stock Clerk&quot;</span><span class="p">,</span><span class="mi">2008</span><span class="p">,</span><span class="mi">5000</span>
 <span class="ss">&quot;SH_CLERK&quot;</span><span class="p">,</span><span class="ss">&quot;Shipping Clerk&quot;</span><span class="p">,</span><span class="mi">2500</span><span class="p">,</span><span class="mi">5500</span>
 <span class="ss">&quot;IT_PROG&quot;</span><span class="p">,</span><span class="ss">&quot;Programmer&quot;</span><span class="p">,</span><span class="mi">4000</span><span class="p">,</span><span class="mi">10000</span>
 <span class="ss">&quot;MK_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Marketing Manager&quot;</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">15000</span>
@@ -418,17 +420,20 @@
 <span class="n">Elapsed</span><span class="p">:</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">.</span><span class="mi">02</span>
 </pre></div>
 </div>
+</div>
 </section>
 <section id="id3">
 <h2>暗号化された表領域を復号する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>オンラインで暗号化を行いましたが、同様にオンラインで復号も行うことができます。</p>
+<p>オンライン暗号化を行いましたが、同様にオンライン復号も行うことができます</p>
 <div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">FREEPDB1で実行 (SYSユーザー)</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- USERS表領域の復号を行う</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">encryption</span><span class="w"> </span><span class="n">online</span><span class="w"> </span><span class="n">decrypt</span><span class="p">;</span>
+<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">alter</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">encryption</span><span class="w"> </span><span class="n">online</span><span class="w"> </span><span class="n">decrypt</span><span class="p">;</span>
 
 <span class="c1">-- 復号されていることを確認する</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
+<span class="err">}</span><span class="o">|</span><span class="err">{</span><span class="n">z</span>
+<span class="n">VFREE</span>
+<span class="n">USERS</span>
 <span class="p">...</span>
 <span class="n">Geneve</span>
 <span class="n">Rua</span><span class="w"> </span><span class="n">Frei</span><span class="w"> </span><span class="n">Caneca</span><span class="w"> </span><span class="mi">1360</span><span class="w">    </span><span class="mi">01307</span><span class="o">-</span><span class="mi">002</span><span class="w">       </span><span class="n">Sao</span><span class="w"> </span><span class="n">Paulo</span><span class="w">       </span><span class="n">Sao</span><span class="w"> </span><span class="n">Paulo</span>
@@ -443,21 +448,6 @@
 </pre></div>
 </div>
 </div>
-<p>復号後、データファイルの内容が再び人間が読める形式で表示されることが確認できます。
-もし、別の端末でオンライン暗号化または復号を行っている最中にデータファイルを確認する場合、次のようなコマンドで確認できます。</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ls<span class="w"> </span>-l
-total<span class="w"> </span><span class="m">1077780</span>
--rw-r-----.<span class="w"> </span><span class="m">1</span><span class="w"> </span>oracle<span class="w"> </span>oinstall<span class="w"> </span><span class="m">597696512</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">28</span><span class="w"> </span><span class="m">14</span>:09<span class="w"> </span>sysaux01.dbf
--rw-r-----.<span class="w"> </span><span class="m">1</span><span class="w"> </span>oracle<span class="w"> </span>oinstall<span class="w"> </span><span class="m">314580992</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">28</span><span class="w"> </span><span class="m">14</span>:08<span class="w"> </span>system01.dbf
--rw-r-----.<span class="w"> </span><span class="m">1</span><span class="w"> </span>oracle<span class="w"> </span>oinstall<span class="w">  </span><span class="m">20979712</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">27</span><span class="w"> </span><span class="m">22</span>:00<span class="w"> </span>temp01.dbf
--rw-r-----.<span class="w"> </span><span class="m">1</span><span class="w"> </span>oracle<span class="w"> </span>oinstall<span class="w"> </span><span class="m">104865792</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">28</span><span class="w"> </span><span class="m">14</span>:09<span class="w"> </span>undotbs01.dbf
--rw-r-----.<span class="w"> </span><span class="m">1</span><span class="w"> </span>oracle<span class="w"> </span>oinstall<span class="w">  </span><span class="m">75505664</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">28</span><span class="w"> </span><span class="m">14</span>:10<span class="w"> </span>users01.dbf
--rw-r-----.<span class="w"> </span><span class="m">1</span><span class="w"> </span>oracle<span class="w"> </span>oinstall<span class="w">  </span><span class="m">75505664</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">28</span><span class="w"> </span><span class="m">14</span>:10<span class="w"> </span>users01.dbf_new
-</pre></div>
-</div>
-<p>ここで、 <code class="docutils literal notranslate"><span class="pre">users01.dbf_new</span></code> という同じサイズの新しいデータファイルが作成されていることが分かります。
-このため、オンライン暗号化を行う際には、対象のデータファイルと同じサイズの空き容量が必要です。</p>
-<p>以上でTDEのデモは終了です。</p>
 </section>
 </section>
 
@@ -472,24 +462,6 @@ total<span class="w"> </span><span class="m">1077780</span>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="1_setup.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">1. TDEの準備</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="../nne/setup.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">ネイティブ・ネットワーク暗号化</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               

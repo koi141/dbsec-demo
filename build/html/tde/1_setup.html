@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>TDE 暗号化デモ &#8212; dbsec-demo  ドキュメント</title>
+    <title>1. TDEの準備 &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -54,6 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'tde/1_setup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
+    <link rel="prev" title="2. サンプルスキーマ（HR）を作成する" href="../env_setup/2_sampleSchema.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -105,8 +106,6 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -145,7 +144,16 @@
 </button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">環境準備:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../env_setup/1_db23ai.html">1. Oracle Database 23ai FREEの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env_setup/2_sampleSchema.html">2. サンプルスキーマ（HR）を作成する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">TDE（透過的データ暗号化）:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. TDEの準備</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../nne/setup.html">ネイティブ・ネットワーク暗号化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nne/confirm.html">通信の暗号化を確認する</a></li>
@@ -284,7 +292,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>TDE 暗号化デモ</h1>
+    <h1>1. TDEの準備</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -294,9 +302,18 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">データファイルの確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">表領域の暗号化を行う</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">暗号化された表領域を復号する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">初期化パラメータの確認</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wallet-root">wallet_root</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tde-configuration">tde_configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">初期化パラメータの設定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">wallet_root</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">tde_configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">キーストアの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">マスター暗号鍵の作成</a></li>
 </ul>
             </nav>
         </div>
@@ -309,136 +326,204 @@
                 <article class="bd-article">
                   
   <section id="tde">
-<h1>TDE 暗号化デモ<a class="headerlink" href="#tde" title="Link to this heading">#</a></h1>
-<p>こちらの手順では表領域に対して暗号化を行い、データファイルを暗号化します。</p>
+<h1>1. TDEの準備<a class="headerlink" href="#tde" title="Link to this heading">#</a></h1>
 <section id="id1">
-<h2>データファイルの確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>作成したHRスキーマを使用します。手順ではUSERS表領域に作成していますが、念のために確認します。</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="c1">-- PDBにSYSユーザーで接続</span>
-<span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<h2>初期化パラメータの確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>TDEに関連する初期化パラメータは2つあります。</p>
+<ul class="simple">
+<li><p>: <a class="reference external" href="https://docs.oracle.com/cd/F82042_01/refrn/WALLET_ROOT.html">wallet_root</a> :  暗号化キー（TDEキー）や証明書などを保存する場所を指定</p></li>
+<li><p>: <a class="reference external" href="https://docs.oracle.com/cd/F82042_01/refrn/TDE_CONFIGURATION.html">tde_configuration</a> : TDEの設定を定義</p></li>
+</ul>
+<p>それぞれを確認していきましょう。</p>
+<section id="wallet-root">
+<h3>wallet_root<a class="headerlink" href="#wallet-root" title="Link to this heading">#</a></h3>
+<p>pdbに接続し現在の値を確認します。（見やすくなるよう、結果を整形しています）</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- 結果をcsv形式で出力</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
 
-<span class="w"> </span><span class="c1">-- HRスキーマの表領域を確認</span>
-<span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">default_tablespace</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dba_users</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="s1">&#39;HR&#39;</span><span class="p">;</span>
-<span class="w"> </span><span class="ss">&quot;USERNAME&quot;</span><span class="p">,</span><span class="ss">&quot;DEFAULT_TABLESPACE&quot;</span>
-<span class="w"> </span><span class="ss">&quot;HR&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;USERS&quot;</span>
-
-<span class="w"> </span><span class="c1">-- USER表領域が格納されるデータファイルのパスを確認</span>
-<span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">tablespace_name</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dba_data_files</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">tablespace_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USERS&#39;</span><span class="p">;</span>
-<span class="w"> </span><span class="ss">&quot;TABLESPACE_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;FILE_NAME&quot;</span>
-<span class="w"> </span><span class="ss">&quot;USERS&quot;</span><span class="w">          </span><span class="p">,</span><span class="ss">&quot;/opt/oracle/oradata/FREE/FREEPDB1/users01.dbf&quot;</span>
-
-<span class="w"> </span><span class="c1">-- データファイルの中身を確認</span>
-<span class="w"> </span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
-<span class="w"> </span><span class="err">}</span><span class="o">|</span><span class="err">{</span><span class="n">z</span>
-<span class="w"> </span><span class="n">VFREE</span>
-<span class="w"> </span><span class="n">USERS</span>
-<span class="w"> </span><span class="p">...</span>
-<span class="w"> </span><span class="n">CJOHNSON</span>
-<span class="w"> </span><span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960034</span>
-<span class="w"> </span><span class="n">SA_REP</span>
-<span class="w"> </span><span class="n">O</span><span class="w">       </span><span class="n">Kimberely</span>
-<span class="w"> </span><span class="k">Grant</span>
-<span class="w"> </span><span class="n">KGRANT</span>
-<span class="w"> </span><span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960033</span>
-<span class="w"> </span><span class="n">SA_REP</span>
-<span class="w"> </span><span class="n">Jack</span>
-<span class="w"> </span><span class="n">Livingston</span>
-<span class="w"> </span><span class="n">JLIVINGS</span>
-<span class="w"> </span><span class="mi">44</span><span class="p">.</span><span class="mi">1632</span><span class="p">.</span><span class="mi">960032</span>
-<span class="w"> </span><span class="p">...</span>
+<span class="c1">-- wallet_rootの値を確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">inst_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">issys_modifiable</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">gv$parameter</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;wallet_root&#39;</span><span class="p">;</span>
+<span class="ss">&quot;INST_ID&quot;</span><span class="p">,</span><span class="ss">&quot;NAME&quot;</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span><span class="p">,</span><span class="ss">&quot;ISSYS_MODIFIABLE&quot;</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;wallet_root&quot;</span><span class="p">,</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
 </pre></div>
 </div>
+<p>デフォルト値はないため、何も設定されていないことが確認できます。
+列の1つ <code class="docutils literal notranslate"><span class="pre">ISSYS_MODIFIABLE</span></code> は <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">SYSTEM</span></code> コマンドでパラメータを変更できるかを表しているため、 <code class="docutils literal notranslate"><span class="pre">FALSE</span></code> は設定の反映に再起動が必要なことを表しています。（つまり静的パラメータということです）</p>
+</section>
+<section id="tde-configuration">
+<h3>tde_configuration<a class="headerlink" href="#tde-configuration" title="Link to this heading">#</a></h3>
+<p>同様に現在の値を確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">inst_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">issys_modifiable</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">gv$parameter</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;tde_configuration&#39;</span><span class="p">;</span>
+<span class="ss">&quot;INST_ID&quot;</span><span class="p">,</span><span class="ss">&quot;NAME&quot;</span><span class="w">             </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span><span class="p">,</span><span class="ss">&quot;ISSYS_MODIFIABLE&quot;</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;tde_configuration&quot;</span><span class="p">,</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;IMMEDIATE&quot;</span>
+</pre></div>
 </div>
-<p>このようにTDEで暗号化されていないと、stringsコマンドでデータの中身が見えてしまうことが分かります。</p>
+<p>こちらもデフォルト値はないため、何も設定されていないことが確認できます。
+<code class="docutils literal notranslate"><span class="pre">ISSYS_MODIFIABLE</span></code> は <code class="docutils literal notranslate"><span class="pre">IMMEDIATE</span></code> ですので、即時反映される動的パラメータであることが分かります。</p>
+</section>
 </section>
 <section id="id2">
-<h2>表領域の暗号化を行う<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>HR表領域の暗号化を行います。</p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- 実行時間を計測</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">timing</span><span class="w"> </span><span class="k">on</span>
+<h2>初期化パラメータの設定<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>ではそれぞれのパラメータを設定していきます。</p>
+<section id="id3">
+<h3>wallet_root<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>TDEの暗号化キーはOracle Walletに保存されます。
+wallet_rootでこのWalletを格納するディレクトリのパスを指定します。</p>
+<p>ディレクトリはどこでもよいのですが、ここでは <code class="docutils literal notranslate"><span class="pre">/opt/oracle/admin/FREE/wallet</span></code> を指定することにします。
+walletディレクトリは作成されていませんので、事前にそのディレクトリを準備しておきます。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/oracle/admin/FREE/wallet
+</pre></div>
+</div>
+<p>CDBに接続し以下のコマンドでパラメータを設定します。PDBからの実行は許されていません。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="k">system</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">wallet_root</span><span class="o">=</span><span class="s1">&#39;/opt/oracle/admin/FREE/wallet&#39;</span><span class="w"> </span><span class="k">scope</span><span class="o">=</span><span class="n">spfile</span><span class="p">;</span>
 
-<span class="c1">-- HRスキーマを暗号化</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">encryption</span><span class="w"> </span><span class="n">online</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="s1">&#39;AES256&#39;</span><span class="w"> </span><span class="n">encrypt</span><span class="p">;</span>
+<span class="k">System</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
 
-<span class="n">Tablespace</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
+<span class="c1">-- 静的パラメータなので再起動するまで反映されていないことが分かる</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">inst_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">issys_modifiable</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">gv$parameter</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;wallet_root&#39;</span><span class="p">;</span>
+<span class="ss">&quot;INST_ID&quot;</span><span class="p">,</span><span class="ss">&quot;NAME&quot;</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span><span class="p">,</span><span class="ss">&quot;ISSYS_MODIFIABLE&quot;</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;wallet_root&quot;</span><span class="p">,</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
 
-<span class="n">Elapsed</span><span class="p">:</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">.</span><span class="mi">02</span>
+<span class="c1">-- 再起動する</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">shutdown</span><span class="w"> </span><span class="k">immediate</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">startup</span>
 
-<span class="c1">-- データファイルの暗号化を確認する</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
-<span class="p">...</span>
-<span class="n">mK</span><span class="o">=</span><span class="p">.</span>
-<span class="n">qM$</span><span class="p">;</span>
-<span class="o">/</span><span class="p">[</span><span class="n">Ur</span>
-<span class="n">N5Y9N</span>
-<span class="n">ZSaKE</span>
-<span class="n">y</span><span class="o">!</span><span class="n">Ac</span>
-<span class="n">oH</span><span class="o">/</span><span class="n">P</span>
-<span class="o">&lt;</span><span class="n">a</span><span class="p">)</span><span class="mi">3</span><span class="p">:</span><span class="n">oii</span>
-<span class="o">/`</span><span class="n">_S</span>
-<span class="err">}</span><span class="n">l</span><span class="w"> </span><span class="n">d</span><span class="o">%</span>
-<span class="p">...</span>
+<span class="c1">-- 再起動後、設定が反映されている</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">inst_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">issys_modifiable</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">gv$parameter</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;wallet_root&#39;</span><span class="p">;</span>
+<span class="ss">&quot;INST_ID&quot;</span><span class="p">,</span><span class="ss">&quot;NAME&quot;</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span><span class="w">                        </span><span class="p">,</span><span class="ss">&quot;ISSYS_MODIFIABLE&quot;</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;wallet_root&quot;</span><span class="p">,</span><span class="ss">&quot;/opt/oracle/admin/FREE/wallet&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>tde_configuration<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>tde_configurationはTDEで使用されるキーストアの種類を設定します。
+19cより分離モードがサポートされ、PDBごとに固有のキーストアを使用することができるようになりました。</p>
+<div class="line-block">
+<div class="line">サポートされるキーストアは以下の通りです。</div>
+<div class="line">（参考： <a class="reference external" href="https://docs.oracle.com/cd/F82042_01/asoag/introduction-to-transparent-data-encryption.html">https://docs.oracle.com/cd/F82042_01/asoag/introduction-to-transparent-data-encryption.html</a> ）</div>
+</div>
+<img alt="../_images/%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%82%8B%E3%82%AD%E3%83%BC%E3%82%B9%E3%83%88%E3%82%A2.png" src="../_images/%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%82%8B%E3%82%AD%E3%83%BC%E3%82%B9%E3%83%88%E3%82%A2.png" />
+<p>なお、設定のためにはwallet_rootを有効にしておく必要があります。</p>
+<p>有効化するとwallet_root配下にディレクトリが作成されます。</p>
+<dl class="field-list simple">
+<dt class="field-odd">FILE<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">&lt;WALLET_ROOT&gt;/tde</span></code></p>
+</dd>
+<dt class="field-even">Oracle Key Vault<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">&lt;WALLET_ROOT&gt;/okv</span></code></p>
+</dd>
+</dl>
+<p>今回はデモですので、HSMなどの外部キーストアは使用せず、DBサーバーにキーストアを設置します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="k">system</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">tde_configuration</span><span class="o">=</span><span class="s1">&#39;keystore_configuration=file&#39;</span><span class="w"> </span><span class="k">scope</span><span class="o">=</span><span class="k">both</span><span class="p">;</span>
 
-<span class="c1">-- SQLは問題なく実行されることを確認</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">jobs</span><span class="p">;</span>
-<span class="ss">&quot;JOB_ID&quot;</span><span class="p">,</span><span class="ss">&quot;JOB_TITLE&quot;</span><span class="p">,</span><span class="ss">&quot;MIN_SALARY&quot;</span><span class="p">,</span><span class="ss">&quot;MAX_SALARY&quot;</span>
-<span class="ss">&quot;AD_PRES&quot;</span><span class="p">,</span><span class="ss">&quot;President&quot;</span><span class="p">,</span><span class="mi">20080</span><span class="p">,</span><span class="mi">40000</span>
-<span class="ss">&quot;AD_VP&quot;</span><span class="p">,</span><span class="ss">&quot;Administration Vice President&quot;</span><span class="p">,</span><span class="mi">15000</span><span class="p">,</span><span class="mi">30000</span>
-<span class="ss">&quot;AD_ASST&quot;</span><span class="p">,</span><span class="ss">&quot;Administration Assistant&quot;</span><span class="p">,</span><span class="mi">3000</span><span class="p">,</span><span class="mi">6000</span>
-<span class="ss">&quot;FI_MGR&quot;</span><span class="p">,</span><span class="ss">&quot;Finance Manager&quot;</span><span class="p">,</span><span class="mi">8200</span><span class="p">,</span><span class="mi">16000</span>
-<span class="ss">&quot;FI_ACCOUNT&quot;</span><span class="p">,</span><span class="ss">&quot;Accountant&quot;</span><span class="p">,</span><span class="mi">4200</span><span class="p">,</span><span class="mi">9000</span>
-<span class="ss">&quot;AC_MGR&quot;</span><span class="p">,</span><span class="ss">&quot;Accounting Manager&quot;</span><span class="p">,</span><span class="mi">8200</span><span class="p">,</span><span class="mi">16000</span>
-<span class="ss">&quot;AC_ACCOUNT&quot;</span><span class="p">,</span><span class="ss">&quot;Public Accountant&quot;</span><span class="p">,</span><span class="mi">4200</span><span class="p">,</span><span class="mi">9000</span>
-<span class="ss">&quot;SA_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Sales Manager&quot;</span><span class="p">,</span><span class="mi">10000</span><span class="p">,</span><span class="mi">20080</span>
-<span class="ss">&quot;SA_REP&quot;</span><span class="p">,</span><span class="ss">&quot;Sales Representative&quot;</span><span class="p">,</span><span class="mi">6000</span><span class="p">,</span><span class="mi">12008</span>
-<span class="ss">&quot;PU_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Purchasing Manager&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">,</span><span class="mi">15000</span>
-<span class="ss">&quot;PU_CLERK&quot;</span><span class="p">,</span><span class="ss">&quot;Purchasing Clerk&quot;</span><span class="p">,</span><span class="mi">2500</span><span class="p">,</span><span class="mi">5500</span>
-<span class="ss">&quot;ST_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Stock Manager&quot;</span><span class="p">,</span><span class="mi">5500</span><span class="p">,</span><span class="mi">8500</span>
-<span class="ss">&quot;ST_CLERK&quot;</span><span class="p">,</span><span class="ss">&quot;Stock Clerk&quot;</span><span class="p">,</span><span class="mi">2008</span><span class="p">,</span><span class="mi">5000</span>
-<span class="ss">&quot;SH_CLERK&quot;</span><span class="p">,</span><span class="ss">&quot;Shipping Clerk&quot;</span><span class="p">,</span><span class="mi">2500</span><span class="p">,</span><span class="mi">5500</span>
-<span class="ss">&quot;IT_PROG&quot;</span><span class="p">,</span><span class="ss">&quot;Programmer&quot;</span><span class="p">,</span><span class="mi">4000</span><span class="p">,</span><span class="mi">10000</span>
-<span class="ss">&quot;MK_MAN&quot;</span><span class="p">,</span><span class="ss">&quot;Marketing Manager&quot;</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">15000</span>
-<span class="ss">&quot;MK_REP&quot;</span><span class="p">,</span><span class="ss">&quot;Marketing Representative&quot;</span><span class="p">,</span><span class="mi">4000</span><span class="p">,</span><span class="mi">9000</span>
-<span class="ss">&quot;HR_REP&quot;</span><span class="p">,</span><span class="ss">&quot;Human Resources Representative&quot;</span><span class="p">,</span><span class="mi">4000</span><span class="p">,</span><span class="mi">9000</span>
-<span class="ss">&quot;PR_REP&quot;</span><span class="p">,</span><span class="ss">&quot;Public Relations Representative&quot;</span><span class="p">,</span><span class="mi">4500</span><span class="p">,</span><span class="mi">10500</span>
+<span class="c1">-- すぐに反映されていることが確認できる</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">inst_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">issys_modifiable</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">gv$parameter</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;tde_configuration&#39;</span><span class="p">;</span>
+<span class="ss">&quot;INST_ID&quot;</span><span class="p">,</span><span class="ss">&quot;NAME&quot;</span><span class="w">             </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span><span class="w">                      </span><span class="p">,</span><span class="ss">&quot;ISSYS_MODIFIABLE&quot;</span>
+<span class="mi">1</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;tde_configuration&quot;</span><span class="p">,</span><span class="ss">&quot;keystore_configuration=file&quot;</span><span class="p">,</span><span class="ss">&quot;IMMEDIATE&quot;</span>
+</pre></div>
+</div>
+<p>CDBで設定を行った場合、PDBはCDBから値を継承します。</p>
+</section>
+</section>
+<section id="id5">
+<h2>キーストアの作成<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>暗号化鍵を格納するためのキーストアを作成します。
+キーストアのマスター鍵管理はSYSKM権限以上が必要です。</p>
+<p>こちらのキーストア操作はSYSユーザーでも可能ですが、キーストア操作の専用ユーザーとしてsyskmユーザーが用意されていますので、こちらを使用しても構いません。</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="n">oracleユーザーでSYSKMとして接続</span>
+<span class="err">$</span><span class="w"> </span><span class="n">sqlplus</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">syskm</span>
 
-<span class="mi">19</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span>
+<span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;SYSKM&quot;</span>
 
-<span class="n">Elapsed</span><span class="p">:</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">.</span><span class="mi">02</span>
+<span class="c1">-- SYSKMユーザーのもつ権限を確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">session_privs</span><span class="p">;</span>
+
+<span class="n">PRIVILEGE</span>
+<span class="c1">----------------------------------------</span>
+<span class="n">SYSKM</span>
+<span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span>
+</pre></div>
+</div>
+</div>
+<p>キーストアを作成します。デフォルトではPKCS#12ベースのキーストレージファイルに保存されます。
+<a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/ADMINISTER-KEY-MANAGEMENT.html">https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/ADMINISTER-KEY-MANAGEMENT.html</a></p>
+<p>CDBから以下のコマンドを実行します。</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">administer</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">management</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">keystore</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">OracleKM123</span><span class="o">#</span><span class="p">;</span>
+
+<span class="n">keystore</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
+</pre></div>
+</div>
+</div>
+<p>このコマンドを実行すると <code class="docutils literal notranslate"><span class="pre">&lt;wallet_root&gt;/tde</span></code> ディレクトリが作成され、その中に <code class="docutils literal notranslate"><span class="pre">ewallet.p12</span></code> が作成されます。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">pwd</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tree
+/opt/oracle/admin/FREE/wallet
+.
+└──<span class="w"> </span>tde
+<span class="w">   </span>└──<span class="w"> </span>ewallet.p12
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">V$ENCRYPTION_WALLETビュー</span></code> からも確認することができます。</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザー)</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
+<span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="w">                     </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;FILE&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;/opt/oracle/admin/FREE/wallet/tde/&quot;</span><span class="p">,</span><span class="ss">&quot;CLOSED&quot;</span><span class="p">,</span><span class="ss">&quot;UNKNOWN&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;SINGLE&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;NONE&quot;</span><span class="w">         </span><span class="p">,</span><span class="ss">&quot;UNDEFINED&quot;</span><span class="w">      </span><span class="p">,</span><span class="mi">1</span>
+
+<span class="c1">-- キーストアがCLOSEDになっていますので、OPENにします。</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">administer</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">management</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">keystore</span><span class="w"> </span><span class="k">open</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">OracleKM123</span><span class="o">#</span><span class="p">;</span>
+
+<span class="c1">-- STATUS列がOPENになっていることを確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
+<span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;FILE&quot;</span><span class="p">,</span><span class="ss">&quot;/opt/oracle/admin/FREE/wallet/tde/&quot;</span><span class="p">,</span><span class="ss">&quot;OPEN_NO_MASTER_KEY&quot;</span><span class="p">,</span><span class="ss">&quot;PASSWORD&quot;</span><span class="p">,</span><span class="ss">&quot;SINGLE&quot;</span><span class="p">,</span><span class="ss">&quot;NONE&quot;</span><span class="p">,</span><span class="ss">&quot;UNDEFINED&quot;</span><span class="p">,</span><span class="mi">1</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="id3">
-<h2>暗号化された表領域を復号する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>オンライン暗号化を行いましたが、同様にオンライン復号も行うことができます</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">alter</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">encryption</span><span class="w"> </span><span class="n">online</span><span class="w"> </span><span class="n">decrypt</span><span class="p">;</span>
+<section id="id6">
+<h2>マスター暗号鍵の作成<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<p>続いてマスター暗号鍵を作成します。今回は統合モードでCDB、PDBを一括で含めた暗号化鍵を作ることにします。</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">CDBで実行 (syskmユーザーまたはsysユーザー)</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">administer</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">management</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="s1">&#39;v1.0_MEK_AllContainer&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">OracleKM123</span><span class="o">#</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">backup</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ALL</span><span class="p">;</span>
 
-<span class="c1">-- 復号されていることを確認する</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">strings</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span><span class="o">/</span><span class="k">FREE</span><span class="o">/</span><span class="n">FREEPDB1</span><span class="o">/</span><span class="n">users01</span><span class="p">.</span><span class="n">dbf</span>
-<span class="err">}</span><span class="o">|</span><span class="err">{</span><span class="n">z</span>
-<span class="n">VFREE</span>
-<span class="n">USERS</span>
-<span class="p">...</span>
-<span class="n">Geneve</span>
-<span class="n">Rua</span><span class="w"> </span><span class="n">Frei</span><span class="w"> </span><span class="n">Caneca</span><span class="w"> </span><span class="mi">1360</span><span class="w">    </span><span class="mi">01307</span><span class="o">-</span><span class="mi">002</span><span class="w">       </span><span class="n">Sao</span><span class="w"> </span><span class="n">Paulo</span><span class="w">       </span><span class="n">Sao</span><span class="w"> </span><span class="n">Paulo</span>
-<span class="n">Schwanthalerstr</span><span class="p">.</span><span class="w"> </span><span class="mi">7031</span>
-<span class="mi">80925</span>
-<span class="n">Munich</span>
-<span class="n">Bavaria</span>
-<span class="mi">9702</span><span class="w"> </span><span class="n">Chester</span><span class="w"> </span><span class="n">Road</span>
-<span class="mi">09629850293</span><span class="w">     </span><span class="n">Stretford</span>
-<span class="n">Manchester</span>
-<span class="p">(</span><span class="n">Magdalen</span><span class="w"> </span><span class="n">Centre</span><span class="p">,</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">Oxford</span><span class="w"> </span><span class="n">Science</span><span class="w"> </span><span class="n">Park</span>
+<span class="n">keystore</span><span class="w"> </span><span class="n">altered</span><span class="p">.</span>
 </pre></div>
 </div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">tag</span></code> 句は無くても問題ないですが、管理のために付けておくとよいかと思います。</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">PDBで実行 (sysユーザー)</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- PDBから正しくウォレットを認識できているかを確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
+<span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;FILE&quot;</span><span class="w">    </span><span class="p">,</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;OPEN&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;PASSWORD&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;SINGLE&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;UNITED&quot;</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w">             </span><span class="p">,</span><span class="mi">3</span>
+
+<span class="c1">-- PDBから正しくマスター暗号鍵を認識できているかを確認（都合上KEY_IDは短縮しています）</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">key_id</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">creator</span><span class="p">,</span><span class="w"> </span><span class="k">user</span><span class="p">,</span><span class="w"> </span><span class="n">key_use</span><span class="p">,</span><span class="w"> </span><span class="n">keystore_type</span><span class="p">,</span><span class="w"> </span><span class="n">activating_dbname</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_keys</span><span class="p">;</span>
+<span class="ss">&quot;KEY_ID&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;TAG&quot;</span><span class="w">                  </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;CREATOR&quot;</span><span class="p">,</span><span class="ss">&quot;USER&quot;</span><span class="p">,</span><span class="ss">&quot;KEY_USE&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;KEYSTORE_TYPE&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;ACTIVATING_DBNAME&quot;</span>
+<span class="ss">&quot;AU1kv...AAAA&quot;</span><span class="p">,</span><span class="ss">&quot;v1.0_MEK_AllContainer&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;SYSKM&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;SYS&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;TDE IN PDB&quot;</span><span class="p">,</span><span class="ss">&quot;SOFTWARE KEYSTORE&quot;</span><span class="p">,</span><span class="ss">&quot;FREE&quot;</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">CREATOR<span class="colon">:</span></dt>
+<dd class="field-odd"><p>マスター・キーを作成したユーザー</p>
+</dd>
+<dt class="field-even">USER<span class="colon">:</span></dt>
+<dd class="field-even"><p>マスター・キーをアクティブ化したユーザー</p>
+</dd>
+</dl>
+<p>では、次の手順から実際に表領域を暗号化してみます</p>
+<p>: <a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html">V$ENCRYPTION_WALLET</a> : ウォレットの状態とTDEウォレットの場所に関する情報を表示
+: <a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html">V$ENCRYPTION_KEYS</a> : マスターキーの説明属性を表示</p>
 </section>
 </section>
 
@@ -453,6 +538,15 @@
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="../env_setup/2_sampleSchema.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">前へ</p>
+        <p class="prev-next-title">2. サンプルスキーマ（HR）を作成する</p>
+      </div>
+    </a>
 </div>
                 </footer>
               
@@ -470,9 +564,18 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">データファイルの確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">表領域の暗号化を行う</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">暗号化された表領域を復号する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">初期化パラメータの確認</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wallet-root">wallet_root</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tde-configuration">tde_configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">初期化パラメータの設定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">wallet_root</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">tde_configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">キーストアの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">マスター暗号鍵の作成</a></li>
 </ul>
   </nav></div>
 
