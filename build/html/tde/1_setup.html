@@ -157,8 +157,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../nne/1_setup.html">ネイティブ・ネットワーク暗号化の準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../nne/2_encryption.html">通信の暗号化を確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nne/1_setup.html">1. ネイティブ・ネットワーク暗号化の準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nne/2_encryption.html">2. 通信の暗号化を確認する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Redaction:</span></p>
 <ul class="nav bd-sidenav">
@@ -489,7 +489,7 @@ PDBから実行はできませんので、CDBから設定を行ってくださ�
 <div class="line">次に、PDBでウォレットとマスター暗号鍵が正しく認識されているかを確認します。</div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">FREEPDBで実行 (SYSユーザー)</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">FREEPDB1で実行 (SYSユーザー)</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- PDBでウォレットの状態を確認</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$encryption_wallet</span><span class="p">;</span>
 <span class="ss">&quot;WRL_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WRL_PARAMETER&quot;</span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;WALLET_ORDER&quot;</span><span class="p">,</span><span class="ss">&quot;KEYSTORE_MODE&quot;</span><span class="p">,</span><span class="ss">&quot;FULLY_BACKED_UP&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
@@ -503,7 +503,7 @@ PDBから実行はできませんので、CDBから設定を行ってくださ�
 </div>
 </div>
 <div class="line-block">
-<div class="line">参考</div>
+<div class="line"><strong>参考</strong></div>
 <div class="line"><a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html">V$ENCRYPTION_WALLET</a> : ウォレットの状態とTDEウォレットの場所に関する情報を表示</div>
 <div class="line"><a class="reference external" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html">V$ENCRYPTION_KEYS</a> : マスターキーの説明属性を表示</div>
 </div>

@@ -207,7 +207,7 @@ CDBで設定を行った場合、PDBはCDBからその値を継承します。
 | 次に、PDBでウォレットとマスター暗号鍵が正しく認識されているかを確認します。
 
 .. code-block:: sql
-   :caption: FREEPDBで実行 (SYSユーザー)
+   :caption: FREEPDB1で実行 (SYSユーザー)
 
    -- PDBでウォレットの状態を確認
    SQL> select * from v$encryption_wallet;
@@ -221,7 +221,7 @@ CDBで設定を行った場合、PDBはCDBからその値を継承します。
 
 
 
-| 参考
+| **参考**
 | `V$ENCRYPTION_WALLET <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_WALLET.html>`__ : ウォレットの状態とTDEウォレットの場所に関する情報を表示  
 | `V$ENCRYPTION_KEYS <https://docs.oracle.com/en/database/oracle/oracle-database/23/refrn/V-ENCRYPTION_KEYS.html>`__ : マスターキーの説明属性を表示
 

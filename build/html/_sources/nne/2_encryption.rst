@@ -1,30 +1,28 @@
 ###############################
-通信の暗号化を確認する
+2. 通信の暗号化を確認する
 ###############################
 
 
-ウィンドウを２つ立ち上げます
+**実施内容**
 
-+ [DBサーバー側] 通信をキャプチャする
-+ [クライアント側] DBにログインし、SQLで問い合わせる
++ sqlnet.oraファイルを編集し、ネイティブ・ネットワーク暗号化を有効化する
++ Wiresharkでパケットが暗号化されているかを確認する
 
 
 ************************************
 DBサーバー側で通信を待ち受ける
 ************************************
 
-
-
-
+| まず、DBサーバー側でポート1521を開放し、通信を受け付ける準備をします。
+| 次のコマンドで、ファイアウォールを設定してポート1521を解放します。
 
 .. code-block:: bash
-    :caption: DBサーバー側で操作
 
-    # ポート1521を解放します
+    # ポート1521を解放
     sudo firewall-cmd --permanent --add-port=1521/tcp
     sudo firewall-cmd --reload
 
-    # インターフェース名と1521番ポートが解放されていることを確認します
+    # インターフェース名と1521番ポートが解放されていることを確認
     $ sudo firewall-cmd --list-all
     public (active)
         target: default
@@ -41,6 +39,10 @@ DBサーバー側で通信を待ち受ける
         icmp-blocks:
         rich rules:
 
+| 次に、tsharkコマンドを使ってネットワークインターフェースを確認し、パケットキャプチャを開始します。
+| 先ほど確認したインターフェース名、enp0s5 を使用してTCPポート1521で通信をキャプチャします。
+
+.. code-block:: bash
 
     # インターフェースの番号を確認
     $ sudo tshark -D
@@ -57,31 +59,27 @@ DBサーバー側で通信を待ち受ける
     10. usbmon3
     ...
 
-
-TCP/1521で受け取る通信をキャプチャします。
-同時にDBに接続している環境では、 ``'ip.addr==X.X.X.X and tcp.port==1521'`` として、クライアントのIPアドレスでさらに制限をかけるといいでしょう。
-
-.. code:: bash
-    
+    # TCP/1521で受け取る通信をキャプチャ
     $ sudo tshark -i 1 -Y 'tcp.port==1521' -x
 
 
+これで、DBサーバー側での通信がキャプチャされるようになります。次に、クライアント側でDBに接続します。
 
-端末をそのままにしておきながら、次の手順でDBに接続します。
 
 
 ************************************
 クライアント側でDBに接続する
 ************************************
 
-
-簡易接続子を使います
-
-.. code:: bash
+簡易接続子を使って、SQL*PlusでOracleデータベースに接続します。
+::
 
     sqlplus hr/<パスポート>@<接続先ホスト名>:<ポート番号>/<サービス名>
 
-    sqlplus hr/Welcome1#Welcome1#@192.168.130.169:1521/freepdb1
+
+以下のコマンドで、HRユーザーとして接続します。実行例ではパスワードを省略することで証跡にパスワードが残らないように接続しています。
+
+.. code:: bash
 
     $ sqlplus hr@192.168.130.169:1521/freepdb1
 
@@ -97,13 +95,6 @@ TCP/1521で受け取る通信をキャプチャします。
     Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free
     Version 23.6.0.24.10
 
-    SQL> show user con_name
-    USER is "HR"
-
-    CON_NAME
-    ------------------------------
-    FREEPDB1
-
     -- jobs表を取得
     SQL> select * from jobs;
 
@@ -118,7 +109,7 @@ TCP/1521で受け取る通信をキャプチャします。
     ...
 
 
-この状態でDBサーバーでパケットキャプチャしていた端末を見ると、以下のようにjobsテーブルの内容が平文でやり取りされていることを確認できます。
+この時点で、DBサーバーでパケットキャプチャを実行している端末を見ると、jobs テーブルの内容が平文で送信されていることが確認できます。
 
 .. code:: text
 
@@ -152,16 +143,28 @@ TCP/1521で受け取る通信をキャプチャします。
     ...
 
 
+| この状態では、データが平文でネットワーク上に送信されており、暗号化が行われていないことが確認できます。
+| それでは、次の手順で通信の暗号化を設定します。
+
 ************************************
 通信の暗号化設定を行う
 ************************************
 
-DBサーバーの ``$ORACLE_HOME/network/admin`` にある ``sqlnet.ora`` ファイルを編集します。
+DBサーバーの ``$ORACLE_HOME/network/admin`` にある ``sqlnet.ora`` ファイルを編集し、通信の暗号化を有効化します。
+
+
+まず、 ``sqlnet.ora`` ファイルの場所を確認します。
+
 
 .. code:: bash
 
     $ ls $ORACLE_HOME/network/admin
     listener.ora  samples  shrept.lst  sqlnet.ora  tnsnames.ora
+
+次に、 ``sqlnet.ora`` を編集して、暗号化を有効にします。
+
+.. code-block:: bash
+    :emphasize-lines: 8,9
 
     $ vi $ORACLE_HOME/network/admin/sqlnet.ora
     # sqlnet.ora Network Configuration File: /opt/oracle/product/23ai/dbhomeFree/network/admin/sqlnet.ora
@@ -169,3 +172,8 @@ DBサーバーの ``$ORACLE_HOME/network/admin`` にある ``sqlnet.ora`` ファ
 
     NAMES.DIRECTORY_PATH= (TNSNAMES, EZCONNECT)
 
+    # 以下の2行を追加
+    SQLNET.ENCRYPTION_SERVER = REQUIRED
+    SQLNET.ENCRYPTION_TYPES_SERVER = (AES256, AES192, AES128)                                    
+
+この設定により、データベースとの通信が暗号化されるようになります。設定を保存したら、SQL*Netサービスを再起動して変更を反映させます
