@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'dbsec-demo'
-copyright = '2024, koin3z'
-author = 'koin3z'
+copyright = '2024, koi141'
+author = 'koi141'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

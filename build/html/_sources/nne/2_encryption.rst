@@ -164,7 +164,7 @@ DBサーバーの ``$ORACLE_HOME/network/admin`` にある ``sqlnet.ora`` ファ
 次に、 ``sqlnet.ora`` を編集して、暗号化を有効にします。
 
 .. code-block:: bash
-    :emphasize-lines: 8,9
+    :emphasize-lines: 5,6
 
     $ vi $ORACLE_HOME/network/admin/sqlnet.ora
     NAMES.DIRECTORY_PATH= (TNSNAMES, EZCONNECT)

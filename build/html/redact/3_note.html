@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Data Redactionの注意点 &#8212; dbsec-demo  ドキュメント</title>
+    <title>3. Data Redactionの注意点 &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -163,7 +163,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Data Redactionの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_redaction.html">2. Redactionを体験する</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Redactionの注意点</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Data Redactionの注意点</a></li>
 </ul>
 
     </div>
@@ -294,7 +294,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Data Redactionの注意点</h1>
+    <h1>3. Data Redactionの注意点</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -304,7 +304,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where">where句で推測を行う</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where">WHERE句での推測例</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">副問い合わせで使用した場合</a></li>
 </ul>
             </nav>
@@ -318,12 +318,16 @@
                 <article class="bd-article">
                   
   <section id="data-redaction">
-<h1>Data Redactionの注意点<a class="headerlink" href="#data-redaction" title="Link to this heading">#</a></h1>
-<p>Data Redactionはあくまで、データを隠すための機能であり、アクセス制御機能ではありません。</p>
+<h1>3. Data Redactionの注意点<a class="headerlink" href="#data-redaction" title="Link to this heading">#</a></h1>
+<div class="line-block">
+<div class="line">Data Redactionは、データの一部を隠すために使用される機能であるため、データへのアクセスを制御する機能ではないことを理解しておく必要があります。</div>
+<div class="line">Data Redactionを適用しても、特定の条件下で推測が可能になる場合があるため、慎重な運用が求められます。</div>
+</div>
 <section id="where">
-<h2>where句で推測を行う<a class="headerlink" href="#where" title="Link to this heading">#</a></h2>
+<h2>WHERE句での推測例<a class="headerlink" href="#where" title="Link to this heading">#</a></h2>
+<p>以下は、リダクション対象の <code class="docutils literal notranslate"><span class="pre">salary</span></code> 列に対してwhere句を用いた例です。</p>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">HRユーザー</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">HRユーザーがクエリを実行した場合:</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span>
 <span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;HR&quot;</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">pages</span><span class="w"> </span><span class="mi">500</span>
@@ -352,7 +356,7 @@
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">HRユーザー</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">SALES_APPユーザーが同じクエリを実行した場合:</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span>
 <span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;SALES_APP&quot;</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">pages</span><span class="w"> </span><span class="mi">500</span>
@@ -380,12 +384,16 @@
 </pre></div>
 </div>
 </div>
-<p>between句などを使えばStevenのsalaryの推測がたつのは明らかです。</p>
+<div class="line-block">
+<div class="line">SALES_APPユーザーではsalary列の値が全て0にリダクションされていますが、結果がHRユーザーのものと同じことが分かります。。</div>
+<div class="line">したがって、特定のWHERE句（例えば、BETWEEN句）を用いることで、リダクションされたデータが元の値を推測可能な場合があります。</div>
+</div>
 </section>
 <section id="id1">
 <h2>副問い合わせで使用した場合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>副問い合わせを含むSQL文においても注意が必要です。以下の例では、 <code class="docutils literal notranslate"><span class="pre">salary</span></code> 列の平均を求める副問い合わせを使用しています。</p>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">HRユーザー</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">HRユーザーの場合</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="k">avg</span><span class="p">(</span><span class="n">salary</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">employees</span><span class="p">);</span>
 
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="k">avg</span><span class="p">(</span><span class="n">salary</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">employees</span><span class="p">);</span>
@@ -412,7 +420,7 @@
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">SALES_APPユーザー</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">SALES_APPユーザーの場合</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">last_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">salary</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">);</span>
 
 <span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="k">avg</span><span class="p">(</span><span class="n">salary</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">);</span>
@@ -441,16 +449,12 @@
 </pre></div>
 </div>
 </div>
-<p>と、リダクションされた値の平均をとると0になるので、結果が異なってほしいですが、リダクションされていないHRと結果が同じであることが分かります。</p>
-<p>select first_name, salary + 1000 as money, commission_pct from hr.employees where salary &gt; 10000;</p>
+<div class="line-block">
+<div class="line">SALES_APPユーザーの結果では、salary列の値が全て0にリダクションされているにもかかわらず、副問い合わせの結果がHRユーザーと同じになっています。</div>
+<div class="line">これは、リダクション後の値が副問い合わせに反映されないためであり、注意が必要です。</div>
+</div>
 <p>あくまでData Redactionはデータを隠すための機能であり、アクセス制御機能としてではないことに注意してください。</p>
-<blockquote>
-<div><p>select first_name, salary, commission_pct from hr.employees where salary &gt; 10000;</p>
-<dl class="simple">
-<dt>SELECT employee_id, first_name, last_name, salary FROM hr.employees</dt><dd><p>WHERE salary &gt; (SELECT AVG(salary) FROM hr.employees);</p>
-</dd>
-</dl>
-</div></blockquote>
+<p>以上で、 Data Redactionのデモは終了です。</p>
 </section>
 </section>
 
@@ -491,7 +495,7 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where">where句で推測を行う</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where">WHERE句での推測例</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">副問い合わせで使用した場合</a></li>
 </ul>
   </nav></div>
@@ -507,7 +511,7 @@
   <div class="footer-item">
     
 <p class="component-author">
-著者 koin3z
+著者 koi141
 </p>
 
   </div>
@@ -517,7 +521,7 @@
 
   <p class="copyright">
     
-      © Copyright 2024, koin3z.
+      © Copyright 2024, koi141.
       <br/>
     
   </p>

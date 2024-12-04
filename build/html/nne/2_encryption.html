@@ -164,7 +164,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../redact/1_setup.html">1. Data Redactionの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../redact/2_redaction.html">2. Redactionを体験する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../redact/caution.html">Data Redactionの注意点</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../redact/3_note.html">3. Data Redactionの注意点</a></li>
 </ul>
 
     </div>
@@ -464,9 +464,9 @@ listener.ora<span class="w">  </span>samples<span class="w">  </span>shrept.lst<
 NAMES.DIRECTORY_PATH<span class="o">=</span><span class="w"> </span><span class="o">(</span>TNSNAMES,<span class="w"> </span>EZCONNECT<span class="o">)</span>
 
 <span class="c1"># 以下の2行を追加</span>
-SQLNET.ENCRYPTION_SERVER<span class="w"> </span><span class="o">=</span><span class="w"> </span>REQUIRED
-SQLNET.ENCRYPTION_TYPES_SERVER<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>AES256,<span class="w"> </span>AES192,<span class="w"> </span>AES128<span class="o">)</span>
-</pre></div>
+<span class="hll">SQLNET.ENCRYPTION_SERVER<span class="w"> </span><span class="o">=</span><span class="w"> </span>REQUIRED
+</span><span class="hll">SQLNET.ENCRYPTION_TYPES_SERVER<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>AES256,<span class="w"> </span>AES192,<span class="w"> </span>AES128<span class="o">)</span>
+</span></pre></div>
 </div>
 <p>この設定により、データベースとの通信が暗号化されるようになります。</p>
 </section>
@@ -591,7 +591,7 @@ AC_MGR<span class="w">     </span>Accounting<span class="w"> </span>Manager<span
   <div class="footer-item">
     
 <p class="component-author">
-著者 koin3z
+著者 koi141
 </p>
 
   </div>
@@ -601,7 +601,7 @@ AC_MGR<span class="w">     </span>Accounting<span class="w"> </span>Manager<span
 
   <p class="copyright">
     
-      © Copyright 2024, koin3z.
+      © Copyright 2024, koi141.
       <br/>
     
   </p>

@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'redact/2_redaction';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="Data Redactionの注意点" href="3_note.html" />
+    <link rel="next" title="3. Data Redactionの注意点" href="3_note.html" />
     <link rel="prev" title="1. Data Redactionの準備" href="1_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -164,7 +164,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Data Redactionの準備</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Redactionを体験する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_note.html">Data Redactionの注意点</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_note.html">3. Data Redactionの注意点</a></li>
 </ul>
 
     </div>
@@ -345,16 +345,14 @@
 <span class="mi">107</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">salary</span></code> 列と <code class="docutils literal notranslate"><span class="pre">commission_pct</span></code> 列のデータがそのまま表示され、HR ユーザーは元のデータにアクセスできていることがわかります。（実行結果は一部を抜粋しています）</p>
+<p><code class="docutils literal notranslate"><span class="pre">salary</span></code> 列と <code class="docutils literal notranslate"><span class="pre">commission_pct</span></code> 列のデータがそのまま表示され、HR ユーザーは元のデータにアクセスできていることがわかります。</p>
 </section>
 <section id="sales-app">
 <h2>SALES_APPユーザーで接続<a class="headerlink" href="#sales-app" title="Link to this heading">#</a></h2>
 <div class="line-block">
 <div class="line">次に、SALES_APPユーザーとしてデータベースに接続し、同じクエリを実行します。</div>
-<div class="line">このユーザーにはリダクションポリシーが適用されているため、マスキングされたデータが返るはずです。</div>
+<div class="line">このユーザーにはリダクションポリシーが適用されているため、マスキングされたデータが返るはずです。（実行結果は一部を抜粋しています）</div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">SALES_APPユーザーで接続</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="err">$</span><span class="w"> </span><span class="n">sqlplus</span><span class="w"> </span><span class="n">sales_app</span><span class="o">/&lt;</span><span class="n">password</span><span class="o">&gt;@</span><span class="n">localhost</span><span class="p">:</span><span class="mi">1521</span><span class="o">/</span><span class="n">freepdb1</span>
 
 <span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="p">,</span><span class="w"> </span><span class="n">commission_pct</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
@@ -370,7 +368,6 @@
 <span class="p">...</span>
 <span class="mi">107</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
 </pre></div>
-</div>
 </div>
 <div class="line-block">
 <div class="line">SALES_APPユーザーでは、 <code class="docutils literal notranslate"><span class="pre">salary</span></code> 列と <code class="docutils literal notranslate"><span class="pre">commission_pct</span></code> 列の値が全て 0 で表示されており、リダクションポリシーが正しく適用されていることが確認できます。</div>
@@ -404,7 +401,7 @@
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">Data Redactionの注意点</p>
+        <p class="prev-next-title">3. Data Redactionの注意点</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -441,7 +438,7 @@
   <div class="footer-item">
     
 <p class="component-author">
-著者 koin3z
+著者 koi141
 </p>
 
   </div>
@@ -451,7 +448,7 @@
 
   <p class="copyright">
     
-      © Copyright 2024, koin3z.
+      © Copyright 2024, koi141.
       <br/>
     
   </p>
