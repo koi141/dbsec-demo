@@ -39,3 +39,21 @@ dbsec-demo
    /redact/1_setup
    /redact/2_redaction
    /redact/3_note
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Virtual Private Database:
+   
+   /vpd/1_rowControl
+   /vpd/2_columnControl
+   /vpd/3_clientIdentifier
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: SQL Firewall:
+   
+   /sqlfirewall/1_setup
+   /sqlfirewall/2_policycheck
+   /sqlfirewall/3_setup-datasafe
+   /sqlfirewall/4_policycheck-datasafe
