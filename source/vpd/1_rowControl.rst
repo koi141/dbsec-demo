@@ -66,16 +66,16 @@ VPDポリシーの作成
 
 .. code:: sql
 
-    BEGIN
-    DBMS_RLS.ADD_POLICY (
-        object_schema   => 'HR',
-        object_name     => 'EMPLOYEES',
-        policy_name     => 'employees_vpd_policy',
-        function_schema => 'HR',
-        policy_function => 'get_sales_predicate'
+BEGIN
+DBMS_RLS.ADD_POLICY (
+    object_schema   => 'HR',
+    object_name     => 'EMPLOYEES',
+    policy_name     => 'employees_vpd_policy',
+    function_schema => 'HR',
+    policy_function => 'get_sales_predicate'
     );
-    END;
-    /
+END;
+/
 
 実行し、 ``PL/SQL procedure successfully completed.`` が表示されることを確認します。
 
