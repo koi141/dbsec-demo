@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>3. クライアント識別子を用いた制御 - dbsec-demo ドキュメント</title>
+        <title>1. Oracle Label Securityの準備 - dbsec-demo ドキュメント</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -222,9 +222,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Virtual Private Database:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="1_rowControl.html">1. VPDで行制御を行う</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_columnControl.html">2. VPDで列制御を行う</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
 
 </div>
@@ -245,7 +245,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/vpd/4_cleanup.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/ols/1_setup.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -265,72 +265,152 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="id1">
-<h1>3. クライアント識別子を用いた制御<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+          <section id="oracle-label-security">
+<h1>1. Oracle Label Securityの準備<a class="headerlink" href="#oracle-label-security" title="Link to this heading">¶</a></h1>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>VPD関数の削除</p></li>
-<li><p>VPDポリシーの削除</p></li>
+<li><p>表の準備</p></li>
+<li><p>OLSの設定の確認</p></li>
 </ul>
-<p>後のデモ内容と競合する可能性があるため、VPDデモで作成した関数・ポリシーを削除します。</p>
-<section id="vpd">
-<h2>VPD関数の削除<a class="headerlink" href="#vpd" title="Link to this heading">¶</a></h2>
-<p>SQL&gt; select object_name from all_objects where owner = 'HR' and object_type = 'FUNCTION';</p>
-<section id="object-name">
-<h3>OBJECT_NAME<a class="headerlink" href="#object-name" title="Link to this heading">¶</a></h3>
-<p>GET_SALES_PREDICATE
-GET_MASKING_SALARY_COL</p>
-<p>drop function hr.get_sales_predicate;</p>
-<p>SQL&gt; drop function hr.get_sales_predicate;</p>
-<p>Function dropped.</p>
-<p>SQL&gt; drop function hr.get_masking_salary_col;</p>
-<p>Function dropped.</p>
-<p>削除されたかを確認します</p>
-<p>SQL&gt; select object_name from all_objects where owner = 'HR' and object_type = 'FUNCTION';</p>
-<p>no rows selected</p>
-</section>
+<section id="id1">
+<h2>表の準備<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>ラベルを設定する表を別で作成してみます。</p>
+<p>今回はHRスキーマのJOB_HISTORY_LABELを使用することにします。</p>
+<p>SQL&gt; CREATE TABLE hr.job_history_4ols AS SELECT * FROM hr.job_history WHERE 1=0;  2</p>
+<p>Table created.</p>
+<p>SQL&gt; INSERT INTO hr.job_history_4ols SELECT * FROM hr.job_history;</p>
+<p>10 rows created.</p>
+<p>表ができたことを確認します</p>
+<p>SQL&gt; select * from hr.job_history_4ols;</p>
+<p>EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID
+----------- --------- --------- ---------- -------------</p>
+<blockquote>
+<div><p>102 13-JAN-11 24-JUL-16 IT_PROG               60
+101 21-SEP-07 27-OCT-11 AC_ACCOUNT           110
+101 28-OCT-11 15-MAR-15 AC_MGR               110
+201 17-FEB-14 19-DEC-17 MK_REP                20
+114 24-MAR-16 31-DEC-17 ST_CLERK              50
+122 01-JAN-17 31-DEC-17 ST_CLERK              50
+200 17-SEP-05 17-JUN-11 AD_ASST               90
+176 24-MAR-16 31-DEC-16 SA_REP                80
+176 01-JAN-17 31-DEC-17 SA_MAN                80
+200 01-JUL-12 31-DEC-16 AC_ACCOUNT            90</p>
+</div></blockquote>
+<p>10 rows selected.</p>
+<dl>
+<dt>insert into HR.JOB_HISTORY_LABEL</dt><dd><dl>
+<dt>nologging</dt><dd><dl>
+<dt>select PROD_ID,</dt><dd><blockquote>
+<div><p>CUST_ID,
+TIME_ID+15*365+3, -- 年月日のデータを15年間進める
+CHANNEL_ID,
+PROMO_ID,
+QUANTITY_SOLD,
+AMOUNT_SOLD,
+rpad(to_char(mod(CUST_ID,30)),100,'dummy1'),
+rpad(to_char(mod(CUST_ID,30)),110,'dummy2')</p>
+</div></blockquote>
+<p>from SH.JOB_HISTORY;</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>commit;</p>
 </section>
 <section id="id2">
-<h2>VPDポリシーの削除<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<p>ポリシーを確認します。
-SQL&gt; select POLICY_NAME from all_policies where object_owner  = 'HR';</p>
-<section id="policy-name">
-<h3>POLICY_NAME<a class="headerlink" href="#policy-name" title="Link to this heading">¶</a></h3>
-<p>EMPLOYEES_SALARY_COL_VPD_POLICY
-EMPLOYEES_VPD_POLICY</p>
-<section id="id3">
-<h4>行制御ポリシー<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
-<dl>
+<h2>設定の確認<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>OLSが構成されているかを確認します。DBA_SA_USER_PRIVSデータ・ディクショナリ・ビューを使用</p>
+<p>SQL&gt; col status for a20
+SQL&gt; col DESCRIPTION for a50
+SQL&gt; set lines 100
+SQL&gt; SELECT * FROM DBA_OLS_STATUS;</p>
+<p>NAME                 STATUS               DESCRIPTION
+-------------------- -------------------- --------------------------------------------------
+OLS_CONFIGURE_STATUS FALSE                Determines if OLS is configured
+OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
+<p>ステータスの意味はそれぞれ以下の通りです。</p>
+<p>OLS_CONFIGURE_STATUS: Oracle Label Securityが構成されているかどうかを判断します。
+OLS_ENABLE_STATUS: Oracle Label Securityが有効化されているかどうかを判断します。</p>
+<p>CDBから各PDBの設定を見るには以下のようにします</p>
+<p>SQL&gt; set lines 200
+SQL&gt; SELECT * FROM CDB_OLS_STATUS;</p>
+<p>NAME                 STATUS               DESCRIPTION                                            CON_ID
+-------------------- -------------------- -------------------------------------------------- ----------
+OLS_CONFIGURE_STATUS FALSE                Determines if OLS is configured                             1
+OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled                                1
+OLS_CONFIGURE_STATUS FALSE                Determines if OLS is configured                             3
+OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled                                3</p>
+</section>
+<section id="ols">
+<h2>OLSを有効化する<a class="headerlink" href="#ols" title="Link to this heading">¶</a></h2>
+<p>有効化していきます</p>
+<p>SQL&gt; show user con_name
+USER is &quot;SYS&quot;</p>
+<section id="con-name">
+<h3>CON_NAME<a class="headerlink" href="#con-name" title="Link to this heading">¶</a></h3>
+<p>FREEPDB1</p>
+<p>SQL&gt; EXEC LBACSYS.CONFIGURE_OLS;</p>
+<p>PL/SQL procedure successfully completed.</p>
+<p>Oracle Label Securityをデータベースに登録する</p>
+<p>OLS機能のインストール、初期設定、および必要なDBオブジェクトの作成が含まれる。</p>
+<p>SQL&gt;  SELECT * FROM DBA_OLS_STATUS;</p>
+<p>NAME                 STATUS               DESCRIPTION
+-------------------- -------------------- --------------------------------------------------
+OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
+OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
+<p>SQL&gt; EXEC LBACSYS.OLS_ENFORCEMENT.ENABLE_OLS;</p>
+<p>PL/SQL procedure successfully completed.</p>
+<p>ENABLE_OLSプロシージャは、OLSポリシーの施行を有効にします。これにより、設定されたラベルセキュリティポリシーがデータベース内で実際に適用され、ユーザーアクセスの制御が開始されます。</p>
+<p>SQL&gt; SELECT * FROM DBA_OLS_STATUS;</p>
+<p>NAME                 STATUS               DESCRIPTION
+-------------------- -------------------- --------------------------------------------------
+OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
+OLS_ENABLE_STATUS    TRUE                 Determines if OLS is enabled</p>
+<p>権限を付与されたユーザーの確認
+LBAC_DBAはSA_SYSDBA PL/SQLパッケージの使用権限を提供する、事前定義ロールです</p>
+<p>SQL&gt; set markup csv on
+SQL&gt;  select * from dba_role_privs where granted_role = 'LBAC_DBA';
+&quot;GRANTEE&quot;,&quot;GRANTED_ROLE&quot;,&quot;ADMIN_OPTION&quot;,&quot;DELEGATE_OPTION&quot;,&quot;DEFAULT_ROLE&quot;,&quot;COMMON&quot;,&quot;INHERITED&quot;
+&quot;SYS&quot;,&quot;LBAC_DBA&quot;,&quot;YES&quot;,&quot;NO&quot;,&quot;YES&quot;,&quot;YES&quot;,&quot;YES&quot;
+&quot;LBACSYS&quot;,&quot;LBAC_DBA&quot;,&quot;YES&quot;,&quot;NO&quot;,&quot;YES&quot;,&quot;YES&quot;,&quot;YES&quot;</p>
+<p>設定を完全に反映させるためにPDBの再起動を行います。</p>
+<p>SQL&gt; alter pluggable database freepdb1 close immediate;</p>
+<p>Pluggable database altered.</p>
+<p>SQL&gt; alter pluggable database freepdb1 open;</p>
+<p>Pluggable database altered.</p>
+<p>新規のOracle Label Securityポリシーを作成し、
+ポリシー固有の列名を定義して、デフォルト・ポリシー・オプションを指定します。</p>
+<p>ポリシーを作成すると、そのロールが作成され、ユーザーに付与されます。
+ラベルやセキュリティポリシーを管理するための論理的なグループである「ポリシーコンテナ」を作成します。
+ポリシーコンテナは、これらのポリシーとラベル、そしてその他の関連する設定を論理的にまとめたものです。つまり、ポリシーコンテナは、データに付加されるラベルや、これらラベルに基づくアクセス制御ルールの適用方法を一元管理する「枠組み」を提供します。</p>
+<p>主にラベルとポリシーから構成されます。</p>
+<dl class="simple">
 <dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
-object_name   =&gt; 'EMPLOYEES',
-policy_name   =&gt; 'employees_vpd_policy'</p>
+<dt>SA_SYSDBA.CREATE_POLICY (</dt><dd><p>policy_name      =&gt; 'OLS_POL_DEMO',
+column_name      =&gt; 'OLS_LABEL_DEMO');</p>
 </dd>
 </dl>
-<p>);</p>
 </dd>
 </dl>
 <p>END;
 /</p>
-</section>
-<section id="id4">
-<h4>列制御ポリシー<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
-object_name   =&gt; 'EMPLOYEES',
-policy_name   =&gt; 'employees_salary_col_vpd_policy'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>削除されたかを確認します。</p>
-<p>SQL&gt; select POLICY_NAME from all_policies where object_owner  = 'HR';</p>
-<p>no rows selected</p>
-</section>
+<p>sysユーザーで構成しようとすると以下のエラーがでます</p>
+<p>ORA-06598: insufficient INHERIT PRIVILEGES privilege
+ORA-06512: at &quot;LBACSYS.SA_SYSDBA&quot;, line 1
+ORA-06512: at line 2
+Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-06598/">https://docs.oracle.com/error-help/db/ora-06598/</a></p>
+<p>LABACSYSユーザーでPL/SQLの権限</p>
+<p>「実行者権限プログラム」とは、プログラムを実行したユーザーの権限で実行される PL/SQL プログラムのこと</p>
+<p>PL/SQLは所有者の権限で実行されるため、強い権限を持つユーザーAのプログラムの実行権限を他ユーザーBに与えてしまった際、BはAの持っている強力な権限を使って処理を実行することができてしまいます。これは非常に危険で、誤った設定により予期しない権限を第三者に与える可能性が出てきます。
+Oracle のデフォルトの仕組みでは、プログラムの所有者が「実行してもいいよ」と一方的に許可するだけで実行が可能になります。</p>
+<p>そこで12cより、INHERIT PRIVILEGES権限が登場しました。この権限は、どのスキーマの「実行者権限」プログラムを実行してもよいかを、実行ユーザー側で制御するためのものです。</p>
+<p>SQL&gt; SELECT grantee, grantor, privilege FROM   user_tab_privs WHERE  privilege = 'INHERIT PRIVILEGES';
+&quot;GRANTEE&quot;,&quot;GRANTOR&quot;,&quot;PRIVILEGE&quot;
+&quot;GSMADMIN_INTERNAL&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;CTXSYS&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;XDB&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;</p>
 </section>
 </section>
 </section>
@@ -372,17 +452,11 @@ policy_name   =&gt; 'employees_salary_col_vpd_policy'</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">3. クライアント識別子を用いた制御</a><ul>
-<li><a class="reference internal" href="#vpd">VPD関数の削除</a><ul>
-<li><a class="reference internal" href="#object-name">OBJECT_NAME</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id2">VPDポリシーの削除</a><ul>
-<li><a class="reference internal" href="#policy-name">POLICY_NAME</a><ul>
-<li><a class="reference internal" href="#id3">行制御ポリシー</a></li>
-<li><a class="reference internal" href="#id4">列制御ポリシー</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">1. Oracle Label Securityの準備</a><ul>
+<li><a class="reference internal" href="#id1">表の準備</a></li>
+<li><a class="reference internal" href="#id2">設定の確認</a></li>
+<li><a class="reference internal" href="#ols">OLSを有効化する</a><ul>
+<li><a class="reference internal" href="#con-name">CON_NAME</a></li>
 </ul>
 </li>
 </ul>
