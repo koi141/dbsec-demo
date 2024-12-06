@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="next" title="&lt;no title&gt;" href="4_policycheck-datasafe.html" /><link rel="prev" title="&lt;no title&gt;" href="2_policycheck.html" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="next" title="4. Data SafeからSQL Firewallを設定する" href="4_policycheck-datasafe.html" /><link rel="prev" title="&lt;no title&gt;" href="2_policycheck.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>&lt;no title&gt; - dbsec-demo ドキュメント</title>
+        <title>1. Data Safeの準備 - dbsec-demo ドキュメント</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -226,6 +226,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. SQL Firewallの準備</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">1. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/3_checkOls.html">3. ラベル制御の確認</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+</ul>
 
 </div>
 </div>
@@ -259,13 +273,108 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          
+          <section id="data-safe">
+<h1>1. Data Safeの準備<a class="headerlink" href="#data-safe" title="Link to this heading">¶</a></h1>
+<p><strong>実施内容</strong></p>
+<ul class="simple">
+<li><p>DATASAFE$ADMINユーザーを作成</p></li>
+<li><p>OCIコンソール</p></li>
+</ul>
+<p>basedbまたはADBの場合はDatasafeは基本無償でお使いいただけますが、コンピュート上に23aiがある場合は課金が発生しますのでご注意ください。
+この手順ではOCI上にDB23aiがあるものとしますが、basedbも同様の手順でいけるはずです。</p>
+<p>ADBの場合は少し手順が異なりますので、以下を参考にしてみてください</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/western24/items/b772d95148b8855b8bb0">https://qiita.com/western24/items/b772d95148b8855b8bb0</a></p></li>
+<li><p><a class="reference external" href="https://docs.oracle.com/cd/E83857_01/paas/data-safe/admds/target-database-registration.html">https://docs.oracle.com/cd/E83857_01/paas/data-safe/admds/target-database-registration.html</a></p></li>
+</ul>
+<section id="datasafe-admin">
+<h2>DATASAFE$ADMINユーザーの作成<a class="headerlink" href="#datasafe-admin" title="Link to this heading">¶</a></h2>
+<p>登録方法についてのサイトはこちら
+<a class="reference external" href="https://docs.oracle.com/cd/E83857_01/paas/data-safe/admds/target-database-registration.html">https://docs.oracle.com/cd/E83857_01/paas/data-safe/admds/target-database-registration.html</a></p>
+<p>DBにはdatasafe用のDBユーザーとして、DATASAFE_ADMINを作成。</p>
+<p>別に名前は自由だが、コンソールではDATASAFE$ADMINユーザーがデフォルトでセットされてるので。</p>
+<p>ADBにはDS$ADMINという名前ですでに作成されているので、作成する必要はない。
+ロックされているのでアンロックする必要はある。
+（ADBが登録解除されると再度ロックされる）</p>
+<dl class="simple">
+<dt>▼ DATASAFE_ADMINユーザーの作成例</dt><dd><p>CREATE USER DATASAFE$ADMIN identified by password
+DEFAULT TABLESPACE &quot;DATA&quot;
+TEMPORARY TABLESPACE &quot;TEMP&quot;;</p>
+</dd>
+</dl>
+<p>GRANT CONNECT, RESOURCE TO DATASAFE_ADMIN;
+:警告: SYSTEMまたはSYSAUXをデフォルト表領域として使用しないでください。 これらの表領域を使用している場合は、データをマスキングできません。</p>
+<p>PDBで作成</p>
+<p>CREATE USER DATASAFE$ADMIN identified by &lt;password&gt;
+DEFAULT TABLESPACE &quot;USERS&quot;
+TEMPORARY TABLESPACE &quot;TEMP&quot;;</p>
+<p>CREATE USER DATASAFE$ADMIN identified by Welcome1#Welcome1#
+DEFAULT TABLESPACE &quot;USERS&quot;
+TEMPORARY TABLESPACE &quot;TEMP&quot;;</p>
+</section>
+<section id="id1">
+<h2>DATASAFE$ADMINユーザーにロールを追加する<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>ロールを追加する
+ADBとno-ADBで追加するロールが違う
+<a class="reference external" href="https://docs.oracle.com/cd/E83857_01/paas/data-safe/admds/grant-roles-oracle-data-safe-service-account-your-target-database.html">https://docs.oracle.com/cd/E83857_01/paas/data-safe/admds/grant-roles-oracle-data-safe-service-account-your-target-database.html</a>
+Autonomous Databaseでは、DS$DATA_MASKING_ROLEを除くすべてのロールがすでにデフォルトで付与されています。</p>
+<img alt="../_images/%E3%83%AD%E3%83%BC%E3%83%AB.png" src="../_images/%E3%83%AD%E3%83%BC%E3%83%AB.png" />
+<p>non-ADBの場合、datasafe_privileges.sqlを流すことで、ロールを付与、または取り消しができる。
+このスクリプトはOCIコンソールのターゲットDBの登録画面から入手可能</p>
+<img alt="../_images/%E6%A8%A9%E9%99%90%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%81%AEDL.png" src="../_images/%E6%A8%A9%E9%99%90%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%81%AEDL.png" />
+<div role="list" class="citation-list">
+<div class="citation" id="id2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>メニューバー<span class="fn-bracket">]</span></span>
+<p>→ [Oracle Database] → [データ・セーフ - データベース・セキュリティ]</p>
+</div>
+</div>
+<p>DBサーバーにスクリプトファイルを移し、以下の感じで実行すると、
+すべての権限を付与し、すべてのOracle Data Safe機能が使用可能になる。</p>
+<p>&#64;datasafe_privileges.sql &lt;DATASAFEユーザー&gt; GRANT ALL -VERBOSE</p>
+<p>SQL&gt; &#64;datasafe_privileges.sql DATASAFE$ADMIN GRANT ALL -VERBOSE
+Enter value for USERNAME (case sensitive matching the username from dba_users)
+Setting USERNAME to DATASAFE$ADMIN
+Enter value for TYPE (grant/revoke)
+Setting TYPE to GRANT
+Enter value for MODE (audit_collection/audit_setting/data_discovery/masking/assessment/sql_firewall/all)
+Setting MODE to ALL</p>
+<p>Granting AUDIT_COLLECTION privileges to &quot;DATASAFE$ADMIN&quot; ...
+CREATE ROLE &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT CREATE SESSION to &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT AUDIT_VIEWER TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT READ ON SYS.DBA_AUDIT_MGMT_CLEANUP_JOBS TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT READ ON SYS.V_$PWFILE_USERS TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT READ ON SYS.DBA_TABLES TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT SELECT ON SYS.DUAL TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT READ ON SYS.V_$OPTION TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT EXECUTE ON SYS.DEFAULT_JOB_CLASS TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT EXECUTE ON SYS.DBMS_OUTPUT TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT READ ON SYS.STMT_AUDIT_OPTION_MAP TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+GRANT EXECUTE ON SYS.XMLTYPE TO &quot;ORA_DSCS_AUDIT_COLLECTION&quot;
+...
+GRANT AUDIT_VIEWER TO &quot;ORA_DSCS_ASSESSMENT&quot;
+GRANT CAPTURE_ADMIN TO &quot;ORA_DSCS_ASSESSMENT&quot;
+GRANT SELECT ON AUDSYS.AUD$UNIFIED TO &quot;ORA_DSCS_ASSESSMENT&quot;
+GRANT &quot;ORA_DSCS_ASSESSMENT&quot; to &quot;DATASAFE$ADMIN&quot;
+Disconnected from Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free
+Version 23.6.0.24.10</p>
+</section>
+<section id="datasafedb">
+<h2>DATASAFEにDBを登録する<a class="headerlink" href="#datasafedb" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3>プライベートエンドポイントの作成<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>[データ・セーフ] → [設定] → [ターゲット・データベース] → [プライベート・エンドポイント]
+からプライベートエンドポイントを作成します。</p>
+</section>
+</section>
+</section>
+
         </article>
       </div>
       <footer>
@@ -276,7 +385,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">&lt;no title&gt;</div>
+                <div class="title">4. Data SafeからSQL Firewallを設定する</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -309,8 +418,32 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">1. Data Safeの準備</a><ul>
+<li><a class="reference internal" href="#datasafe-admin">DATASAFE$ADMINユーザーの作成</a></li>
+<li><a class="reference internal" href="#id1">DATASAFE$ADMINユーザーにロールを追加する</a></li>
+<li><a class="reference internal" href="#datasafedb">DATASAFEにDBを登録する</a><ul>
+<li><a class="reference internal" href="#id3">プライベートエンドポイントの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

@@ -57,3 +57,13 @@ dbsec-demo
    /sqlfirewall/2_policycheck
    /sqlfirewall/3_setup-datasafe
    /sqlfirewall/4_policycheck-datasafe
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Oracle Label Security:
+   
+   /ols/1_setup
+   /ols/2_setupPolicy
+   /ols/3_checkOls
+   /ols/4_labelColumn
+   /ols/5_cleanup

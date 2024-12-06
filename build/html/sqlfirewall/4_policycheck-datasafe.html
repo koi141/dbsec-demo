@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="prev" title="&lt;no title&gt;" href="3_setup-datasafe.html" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="next" title="1. Oracle Label Securityの準備" href="../ols/1_setup.html" /><link rel="prev" title="1. Data Safeの準備" href="3_setup-datasafe.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>&lt;no title&gt; - dbsec-demo ドキュメント</title>
+        <title>4. Data SafeからSQL Firewallを設定する - dbsec-demo ドキュメント</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -226,6 +226,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. SQL Firewallの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setup-datasafe.html">1. Data Safeの準備</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">4. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/3_checkOls.html">3. ラベル制御の確認</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+</ul>
 
 </div>
 </div>
@@ -265,13 +279,30 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          
+          <section id="data-safesql-firewall">
+<h1>4. Data SafeからSQL Firewallを設定する<a class="headerlink" href="#data-safesql-firewall" title="Link to this heading">¶</a></h1>
+<p><strong>実施内容</strong></p>
+<ul class="simple">
+<li><p>DATASAFE$ADMINユーザーを作成</p></li>
+<li><p>OCIコンソール</p></li>
+</ul>
+<p>まだ有効化していない場合は[有効化]ボタンから有効化することができます。</p>
+</section>
+
         </article>
       </div>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="../ols/1_setup.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">1. Oracle Label Securityの準備</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="3_setup-datasafe.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -279,7 +310,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">&lt;no title&gt;</div>
+                <div class="title">1. Data Safeの準備</div>
                 
               </div>
             </a>

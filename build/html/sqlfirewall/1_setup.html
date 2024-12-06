@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="next" title="&lt;no title&gt;" href="2_policycheck.html" /><link rel="prev" title="3. クライアント識別子を用いた制御" href="../vpd/3_clientIdentifier.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>&lt;no title&gt; - dbsec-demo ドキュメント</title>
+        <title>1. SQL Firewallの準備 - dbsec-demo ドキュメント</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -226,6 +226,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">1. SQL Firewallの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setup-datasafe.html">1. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/3_checkOls.html">3. ラベル制御の確認</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+</ul>
 
 </div>
 </div>
@@ -259,13 +273,61 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          
+          <section id="sql-firewall">
+<h1>1. SQL Firewallの準備<a class="headerlink" href="#sql-firewall" title="Link to this heading">¶</a></h1>
+<p><strong>実施内容</strong></p>
+<ul class="simple">
+<li><p>SQL Firewallを有効化する</p></li>
+<li><p>OCIコンソール</p></li>
+</ul>
+<section id="id1">
+<h2>SQL Firewallを有効化する<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>ステータスを確認します。
+SQL&gt; set markup csv on
+SQL&gt; select * from DBA_SQL_FIREWALL_STATUS;
+&quot;STATUS&quot;,&quot;STATUS_UPDATED_ON&quot;,&quot;EXCLUDE_JOBS&quot;
+&quot;DISABLED&quot;,&quot;06-DEC-24 05.50.51.263690 AM +00:00&quot;,&quot;Y&quot;</p>
+<p>DISABLEDなので無効化されていることが分かります。</p>
+<p>EXEC DBMS_SQL_FIREWALL.ENABLE;</p>
+<p>有効化されたかを確認します</p>
+<p>SQL&gt; select * from DBA_SQL_FIREWALL_STATUS;
+&quot;STATUS&quot;,&quot;STATUS_UPDATED_ON&quot;,&quot;EXCLUDE_JOBS&quot;
+&quot;ENABLED&quot;,&quot;06-DEC-24 05.52.21.098865 AM +00:00&quot;,&quot;Y&quot;</p>
+<p>ENABLEDになったことが分かります。</p>
+</section>
+<section id="sql">
+<h2>SQLトラフィックをキャプチャする<a class="headerlink" href="#sql" title="Link to this heading">¶</a></h2>
+<p>SALES_APPユーザーからくるSQLのキャプチャを開始します。</p>
+<dl>
+<dt>BEGIN</dt><dd><dl class="simple">
+<dt>DBMS_SQL_FIREWALL.CREATE_CAPTURE (</dt><dd><p>username         =&gt; 'SALES_APP',
+top_level_only   =&gt; TRUE,
+start_capture    =&gt; TRUE</p>
+</dd>
+</dl>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+<p>PL/SQL procedure successfully completed.</p>
+<p>SALES_APPユーザーに切り替え、適当にSQLを実行します。</p>
+<p>$ sqlplus <a class="reference external" href="mailto:sales_app/Welcome1#Welcome1#&#37;&#52;&#48;localhost">sales_app/Welcome1#Welcome1#<span>&#64;</span>localhost</a>:1521/freepdb1</p>
+<p>Select * From hr.job_history;</p>
+<p>select job_title from hr.job_history;</p>
+<p>desc EMPLOYEEs;</p>
+<p>Select first_name From hr.employees where employee_id IN(102,200);</p>
+<p>select first_name, email, job_id from customers where job_id like 'SA_%';</p>
+<p>select jfiros from aaiorwae;</p>
+</section>
+</section>
+
         </article>
       </div>
       <footer>
@@ -309,8 +371,28 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">1. SQL Firewallの準備</a><ul>
+<li><a class="reference internal" href="#id1">SQL Firewallを有効化する</a></li>
+<li><a class="reference internal" href="#sql">SQLトラフィックをキャプチャする</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

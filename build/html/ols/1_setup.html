@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="next" title="2. OLSポリシーの準備" href="2_setupPolicy.html" /><link rel="prev" title="4. Data SafeからSQL Firewallを設定する" href="../sqlfirewall/4_policycheck-datasafe.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>1. Oracle Label Securityの準備 - dbsec-demo ドキュメント</title>
@@ -226,6 +226,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">1. Oracle Label Securityの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_setupPolicy.html">2. OLSポリシーの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_checkOls.html">3. ラベル制御の確認</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLSの設定を削除する</a></li>
+</ul>
 
 </div>
 </div>
@@ -380,6 +394,10 @@ SQL&gt;  select * from dba_role_privs where granted_role = 'LBAC_DBA';
 <p>Pluggable database altered.</p>
 <p>SQL&gt; alter pluggable database freepdb1 open;</p>
 <p>Pluggable database altered.</p>
+</section>
+</section>
+<section id="id3">
+<h2>ポリシーを有効化する<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <p>新規のOracle Label Securityポリシーを作成し、
 ポリシー固有の列名を定義して、デフォルト・ポリシー・オプションを指定します。</p>
 <p>ポリシーを作成すると、そのロールが作成され、ユーザーに付与されます。
@@ -406,12 +424,59 @@ Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/
 <p>PL/SQLは所有者の権限で実行されるため、強い権限を持つユーザーAのプログラムの実行権限を他ユーザーBに与えてしまった際、BはAの持っている強力な権限を使って処理を実行することができてしまいます。これは非常に危険で、誤った設定により予期しない権限を第三者に与える可能性が出てきます。
 Oracle のデフォルトの仕組みでは、プログラムの所有者が「実行してもいいよ」と一方的に許可するだけで実行が可能になります。</p>
 <p>そこで12cより、INHERIT PRIVILEGES権限が登場しました。この権限は、どのスキーマの「実行者権限」プログラムを実行してもよいかを、実行ユーザー側で制御するためのものです。</p>
-<p>SQL&gt; SELECT grantee, grantor, privilege FROM   user_tab_privs WHERE  privilege = 'INHERIT PRIVILEGES';
+<p>SYS ユーザーが LBACSYS の権限を継承してそのパッケージを利用することを許可する設定（INHERIT PRIVILEGES）が明示的に付与されていないため、エラーが発生しているのです。</p>
+<p>INHERIT PRIVILEGES はユーザーが他のユーザーから権限を「継承」して実行するかどうかを制御するためのもので、特に高権限のユーザーに対するセキュリティ強化のために導入されました。
+デフォルトでは、INHERIT PRIVILEGES 権限は PUBLIC に付与されているため、すべてのユーザーが他のユーザーのプログラムを継承して実行できる設定になっていますが、高権限ユーザーに対してはこの権限が制限されています。</p>
+<p>SYSユーザーにはPUBLICからSYSにINHERIT PRIVILEGES 権限が付与されていないことが分かります。</p>
+<blockquote>
+<div><p>SQL&gt; SELECT grantee, grantor, privilege FROM   DBA_tab_privs WHERE  privilege = 'INHERIT PRIVILEGES';
 &quot;GRANTEE&quot;,&quot;GRANTOR&quot;,&quot;PRIVILEGE&quot;
 &quot;GSMADMIN_INTERNAL&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
 &quot;CTXSYS&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;XDB&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;</p>
-</section>
+&quot;XDB&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;PUBLIC&quot;,&quot;PUBLIC&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;CTXSYS&quot;,&quot;GSMADMIN_INTERNAL&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;XDB&quot;,&quot;GSMADMIN_INTERNAL&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;GSMADMIN_INTERNAL&quot;,&quot;GSMCATUSER&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;CTXSYS&quot;,&quot;XDB&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;PUBLIC&quot;,&quot;HR&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;PUBLIC&quot;,&quot;SALES_APP&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;PUBLIC&quot;,&quot;LBAC_TRIGGER&quot;,&quot;INHERIT PRIVILEGES&quot;
+&quot;PUBLIC&quot;,&quot;XS$NULL&quot;,&quot;INHERIT PRIVILEGES&quot;</p>
+</div></blockquote>
+<p>そのため、SYS ユーザーはデフォルトでは他のスキーマが所有する「実行者権限」のプログラムを実行するための継承権限を持っていないことがわかります。</p>
+<p>以下が確認できます:</p>
+<p>PUBLIC に対しては複数のユーザー（例: HR, SALES_APP, LBAC_TRIGGER など）から INHERIT PRIVILEGES が付与されていますが、SYS に対してはそのような付与が行われていません。
+これは、SYS ユーザーのような非常に強力な権限を持つユーザーが、他のユーザーの持つプログラムを無制限に実行してしまうことを防ぐためです。
+このため、SYS ユーザーで LBACSYS の CREATE_POLICY を実行しようとした場合、INHERIT PRIVILEGES が付与されていないためにエラーが発生します。
+このセキュリティ設定により、権限の強いユーザーであっても、明示的な許可なしには他のスキーマの権限を使用できないようにすることで、データベースの安全性が向上しています。</p>
+<p>SYS ユーザーに対して LBACSYS からの INHERIT PRIVILEGES 権限を付与します。以下のSQLを使って付与できます。</p>
+<blockquote>
+<div><p>GRANT INHERIT PRIVILEGES ON USER SYS TO LBACSYS</p>
+</div></blockquote>
+<p>結果の <code class="docutils literal notranslate"><span class="pre">Grant</span> <span class="pre">succeeded.</span></code> を確認し、再度実行します。</p>
+<blockquote>
+<div><dl class="simple">
+<dt>BEGIN</dt><dd><dl class="simple">
+<dt>SA_SYSDBA.CREATE_POLICY (</dt><dd><p>policy_name      =&gt; 'OLS_POL_DEMO',
+column_name      =&gt; 'OLS_LABEL_DEMO');</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>END;
+/</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">PL/SQL</span> <span class="pre">procedure</span> <span class="pre">successfully</span> <span class="pre">completed.</span></code> が表示され、無事実行できるはずです。</p>
+<p><a class="reference external" href="https://connor-mcdonald.com/2018/10/31/the-strange-place-for-inherit-privileges/">https://connor-mcdonald.com/2018/10/31/the-strange-place-for-inherit-privileges/</a></p>
+<dl class="simple">
+<dt>取り消す場合は以下です</dt><dd><p>REVOKE INHERIT PRIVILEGES ON USER SYS FROM LBACSYS;</p>
+</dd>
+</dl>
+<p>ではポリシーを有効にします。</p>
+<blockquote>
+<div><p>EXEC SA_SYSDBA.ENABLE_POLICY ('OLS_POL_DEMO');</p>
+</div></blockquote>
 </section>
 </section>
 
@@ -420,8 +485,26 @@ Oracle のデフォルトの仕組みでは、プログラムの所有者が「�
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="2_setupPolicy.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">2. OLSポリシーの準備</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../sqlfirewall/4_policycheck-datasafe.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">4. Data SafeからSQL Firewallを設定する</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -459,6 +542,7 @@ Oracle のデフォルトの仕組みでは、プログラムの所有者が「�
 <li><a class="reference internal" href="#con-name">CON_NAME</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id3">ポリシーを有効化する</a></li>
 </ul>
 </li>
 </ul>

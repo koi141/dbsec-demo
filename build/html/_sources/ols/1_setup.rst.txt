@@ -159,6 +159,12 @@ SQL> alter pluggable database freepdb1 open;
 Pluggable database altered.
 
 
+****************************
+ポリシーを有効化する
+****************************
+
+
+
 新規のOracle Label Securityポリシーを作成し、
 ポリシー固有の列名を定義して、デフォルト・ポリシー・オプションを指定します。
 
@@ -192,8 +198,64 @@ Oracle のデフォルトの仕組みでは、プログラムの所有者が「�
 
 そこで12cより、INHERIT PRIVILEGES権限が登場しました。この権限は、どのスキーマの「実行者権限」プログラムを実行してもよいかを、実行ユーザー側で制御するためのものです。
 
-SQL> SELECT grantee, grantor, privilege FROM   user_tab_privs WHERE  privilege = 'INHERIT PRIVILEGES';
-"GRANTEE","GRANTOR","PRIVILEGE"
-"GSMADMIN_INTERNAL","SYS","INHERIT PRIVILEGES"
-"CTXSYS","SYS","INHERIT PRIVILEGES"
-"XDB","SYS","INHERIT PRIVILEGES"
+SYS ユーザーが LBACSYS の権限を継承してそのパッケージを利用することを許可する設定（INHERIT PRIVILEGES）が明示的に付与されていないため、エラーが発生しているのです。
+
+INHERIT PRIVILEGES はユーザーが他のユーザーから権限を「継承」して実行するかどうかを制御するためのもので、特に高権限のユーザーに対するセキュリティ強化のために導入されました。
+デフォルトでは、INHERIT PRIVILEGES 権限は PUBLIC に付与されているため、すべてのユーザーが他のユーザーのプログラムを継承して実行できる設定になっていますが、高権限ユーザーに対してはこの権限が制限されています。
+
+SYSユーザーにはPUBLICからSYSにINHERIT PRIVILEGES 権限が付与されていないことが分かります。
+
+    SQL> SELECT grantee, grantor, privilege FROM   DBA_tab_privs WHERE  privilege = 'INHERIT PRIVILEGES';
+    "GRANTEE","GRANTOR","PRIVILEGE"
+    "GSMADMIN_INTERNAL","SYS","INHERIT PRIVILEGES"
+    "CTXSYS","SYS","INHERIT PRIVILEGES"
+    "XDB","SYS","INHERIT PRIVILEGES"
+    "PUBLIC","PUBLIC","INHERIT PRIVILEGES"
+    "CTXSYS","GSMADMIN_INTERNAL","INHERIT PRIVILEGES"
+    "XDB","GSMADMIN_INTERNAL","INHERIT PRIVILEGES"
+    "GSMADMIN_INTERNAL","GSMCATUSER","INHERIT PRIVILEGES"
+    "CTXSYS","XDB","INHERIT PRIVILEGES"
+    "PUBLIC","HR","INHERIT PRIVILEGES"
+    "PUBLIC","SALES_APP","INHERIT PRIVILEGES"
+    "PUBLIC","LBAC_TRIGGER","INHERIT PRIVILEGES"
+    "PUBLIC","XS$NULL","INHERIT PRIVILEGES"
+
+
+そのため、SYS ユーザーはデフォルトでは他のスキーマが所有する「実行者権限」のプログラムを実行するための継承権限を持っていないことがわかります。
+
+以下が確認できます:
+
+PUBLIC に対しては複数のユーザー（例: HR, SALES_APP, LBAC_TRIGGER など）から INHERIT PRIVILEGES が付与されていますが、SYS に対してはそのような付与が行われていません。
+これは、SYS ユーザーのような非常に強力な権限を持つユーザーが、他のユーザーの持つプログラムを無制限に実行してしまうことを防ぐためです。
+このため、SYS ユーザーで LBACSYS の CREATE_POLICY を実行しようとした場合、INHERIT PRIVILEGES が付与されていないためにエラーが発生します。
+このセキュリティ設定により、権限の強いユーザーであっても、明示的な許可なしには他のスキーマの権限を使用できないようにすることで、データベースの安全性が向上しています。
+
+SYS ユーザーに対して LBACSYS からの INHERIT PRIVILEGES 権限を付与します。以下のSQLを使って付与できます。
+
+    GRANT INHERIT PRIVILEGES ON USER SYS TO LBACSYS
+
+
+結果の ``Grant succeeded.`` を確認し、再度実行します。
+
+    BEGIN
+        SA_SYSDBA.CREATE_POLICY (
+            policy_name      => 'OLS_POL_DEMO',
+            column_name      => 'OLS_LABEL_DEMO');
+    END;
+    /
+
+``PL/SQL procedure successfully completed.`` が表示され、無事実行できるはずです。
+
+https://connor-mcdonald.com/2018/10/31/the-strange-place-for-inherit-privileges/
+
+
+取り消す場合は以下です
+    REVOKE INHERIT PRIVILEGES ON USER SYS FROM LBACSYS;
+
+
+ではポリシーを有効にします。
+
+    EXEC SA_SYSDBA.ENABLE_POLICY ('OLS_POL_DEMO');
+
+
+
