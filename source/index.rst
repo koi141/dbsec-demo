@@ -54,7 +54,8 @@ dbsec-demo
    :caption: SQL Firewall:
    
    /sqlfirewall/1_setup
-   /sqlfirewall/2_policycheck
+   /sqlfirewall/2_learningTraffic
+   /sqlfirewall/3_allowTraffic
    /sqlfirewall/3_setup-datasafe
    /sqlfirewall/4_policycheck-datasafe
 
