@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>3. クライアント識別子を用いた制御 &#8212; dbsec-demo  ドキュメント</title>
+    <title>2. Database Vaultの準備 &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -51,11 +51,11 @@
     <script src="../_static/translations.js?v=4755f45a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'vpd/3_clientIdentifier';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dv/2_authRealm';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. SQL Firewallの準備" href="../sqlfirewall/1_setup.html" />
-    <link rel="prev" title="2. VPDで列制御を行う" href="2_columnControl.html" />
+    <link rel="next" title="3. Database Vaultを確認する" href="3_checkDv.html" />
+    <link rel="prev" title="1. Database Vaultの有効化" href="1_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -167,10 +167,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../redact/3_note.html">3. Data Redactionの注意点</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Virtual Private Database:</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="1_rowControl.html">1. VPDで行制御を行う</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_columnControl.html">2. VPDで列制御を行う</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. クライアント識別子を用いた制御</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
@@ -179,11 +179,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultを確認する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Database Vaultの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -246,7 +246,7 @@
       
       
       
-      <li><a href="../_sources/vpd/3_clientIdentifier.rst" target="_blank"
+      <li><a href="../_sources/dv/2_authRealm.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -322,7 +322,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>3. クライアント識別子を用いた制御</h1>
+    <h1>2. Database Vaultの準備</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -332,9 +332,15 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">APPユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vpd">VPD関数の作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルムを作成する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルムにオブジェクトを登録する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レルム認可を行う</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hr">所有者(HR)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">参加者(SALES_APPユーザー)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#app">参加者(APPユーザー)</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -346,165 +352,94 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="id1">
-<h1>3. クライアント識別子を用いた制御<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p><strong>実施内容</strong>
-+
-+ VPD関数の作成
-+ VPDのポリシーの作成
-+ HRユーザーまたはSYSユーザーでEMMPLOYEES表を確認
-+ SALES_APPユーザーでEMMPLOYEES表を確認</p>
-<p>VPD
-client_Identifier</p>
-<section id="app">
-<h2>APPユーザーの作成<a class="headerlink" href="#app" title="Link to this heading">#</a></h2>
-<p>ここでは新しくAPPユーザーを作成します。作成の流れはSALES_APPユーザーと同じです。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">APP</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="o">&lt;</span><span class="n">password</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">TEMPORARY</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">TEMP</span><span class="p">;</span>
-</pre></div>
-</div>
-<p>以下は実行例です。証跡としてパスワードが残らないよう、2つのコマンドに分けて設定しています。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">app</span>
-<span class="mi">2</span><span class="w">     </span><span class="k">default</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span>
-<span class="mi">3</span><span class="w">     </span><span class="k">temporary</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
-
-<span class="c1">-- passwordを設定</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="n">app</span>
-<span class="n">Changing</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sales_app</span>
-<span class="k">New</span><span class="w"> </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="err">パスワードを入力</span><span class="o">&gt;</span>
-<span class="n">Retype</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="err">パスワードを再入力</span><span class="o">&gt;</span>
-<span class="n">Password</span><span class="w"> </span><span class="n">changed</span>
-</pre></div>
-</div>
-<p>次に、APP ユーザーにセッション作成権限を付与します。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">grant</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">app</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">さらに、HRスキーマに対して SELECT 権限を付与します。</div>
-<div class="line">スキーマ単位で権限付与する方法は23aiの新機能となっており、これにより、APP ユーザーは HR スキーマのテーブルに対してデータを参照できるようになります。</div>
-</div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- 23aiの新機能、スキーマ権限</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">grant</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="k">any</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">schema</span><span class="w"> </span><span class="n">HR</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">app</span><span class="p">;</span>
-</pre></div>
-</div>
-</section>
-<section id="vpd">
-<h2>VPD関数の作成<a class="headerlink" href="#vpd" title="Link to this heading">#</a></h2>
-<p>jobは以下の19つあります。</p>
-<p>SQL&gt;  select job_id, JOB_TITLE from hr.jobs;</p>
-<p>JOB_ID     JOB_TITLE
----------- -----------------------------------
-AD_PRES    President
-AD_VP      Administration Vice President
-AD_ASST    Administration Assistant
-FI_MGR     Finance Manager
-FI_ACCOUNT Accountant
-AC_MGR     Accounting Manager
-AC_ACCOUNT Public Accountant
-SA_MAN     Sales Manager
-SA_REP     Sales Representative
-PU_MAN     Purchasing Manager
-PU_CLERK   Purchasing Clerk
-ST_MAN     Stock Manager
-ST_CLERK   Stock Clerk
-SH_CLERK   Shipping Clerk
-IT_PROG    Programmer
-MK_MAN     Marketing Manager
-MK_REP     Marketing Representative
-HR_REP     Human Resources Representative
-PR_REP     Public Relations Representative</p>
-<p>ここでは、以下の3つに分けてwhere句をそれぞれつけていきたいと思います。</p>
+  <section id="database-vault">
+<h1>2. Database Vaultの準備<a class="headerlink" href="#database-vault" title="Link to this heading">#</a></h1>
+<p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>Viewer: 一般的なスタッフ職やコントリビューターを表示</p></li>
-<li><p>Editor: 閲覧専用ユーザーで見られる行に加え、ミドルマネジメント職等を表示</p></li>
-<li><p>Admin: 全てのJOBタイトルが閲覧可能</p></li>
+<li><p>許可リストを作成する</p></li>
 </ul>
-<dl>
-<dt>CREATE OR REPLACE FUNCTION hr.get_app_predicate(</dt><dd><p>p_schema IN VARCHAR2,
-p_table  IN VARCHAR2
-)
-RETURN VARCHAR2
-IS</p>
+<section id="id1">
+<h2>確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>有効化した時点でSYSユーザーではユーザーが作成できないことが確認できます。</p>
 <blockquote>
-<div><p>v_predicate VARCHAR2 (400);</p>
+<div><p>SQL&gt; show user
+USER is &quot;SYS&quot;
+SQL&gt; create user test;
+create user test
+*
+ERROR at line 1:
+ORA-01031: insufficient privileges
+Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-01031/">https://docs.oracle.com/error-help/db/ora-01031/</a></p>
 </div></blockquote>
-<dl>
-<dt>BEGIN</dt><dd><dl>
-<dt>IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN</dt><dd><p>v_predicate := 'JOB_ID LIKE ''SA_%''';</p>
-</dd>
-<dt>ELSIF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'APP' THEN</dt><dd><dl class="simple">
-<dt>IF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'VIEWER' THEN</dt><dd><p>v_predicate := 'REGEXP_LIKE(JOB_ID, ''_(ACCOUNT|CLERK|REP)$'')';</p>
-</dd>
-<dt>ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'EDITOR' THEN</dt><dd><p>v_predicate := 'NOT REGEXP_LIKE(JOB_ID, ''_(PRES|VP|ASST)$'')';</p>
-</dd>
-<dt>ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'ADMIN' THEN</dt><dd><p>v_predicate := '1=1';</p>
-</dd>
-<dt>ELSE</dt><dd><p>v_predicate := '1=2';</p>
-</dd>
-</dl>
-<p>END IF;</p>
-</dd>
-<dt>ELSE</dt><dd><p>v_predicate := '1=1';</p>
-</dd>
-</dl>
-<p>END IF;</p>
-</dd>
-</dl>
-<p>RETURN v_predicate;</p>
-</dd>
-</dl>
-<p>END get_app_predicate;
-/</p>
-<p>閲覧専用ユーザー(Viewer): 一般的なスタッフ職やコントリビューターを表示</p>
-<p>例:
-FI_ACCOUNT (Accountant)
-AC_ACCOUNT (Public Accountant)
-SA_REP (Sales Representative)
-PU_CLERK (Purchasing Clerk)
-ST_CLERK (Stock Clerk)
-SH_CLERK (Shipping Clerk)
-MK_REP (Marketing Representative)
-HR_REP (Human Resources Representative)
-PR_REP (Public Relations Representative)
-一般権限ユーザー(Editor): 閲覧専用ユーザーで見られる行に加え、ミドルマネジメント職等を表示</p>
-<p>閲覧専用ユーザーが見られる職種＋以下職種:
-FI_MGR (Finance Manager)
-AC_MGR (Accounting Manager)
-SA_MAN (Sales Manager)
-PU_MAN (Purchasing Manager)
-ST_MAN (Stock Manager)
-IT_PROG (Programmer)
-MK_MAN (Marketing Manager)
-管理者(Admin): 全てのJOBタイトルが閲覧可能</p>
-<p>上記全て＋
-AD_PRES (President)
-AD_VP (Administration Vice President)
-AD_ASST (Administration Assistant)</p>
+<p>レルムはまだ作成していないので、表を参照することはできます。</p>
+<blockquote>
+<div><p>SQL&gt; select count(*) from hr.jobs;</p>
+<blockquote>
+<div><p>19</p>
+</div></blockquote>
+</div></blockquote>
 </section>
 <section id="id2">
-<h2>VPDポリシーの作成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>それでは先ほど作成したVPD関数を指定してVPDポリシーを作成していきます。
-すでに作成したemployees_vpd_policyをDROPし、再作成する形で適用します。</p>
-<p>ある場合はいったん削除する
-BEGIN</p>
+<h2>レルムを作成する<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>他の機能と競合しないよう、念のため今回はHRスキーマのREGIONS表とCOUNTRIES表をレルムに追加します。</p>
+<p>DV管理者で以下を実行します。</p>
+<dl>
+<dt>BEGIN</dt><dd><dl>
+<dt>DBMS_MACADM.CREATE_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',              -- レルム名
+description       =&gt; 'This realm is created for demonstration',  -- レルムの説明
+enabled           =&gt; DBMS_MACUTL.G_YES,             -- (*)作成直後から有効化</p>
 <blockquote>
-<div><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY (</dt><dd><p>object_schema   =&gt; 'HR',
-object_name     =&gt; 'EMPLOYEES',
-policy_name     =&gt; 'employees_vpd_policy'</p>
+<div><p>audit_options     =&gt; DBMS_MACUTL.G_REALM_AUDIT_OFF, -- (*)レルムの監査を無効
+realm_type        =&gt; 1,                             -- 必須レルムを有効化
+realm_scope       =&gt; DBMS_MACUTL.G_SCOPE_LOCAL,     -- (*)レルムはローカルの範囲で動作
+pl_sql_stack      =&gt; FALSE                          -- (*)PL/SQLスタック検証は行わない</p>
+</div></blockquote>
 </dd>
 </dl>
 <p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+<p>作成したレルムは <code class="docutils literal notranslate"><span class="pre">DVSYS.DBA_DV_REALM</span></code> から確認することができます。</p>
+<blockquote>
+<div><p>SQL&gt; select name, description, realm_type from dvsys.dba_dv_realm;
+&quot;NAME&quot;,&quot;DESCRIPTION&quot;,&quot;REALM_TYPE&quot;
+&quot;Oracle Database Vault&quot;,&quot;Defines the realm for the Oracle Database Vault schemas - DVSYS and DVF where Database Vault access control configuration and roles are contained.&quot;,&quot;MANDATORY&quot;
+&quot;Oracle Label Security&quot;,&quot;Defines the realm for the Oracle Label Security schemas and roles - LBACSYS and LBAC_DBA.&quot;,&quot;MANDATORY&quot;
+&quot;Database Vault Account Management&quot;,&quot;Defines the realm for administrators who create and manage database accounts and profiles.&quot;,&quot;REGULAR&quot;
+&quot;Oracle Enterprise Manager&quot;,&quot;Defines the Enterprise Manager monitoring and management realm.&quot;,&quot;REGULAR&quot;
+&quot;Oracle Default Schema Protection Realm&quot;,&quot;Defines the realm for the Oracle Default schemas.&quot;,&quot;REGULAR&quot;
+&quot;Oracle System Privilege and Role Management Realm&quot;,&quot;Defines the realm to control granting of system privileges and database administrator roles.&quot;,&quot;REGULAR&quot;
+&quot;Oracle Default Component Protection Realm&quot;,&quot;Defines the realm to protect default components of the Oracle database.&quot;,&quot;REGULAR&quot;
+&quot;Oracle Audit&quot;,&quot;Defines the realm to protect audit related objects of the Oracle database.&quot;,&quot;MANDATORY&quot;
+&quot;Oracle GoldenGate Protection Realm&quot;,&quot;Defines the realm to protect GoldenGate-related objects of the Oracle database.&quot;,&quot;MANDATORY&quot;
+&quot;Realm for demo&quot;,&quot;This realm is created for demonstration&quot;,&quot;MANDATORY&quot;</p>
+<p>10 rows selected.</p>
 </div></blockquote>
+</section>
+<section id="id3">
+<h2>レルムにオブジェクトを登録する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>レルム認可を必要とするオブジェクトを登録します。</p>
+<dl>
+<dt>BEGIN</dt><dd><dl class="simple">
+<dt>DBMS_MACADM.ADD_OBJECT_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',
+object_owner      =&gt; 'HR',
+object_name       =&gt; 'COUNTRIES',
+object_type       =&gt; 'TABLE'</p>
+</dd>
+</dl>
+<p>);</p>
+</dd>
+</dl>
 <p>END;
 /</p>
 <dl>
 <dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.ADD_POLICY (</dt><dd><p>object_schema   =&gt; 'HR',
-object_name     =&gt; 'EMPLOYEES',
-policy_name     =&gt; 'employees_vpd_policy',
-function_schema =&gt; 'HR',
-policy_function =&gt; 'get_app_predicate'</p>
+<dt>DBMS_MACADM.ADD_OBJECT_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',
+object_owner      =&gt; 'HR',
+object_name       =&gt; 'REGIONS',
+object_type       =&gt; 'TABLE'</p>
 </dd>
 </dl>
 <p>);</p>
@@ -512,6 +447,129 @@ policy_function =&gt; 'get_app_predicate'</p>
 </dl>
 <p>END;
 /</p>
+<p>object_name, object_typeではワイルドカード'%'が使用することができますので、HRスキーマ内のオブジェクトを一括で登録することが可能です。</p>
+<p>登録したオブジェクトは以下のコマンドで確認できます。</p>
+<blockquote>
+<div><p>SQL&gt; select REALM_NAME, OWNER, OBJECT_NAME, OBJECT_TYPE from DVSYS.DBA_DV_REALM_OBJECT where realm_name = 'Realm for demo';
+&quot;REALM_NAME&quot;,&quot;OWNER&quot;,&quot;OBJECT_NAME&quot;,&quot;OBJECT_TYPE&quot;
+&quot;Realm for demo&quot;,&quot;HR&quot;,&quot;COUNTRIES&quot;,&quot;TABLE&quot;
+&quot;Realm for demo&quot;,&quot;HR&quot;,&quot;REGIONS&quot;,&quot;TABLE&quot;</p>
+</div></blockquote>
+</section>
+<section id="id4">
+<h2>レルム認可を行う<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>このままではオブジェクトの持ち主であるHRユーザーでさえも、レルム内のオブジェクトにアクセスすることができません。
+そのため、レルム認可を行い、オブジェクトにアクセスする権限を付与します。</p>
+<section id="hr">
+<h3>所有者(HR)<a class="headerlink" href="#hr" title="Link to this heading">#</a></h3>
+<dl>
+<dt>BEGIN</dt><dd><blockquote>
+<div><dl class="simple">
+<dt>DBMS_MACADM.ADD_AUTH_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',   -- レルム名
+grantee           =&gt; 'HR',               -- 権限を付与するユーザ名またはロール名
+auth_options      =&gt; DBMS_MACUTL.G_REALM_AUTH_OWNER  -- ユーザーを「所有者」として認可する</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+</section>
+<section id="sales-app">
+<h3>参加者(SALES_APPユーザー)<a class="headerlink" href="#sales-app" title="Link to this heading">#</a></h3>
+<dl>
+<dt>BEGIN</dt><dd><blockquote>
+<div><dl class="simple">
+<dt>DBMS_MACADM.ADD_AUTH_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',   -- レルム名
+grantee           =&gt; 'SALES_APP',           -- 権限を付与するユーザ名またはロール名
+auth_options      =&gt; DBMS_MACUTL.G_REALM_AUTH_PARTICIPANT  -- ユーザーを「参加者」として認可する</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+</section>
+<section id="app">
+<h3>参加者(APPユーザー)<a class="headerlink" href="#app" title="Link to this heading">#</a></h3>
+<p>APPユーザーに対してはIPアドレスでの制限を追加してみます。</p>
+<p>ルールを作成します
+BEGIN</p>
+<blockquote>
+<div><dl>
+<dt>DBMS_MACADM.CREATE_RULE(</dt><dd><blockquote>
+<div><p>rule_name       =&gt; 'Rule to restrict APP to specific IP',</p>
+</div></blockquote>
+<p>rule_expr       =&gt; 'SYS_CONTEXT(''USERENV'',''IP_ADDRESS'') = ''192.168.0.10''',
+scope           =&gt; DBMS_MACUTL.G_SCOPE_LOCAL</p>
+</dd>
+</dl>
+<p>);</p>
+</div></blockquote>
+<p>END;
+/</p>
+<p>ルールを束ねたルールセットを作成します。
+BEGIN</p>
+<blockquote>
+<div><dl class="simple">
+<dt>DBMS_MACADM.CREATE_RULE_SET(</dt><dd><p>rule_set_name    =&gt; 'Ruleset for APP',
+description      =&gt; 'Rule to restrict APP to specific IP',
+enabled          =&gt; DBMS_MACUTL.G_YES,   -- (*)
+eval_options     =&gt; DBMS_MACUTL.G_RULESET_EVAL_ALL,    -- (*)
+audit_options    =&gt; DBMS_MACUTL.G_RULESET_AUDIT_OFF,   -- (*)
+fail_options     =&gt; DBMS_MACUTL.G_RULESET_FAIL_SHOW,   -- (*)
+fail_message     =&gt; 'DV_Error: Can only be accessed from a specific IP address',
+fail_code        =&gt; 20000,
+handler_options  =&gt; DBMS_MACUTL.G_RULESET_HANDLER_OFF,   -- (*)
+handler          =&gt; '',
+is_static        =&gt; FALSE, -- (*)
+scope            =&gt; DBMS_MACUTL.G_SCOPE_LOCAL</p>
+</dd>
+</dl>
+<p>);</p>
+</div></blockquote>
+<p>END;
+/</p>
+<p>ルールセットにルールを追加します。</p>
+<dl>
+<dt>BEGIN</dt><dd><dl class="simple">
+<dt>DBMS_MACADM.ADD_RULE_TO_RULE_SET(</dt><dd><p>rule_set_name  =&gt; 'Ruleset for APP',
+rule_name      =&gt; 'Rule to restrict APP to specific IP',
+rule_order     =&gt; 1,
+enabled        =&gt; DBMS_MACUTL.G_YES -- (*)</p>
+</dd>
+</dl>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+<dl>
+<dt>BEGIN</dt><dd><blockquote>
+<div><dl class="simple">
+<dt>DBMS_MACADM.ADD_AUTH_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',   -- レルム名
+grantee           =&gt; 'APP',           -- 権限を付与するユーザ名またはロール名</p>
+</dd>
+<dt>rule_set_name     =&gt; 'Ruleset for APP',</dt><dd><p>auth_options      =&gt; DBMS_MACUTL.G_REALM_AUTH_PARTICIPANT  -- ユーザーを「参加者」として認可する</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>);</p>
+</dd>
+</dl>
+<p>END;
+/</p>
+<p>レルム認可は以下のコマンドで見ることができます。
+SQL&gt; select realm_name, grantee, AUTH_OPTIONS,AUTH_RULE_SET_NAME from DVSYS.DBA_DV_REALM_AUTH where realm_name = 'Realm for demo';
+&quot;REALM_NAME&quot;,&quot;GRANTEE&quot;,&quot;AUTH_OPTIONS&quot;,&quot;AUTH_RULE_SET_NAME&quot;
+&quot;Realm for demo&quot;,&quot;APP&quot;,&quot;Participant&quot;,&quot;Ruleset for APP&quot;
+&quot;Realm for demo&quot;,&quot;SALES_APP&quot;,&quot;Participant&quot;,
+&quot;Realm for demo&quot;,&quot;HR&quot;,&quot;Owner&quot;,</p>
+</section>
 </section>
 </section>
 
@@ -527,20 +585,20 @@ policy_function =&gt; 'get_app_predicate'</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="2_columnControl.html"
+       href="1_setup.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">2. VPDで列制御を行う</p>
+        <p class="prev-next-title">1. Database Vaultの有効化</p>
       </div>
     </a>
     <a class="right-next"
-       href="../sqlfirewall/1_setup.html"
+       href="3_checkDv.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">1. SQL Firewallの準備</p>
+        <p class="prev-next-title">3. Database Vaultを確認する</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -561,9 +619,15 @@ policy_function =&gt; 'get_app_predicate'</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">APPユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vpd">VPD関数の作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルムを作成する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルムにオブジェクトを登録する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レルム認可を行う</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hr">所有者(HR)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">参加者(SALES_APPユーザー)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#app">参加者(APPユーザー)</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

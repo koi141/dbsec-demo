@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'sqlfirewall/1_setup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="2_policycheck.html" />
+    <link rel="next" title="2. SQLをキャプチャし、学習する" href="2_learningTraffic.html" />
     <link rel="prev" title="3. クライアント識別子を用いた制御" href="../vpd/3_clientIdentifier.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -175,8 +175,15 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -326,7 +333,6 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">SQL Firewallを有効化する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sql">SQLトラフィックをキャプチャする</a></li>
 </ul>
             </nav>
         </div>
@@ -360,31 +366,6 @@ SQL&gt; select * from DBA_SQL_FIREWALL_STATUS;
 &quot;ENABLED&quot;,&quot;06-DEC-24 05.52.21.098865 AM +00:00&quot;,&quot;Y&quot;</p>
 <p>ENABLEDになったことが分かります。</p>
 </section>
-<section id="sql">
-<h2>SQLトラフィックをキャプチャする<a class="headerlink" href="#sql" title="Link to this heading">#</a></h2>
-<p>SALES_APPユーザーからくるSQLのキャプチャを開始します。</p>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_SQL_FIREWALL.CREATE_CAPTURE (</dt><dd><p>username         =&gt; 'SALES_APP',
-top_level_only   =&gt; TRUE,
-start_capture    =&gt; TRUE</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>PL/SQL procedure successfully completed.</p>
-<p>SALES_APPユーザーに切り替え、適当にSQLを実行します。</p>
-<p>$ sqlplus <a class="reference external" href="mailto:sales_app/Welcome1#Welcome1#&#37;&#52;&#48;localhost">sales_app/Welcome1#Welcome1#<span>&#64;</span>localhost</a>:1521/freepdb1</p>
-<p>Select * From hr.job_history;</p>
-<p>select job_title from hr.job_history;</p>
-<p>desc EMPLOYEEs;</p>
-<p>Select first_name From hr.employees where employee_id IN(102,200);</p>
-<p>select first_name, email, job_id from customers where job_id like 'SA_%';</p>
-<p>select jfiros from aaiorwae;</p>
-</section>
 </section>
 
 
@@ -408,11 +389,11 @@ start_capture    =&gt; TRUE</p>
       </div>
     </a>
     <a class="right-next"
-       href="2_policycheck.html"
+       href="2_learningTraffic.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">&lt;no title&gt;</p>
+        <p class="prev-next-title">2. SQLをキャプチャし、学習する</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -434,7 +415,6 @@ start_capture    =&gt; TRUE</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">SQL Firewallを有効化する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sql">SQLトラフィックをキャプチャする</a></li>
 </ul>
   </nav></div>
 

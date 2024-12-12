@@ -3,8 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+############################################
 dbsec-demo
-========================
+############################################
 
 .. hint::
 
@@ -47,6 +48,7 @@ dbsec-demo
    /vpd/1_rowControl
    /vpd/2_columnControl
    /vpd/3_clientIdentifier
+   /vpd/4_cleanup
 
 
 .. toctree::
@@ -54,9 +56,20 @@ dbsec-demo
    :caption: SQL Firewall:
    
    /sqlfirewall/1_setup
-   /sqlfirewall/2_policycheck
-   /sqlfirewall/3_setup-datasafe
-   /sqlfirewall/4_policycheck-datasafe
+   /sqlfirewall/2_learningTraffic
+   /sqlfirewall/3_allowTraffic
+   /sqlfirewall/4_checkFirewall
+   /sqlfirewall/5_setup-datasafe
+   /sqlfirewall/6_policycheck-datasafe
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Database Vault:
+   
+   /dv/1_setup
+   /dv/2_authRealm
+   /dv/3_checkDv
+   /dv/4_cleanup
 
 .. toctree::
    :maxdepth: 2

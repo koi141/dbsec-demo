@@ -2,16 +2,16 @@
 3. クライアント識別子を用いた制御
 ############################################
 
+クライアント識別子やアプリケーション・コンテキストをアプリケーションから指定することで、同じDBユーザでも異なるwhere句を追加することができます。
+ここで示すデモ手順では、クライアント識別子を設定することで、同じデータベースユーザーでも異なる行を表示させる制御を行います。
 
 **実施内容**
-+ 
-+ VPD関数の作成
-+ VPDのポリシーの作成
-+ HRユーザーまたはSYSユーザーでEMMPLOYEES表を確認
-+ SALES_APPユーザーでEMMPLOYEES表を確認
 
-VPD
-client_Identifier
++ APPユーザーの作成と権限付与
++ VPD関数の作成
++ VPDポリシーの作成
++ 各クライアント識別子での確認
+
 
 
 ****************************
@@ -22,165 +22,190 @@ APPユーザーの作成
 
 .. code:: sql
 
-    CREATE USER APP IDENTIFIED BY <password> DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
+    -- APPユーザーを作成
+    CREATE USER APP IDENTIFIED BY <password> 
+    DEFAULT TABLESPACE USERS 
+    TEMPORARY TABLESPACE TEMP;
+
+    -- セッション作成権限を付与
+    GRANT CREATE SESSION TO APP;
+
+    -- HRスキーマ内のすべてのテーブルに対するSELECT権限を付与
+    GRANT SELECT ANY TABLE ON SCHEMA HR TO APP;
 
 
-以下は実行例です。証跡としてパスワードが残らないよう、2つのコマンドに分けて設定しています。
-
-.. code:: sql
-
-    SQL> create user app
-    2     default tablespace users
-    3     temporary tablespace temp;
-
-    -- passwordを設定
-    SQL> password app
-    Changing password for sales_app
-    New password: <パスワードを入力>
-    Retype new password: <パスワードを再入力>
-    Password changed
-
-
-次に、APP ユーザーにセッション作成権限を付与します。
-
-.. code:: sql
-
-    SQL> grant create session to app;
-
-
-| さらに、HRスキーマに対して SELECT 権限を付与します。
-| スキーマ単位で権限付与する方法は23aiの新機能となっており、これにより、APP ユーザーは HR スキーマのテーブルに対してデータを参照できるようになります。
-
-.. code:: sql
-
-    -- 23aiの新機能、スキーマ権限
-    SQL> grant select any table on schema HR to app;
+これにより、APP ユーザーはHRスキーマ内のデータにアクセスできます。
 
 
 ****************************
 VPD関数の作成
 ****************************
 
-jobは以下の19つあります。
+クライアント識別子に基づいて、表示する行を制御するVPD関数を作成します。
+ここでは、例として以下の3つを識別子として作成および制御することにします。
 
-SQL>  select job_id, JOB_TITLE from hr.jobs;
++ Viewer: 一般スタッフやコントリビューター職のみ(_ACCOUNT, _REP, _CLERK)
++ Editor: Viewerが表示可能な行に加え、ミドルマネジメント職を表示(_MGR, _MAN, _PROG)
++ Admin: すべての行を表示(_PRES, _VP, _ASST)
 
-JOB_ID     JOB_TITLE
----------- -----------------------------------
-AD_PRES    President
-AD_VP      Administration Vice President
-AD_ASST    Administration Assistant
-FI_MGR     Finance Manager
-FI_ACCOUNT Accountant
-AC_MGR     Accounting Manager
-AC_ACCOUNT Public Accountant
-SA_MAN     Sales Manager
-SA_REP     Sales Representative
-PU_MAN     Purchasing Manager
-PU_CLERK   Purchasing Clerk
-ST_MAN     Stock Manager
-ST_CLERK   Stock Clerk
-SH_CLERK   Shipping Clerk
-IT_PROG    Programmer
-MK_MAN     Marketing Manager
-MK_REP     Marketing Representative
-HR_REP     Human Resources Representative
-PR_REP     Public Relations Representative
+.. code-block:: sql
+    :caption: VPD関数
 
-
-ここでは、以下の3つに分けてwhere句をそれぞれつけていきたいと思います。
-
-+ Viewer: 一般的なスタッフ職やコントリビューターを表示
-+ Editor: 閲覧専用ユーザーで見られる行に加え、ミドルマネジメント職等を表示
-+ Admin: 全てのJOBタイトルが閲覧可能
-
-CREATE OR REPLACE FUNCTION hr.get_app_predicate( 
-    p_schema IN VARCHAR2,
-    p_table  IN VARCHAR2
-    )
-    RETURN VARCHAR2
-    IS
-        v_predicate VARCHAR2 (400);
-    BEGIN
-        IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN
-            v_predicate := 'JOB_ID LIKE ''SA_%''';
-        ELSIF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'APP' THEN
-            IF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'VIEWER' THEN
-                v_predicate := 'REGEXP_LIKE(JOB_ID, ''_(ACCOUNT|CLERK|REP)$'')';
-            ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'EDITOR' THEN
-                v_predicate := 'NOT REGEXP_LIKE(JOB_ID, ''_(PRES|VP|ASST)$'')';
-            ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'ADMIN' THEN
-                v_predicate := '1=1';
+    CREATE OR REPLACE FUNCTION hr.get_app_predicate( 
+        p_schema IN VARCHAR2,
+        p_table  IN VARCHAR2
+        )
+        RETURN VARCHAR2
+        IS
+            v_predicate VARCHAR2 (400);
+        BEGIN
+            IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN
+                v_predicate := 'JOB_ID LIKE ''SA_%''';
+            ELSIF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'APP' THEN   -- APPユーザーの場合、ユーザー識別子でwhere句を決定する
+                IF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'VIEWER' THEN
+                    v_predicate := 'REGEXP_LIKE(JOB_ID, ''_(ACCOUNT|CLERK|REP)$'')';
+                ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'EDITOR' THEN
+                    v_predicate := 'NOT REGEXP_LIKE(JOB_ID, ''_(PRES|VP|ASST)$'')';
+                ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'ADMIN' THEN
+                    v_predicate := '1=1';
+                ELSE
+                    v_predicate := '1=2'; -- どの識別子にも該当しない場合、何も表示しない
+                END IF;
             ELSE
-                v_predicate := '1=2';
+                v_predicate := '1=1';
             END IF;
-        ELSE
-            v_predicate := '1=1';
-        END IF;
-    RETURN v_predicate;
-END get_app_predicate;
-/
-
-閲覧専用ユーザー(Viewer): 一般的なスタッフ職やコントリビューターを表示
-
-例:
-FI_ACCOUNT (Accountant)
-AC_ACCOUNT (Public Accountant)
-SA_REP (Sales Representative)
-PU_CLERK (Purchasing Clerk)
-ST_CLERK (Stock Clerk)
-SH_CLERK (Shipping Clerk)
-MK_REP (Marketing Representative)
-HR_REP (Human Resources Representative)
-PR_REP (Public Relations Representative)
-一般権限ユーザー(Editor): 閲覧専用ユーザーで見られる行に加え、ミドルマネジメント職等を表示
-
-閲覧専用ユーザーが見られる職種＋以下職種:
-FI_MGR (Finance Manager)
-AC_MGR (Accounting Manager)
-SA_MAN (Sales Manager)
-PU_MAN (Purchasing Manager)
-ST_MAN (Stock Manager)
-IT_PROG (Programmer)
-MK_MAN (Marketing Manager)
-管理者(Admin): 全てのJOBタイトルが閲覧可能
-
-上記全て＋
-AD_PRES (President)
-AD_VP (Administration Vice President)
-AD_ASST (Administration Assistant)
+        RETURN v_predicate;
+    END get_app_predicate;
+    /
 
 
 
 ****************************
 VPDポリシーの作成
 ****************************
-
-それでは先ほど作成したVPD関数を指定してVPDポリシーを作成していきます。
-すでに作成したemployees_vpd_policyをDROPし、再作成する形で適用します。
-
-
-.. code:: sql
-
-ある場合はいったん削除する
-BEGIN
-    DBMS_RLS.DROP_POLICY (
-        object_schema   => 'HR',
-        object_name     => 'EMPLOYEES',
-        policy_name     => 'employees_vpd_policy'
-    ); 
-END;
-/
-
-BEGIN
-    DBMS_RLS.ADD_POLICY (
-        object_schema   => 'HR',
-        object_name     => 'EMPLOYEES',
-        policy_name     => 'employees_vpd_policy',
-        function_schema => 'HR',
-        policy_function => 'get_app_predicate'
-    );
-END;
-/
+作成したVPD関数を指定してVPDポリシーを作成していきます。
+既存のポリシーがあるため、削除したのちに作成した関数を使用して新しいポリシーを作成します。
 
 
+.. code-block:: sql
+    :caption: 既存ポリシーを削除
+
+    BEGIN
+        DBMS_RLS.DROP_POLICY (
+            object_schema   => 'HR',
+            object_name     => 'EMPLOYEES',
+            policy_name     => 'employees_vpd_policy'
+        ); 
+    END;
+    /
+
+.. code-block:: sql
+    :caption: 新規ポリシーを作成
+
+    BEGIN
+        DBMS_RLS.ADD_POLICY (
+            object_schema   => 'HR',
+            object_name     => 'EMPLOYEES',
+            policy_name     => 'employees_vpd_policy',
+            function_schema => 'HR',
+            policy_function => 'get_app_predicate'
+        );
+    END;
+    /
+
+
+****************************
+各クライアント識別子での確認
+****************************
+以下のコマンドはすべてAPPユーザーで実行します。
+
+.. code-block:: sql
+    
+    -- ユーザーがAPPであることを確認
+    SQL> set pages 200
+    SQL> show user
+    USER is "APP"
+
+    -- クライアント識別子を設定していない場合は何も結果が返されない
+    SQL> SELECT employee_id, first_name, job_id FROM hr.employees;
+
+    no rows selected
+
+(1) Viewerの場合
+================
+
+クライアント識別子「VIEWER」を設定し、APP ユーザーでクエリを実行します。
+
+
+.. code-block:: sql
+
+    -- クライアント識別子の設定
+    SQL> EXEC DBMS_SESSION.SET_IDENTIFIER('VIEWER');
+
+    -- データの確認
+    SQL> SELECT employee_id, first_name, job_id FROM hr.employees;
+
+    EMPLOYEE_ID FIRST_NAME           JOB_ID
+    ----------- -------------------- ----------
+            109 Daniel               FI_ACCOUNT
+            110 John                 FI_ACCOUNT
+            111 Ismael               FI_ACCOUNT
+            112 Jose Manuel          FI_ACCOUNT
+            ...
+            206 William              AC_ACCOUNT
+
+    84 rows selected.
+
+
+(2) Editorの場合
+================
+
+クライアント識別子「EDITOR」を設定し、APP ユーザーでクエリを実行します。
+
+
+.. code-block:: sql
+
+    -- クライアント識別子の設定
+    SQL> EXEC DBMS_SESSION.SET_IDENTIFIER('EDITOR');
+
+    -- データの確認
+    SQL> SELECT employee_id, first_name, job_id FROM hr.employees;
+
+    EMPLOYEE_ID FIRST_NAME           JOB_ID
+    ----------- -------------------- ----------
+            103 Alexander            IT_PROG
+            104 Bruce                IT_PROG
+            105 David                IT_PROG
+            106 Valli                IT_PROG
+            107 Diana                IT_PROG
+            ...
+        206 William              AC_ACCOUNT
+
+    103 rows selected.
+
+
+(3) Adminの場合
+================
+
+クライアント識別子「Admin」を設定し、APP ユーザーでクエリを実行します。
+
+
+.. code-block:: sql
+
+    -- クライアント識別子の設定
+    SQL> EXEC DBMS_SESSION.SET_IDENTIFIER('ADMIN');
+
+    -- データの確認
+    SQL> SELECT employee_id, first_name, job_id FROM hr.employees;
+
+    EMPLOYEE_ID FIRST_NAME           JOB_ID
+    ----------- -------------------- ----------
+            100 Steven               AD_PRES
+            101 Neena                AD_VP
+            102 Lex                  AD_VP
+            103 Alexander            IT_PROG
+            104 Bruce                IT_PROG
+                ...
+            206 William              AC_ACCOUNT
+
+    107 rows selected.

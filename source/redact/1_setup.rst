@@ -20,6 +20,7 @@ HRユーザーとリダクションの結果を比較するために、マスキ
 .. code:: sql
 
     CREATE USER SALES_APP IDENTIFIED BY <password> DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
+    CREATE USER SALES_APP IDENTIFIED BY Welcome1#Welcom1# DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
 
 
 以下は実行例です。証跡としてパスワードが残らないよう、2つのコマンドに分けて設定しています。

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>3. クライアント識別子を用いた制御 &#8212; dbsec-demo  ドキュメント</title>
+    <title>2. SQLをキャプチャし、学習する &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -51,11 +51,11 @@
     <script src="../_static/translations.js?v=4755f45a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'vpd/3_clientIdentifier';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sqlfirewall/2_learningTraffic';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. SQL Firewallの準備" href="../sqlfirewall/1_setup.html" />
-    <link rel="prev" title="2. VPDで列制御を行う" href="2_columnControl.html" />
+    <link rel="next" title="3. SQLの許可リストを作成する" href="3_allowTraffic.html" />
+    <link rel="prev" title="1. SQL Firewallの準備" href="1_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -167,16 +167,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../redact/3_note.html">3. Data Redactionの注意点</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Virtual Private Database:</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="1_rowControl.html">1. VPDで行制御を行う</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_columnControl.html">2. VPDで列制御を行う</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. クライアント識別子を用いた制御</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. SQL Firewallの準備</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
 <ul class="nav bd-sidenav">
@@ -246,7 +246,7 @@
       
       
       
-      <li><a href="../_sources/vpd/3_clientIdentifier.rst" target="_blank"
+      <li><a href="../_sources/sqlfirewall/2_learningTraffic.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -322,7 +322,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>3. クライアント識別子を用いた制御</h1>
+    <h1>2. SQLをキャプチャし、学習する</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -332,9 +332,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">APPユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vpd">VPD関数の作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">SQLトラフィックをキャプチャする</a></li>
 </ul>
             </nav>
         </div>
@@ -346,165 +344,21 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="id1">
-<h1>3. クライアント識別子を用いた制御<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p><strong>実施内容</strong>
-+
-+ VPD関数の作成
-+ VPDのポリシーの作成
-+ HRユーザーまたはSYSユーザーでEMMPLOYEES表を確認
-+ SALES_APPユーザーでEMMPLOYEES表を確認</p>
-<p>VPD
-client_Identifier</p>
-<section id="app">
-<h2>APPユーザーの作成<a class="headerlink" href="#app" title="Link to this heading">#</a></h2>
-<p>ここでは新しくAPPユーザーを作成します。作成の流れはSALES_APPユーザーと同じです。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">APP</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="o">&lt;</span><span class="n">password</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">TEMPORARY</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">TEMP</span><span class="p">;</span>
-</pre></div>
-</div>
-<p>以下は実行例です。証跡としてパスワードが残らないよう、2つのコマンドに分けて設定しています。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">app</span>
-<span class="mi">2</span><span class="w">     </span><span class="k">default</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">users</span>
-<span class="mi">3</span><span class="w">     </span><span class="k">temporary</span><span class="w"> </span><span class="n">tablespace</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
-
-<span class="c1">-- passwordを設定</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="n">app</span>
-<span class="n">Changing</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sales_app</span>
-<span class="k">New</span><span class="w"> </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="err">パスワードを入力</span><span class="o">&gt;</span>
-<span class="n">Retype</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="err">パスワードを再入力</span><span class="o">&gt;</span>
-<span class="n">Password</span><span class="w"> </span><span class="n">changed</span>
-</pre></div>
-</div>
-<p>次に、APP ユーザーにセッション作成権限を付与します。</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">grant</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">app</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">さらに、HRスキーマに対して SELECT 権限を付与します。</div>
-<div class="line">スキーマ単位で権限付与する方法は23aiの新機能となっており、これにより、APP ユーザーは HR スキーマのテーブルに対してデータを参照できるようになります。</div>
-</div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- 23aiの新機能、スキーマ権限</span>
-<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">grant</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="k">any</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">schema</span><span class="w"> </span><span class="n">HR</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">app</span><span class="p">;</span>
-</pre></div>
-</div>
-</section>
-<section id="vpd">
-<h2>VPD関数の作成<a class="headerlink" href="#vpd" title="Link to this heading">#</a></h2>
-<p>jobは以下の19つあります。</p>
-<p>SQL&gt;  select job_id, JOB_TITLE from hr.jobs;</p>
-<p>JOB_ID     JOB_TITLE
----------- -----------------------------------
-AD_PRES    President
-AD_VP      Administration Vice President
-AD_ASST    Administration Assistant
-FI_MGR     Finance Manager
-FI_ACCOUNT Accountant
-AC_MGR     Accounting Manager
-AC_ACCOUNT Public Accountant
-SA_MAN     Sales Manager
-SA_REP     Sales Representative
-PU_MAN     Purchasing Manager
-PU_CLERK   Purchasing Clerk
-ST_MAN     Stock Manager
-ST_CLERK   Stock Clerk
-SH_CLERK   Shipping Clerk
-IT_PROG    Programmer
-MK_MAN     Marketing Manager
-MK_REP     Marketing Representative
-HR_REP     Human Resources Representative
-PR_REP     Public Relations Representative</p>
-<p>ここでは、以下の3つに分けてwhere句をそれぞれつけていきたいと思います。</p>
+  <section id="sql">
+<h1>2. SQLをキャプチャし、学習する<a class="headerlink" href="#sql" title="Link to this heading">#</a></h1>
+<p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>Viewer: 一般的なスタッフ職やコントリビューターを表示</p></li>
-<li><p>Editor: 閲覧専用ユーザーで見られる行に加え、ミドルマネジメント職等を表示</p></li>
-<li><p>Admin: 全てのJOBタイトルが閲覧可能</p></li>
+<li><p>SQLをキャプチャ</p></li>
+<li><p>キャプチャしたSQLを確認する</p></li>
 </ul>
-<dl>
-<dt>CREATE OR REPLACE FUNCTION hr.get_app_predicate(</dt><dd><p>p_schema IN VARCHAR2,
-p_table  IN VARCHAR2
-)
-RETURN VARCHAR2
-IS</p>
-<blockquote>
-<div><p>v_predicate VARCHAR2 (400);</p>
-</div></blockquote>
-<dl>
-<dt>BEGIN</dt><dd><dl>
-<dt>IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN</dt><dd><p>v_predicate := 'JOB_ID LIKE ''SA_%''';</p>
-</dd>
-<dt>ELSIF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'APP' THEN</dt><dd><dl class="simple">
-<dt>IF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'VIEWER' THEN</dt><dd><p>v_predicate := 'REGEXP_LIKE(JOB_ID, ''_(ACCOUNT|CLERK|REP)$'')';</p>
-</dd>
-<dt>ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'EDITOR' THEN</dt><dd><p>v_predicate := 'NOT REGEXP_LIKE(JOB_ID, ''_(PRES|VP|ASST)$'')';</p>
-</dd>
-<dt>ELSIF SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') = 'ADMIN' THEN</dt><dd><p>v_predicate := '1=1';</p>
-</dd>
-<dt>ELSE</dt><dd><p>v_predicate := '1=2';</p>
-</dd>
-</dl>
-<p>END IF;</p>
-</dd>
-<dt>ELSE</dt><dd><p>v_predicate := '1=1';</p>
-</dd>
-</dl>
-<p>END IF;</p>
-</dd>
-</dl>
-<p>RETURN v_predicate;</p>
-</dd>
-</dl>
-<p>END get_app_predicate;
-/</p>
-<p>閲覧専用ユーザー(Viewer): 一般的なスタッフ職やコントリビューターを表示</p>
-<p>例:
-FI_ACCOUNT (Accountant)
-AC_ACCOUNT (Public Accountant)
-SA_REP (Sales Representative)
-PU_CLERK (Purchasing Clerk)
-ST_CLERK (Stock Clerk)
-SH_CLERK (Shipping Clerk)
-MK_REP (Marketing Representative)
-HR_REP (Human Resources Representative)
-PR_REP (Public Relations Representative)
-一般権限ユーザー(Editor): 閲覧専用ユーザーで見られる行に加え、ミドルマネジメント職等を表示</p>
-<p>閲覧専用ユーザーが見られる職種＋以下職種:
-FI_MGR (Finance Manager)
-AC_MGR (Accounting Manager)
-SA_MAN (Sales Manager)
-PU_MAN (Purchasing Manager)
-ST_MAN (Stock Manager)
-IT_PROG (Programmer)
-MK_MAN (Marketing Manager)
-管理者(Admin): 全てのJOBタイトルが閲覧可能</p>
-<p>上記全て＋
-AD_PRES (President)
-AD_VP (Administration Vice President)
-AD_ASST (Administration Assistant)</p>
-</section>
-<section id="id2">
-<h2>VPDポリシーの作成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>それでは先ほど作成したVPD関数を指定してVPDポリシーを作成していきます。
-すでに作成したemployees_vpd_policyをDROPし、再作成する形で適用します。</p>
-<p>ある場合はいったん削除する
-BEGIN</p>
-<blockquote>
-<div><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY (</dt><dd><p>object_schema   =&gt; 'HR',
-object_name     =&gt; 'EMPLOYEES',
-policy_name     =&gt; 'employees_vpd_policy'</p>
-</dd>
-</dl>
-<p>);</p>
-</div></blockquote>
-<p>END;
-/</p>
+<section id="id1">
+<h2>SQLトラフィックをキャプチャする<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>SALES_APPユーザーからくるSQLのキャプチャを開始します。</p>
 <dl>
 <dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.ADD_POLICY (</dt><dd><p>object_schema   =&gt; 'HR',
-object_name     =&gt; 'EMPLOYEES',
-policy_name     =&gt; 'employees_vpd_policy',
-function_schema =&gt; 'HR',
-policy_function =&gt; 'get_app_predicate'</p>
+<dt>DBMS_SQL_FIREWALL.CREATE_CAPTURE (</dt><dd><p>username         =&gt; 'SALES_APP',
+top_level_only   =&gt; TRUE,
+start_capture    =&gt; TRUE</p>
 </dd>
 </dl>
 <p>);</p>
@@ -512,6 +366,48 @@ policy_function =&gt; 'get_app_predicate'</p>
 </dl>
 <p>END;
 /</p>
+<p>PL/SQL procedure successfully completed.</p>
+<p>SALES_APPユーザーに切り替え、適当にSQLを実行します。</p>
+<p>$ sqlplus <a class="reference external" href="mailto:sales_app/Welcome1#Welcome1#&#37;&#52;&#48;localhost">sales_app/Welcome1#Welcome1#<span>&#64;</span>localhost</a>:1521/freepdb1</p>
+<p>Select * From hr.job_history;</p>
+<p>select job_id from hr.job_history;</p>
+<p>desc hr.job_history;</p>
+<p>Select first_name From hr.employees where employee_id IN(102,200);</p>
+<p>select first_name, email, job_id from hr.employees where job_id like 'SA_%';</p>
+<p>select jfiros from aaiorwae;</p>
+<p>さいごのSQLはわざと失敗してみることにします。
+ERROR at line 1:
+ORA-00942: table or view &quot;SALES_APP&quot;.&quot;AAIORWAE&quot; does not exist</p>
+<p>SYSユーザーに切り替え、キャプチャを停止します。</p>
+<p>EXEC DBMS_SQL_FIREWALL.STOP_CAPTURE('SALES_APP');</p>
+<p>キャプチャしたSQLを確認してみます。</p>
+<p>SELECT USERNAME, COMMAND_TYPE, SQL_TEXT FROM DBA_SQL_FIREWALL_CAPTURE_LOGS;</p>
+<blockquote>
+<div><p>SQL&gt; set markup csv on
+SQL&gt; SELECT USERNAME, COMMAND_TYPE, SQL_TEXT FROM DBA_SQL_FIREWALL_CAPTURE_LOGS;
+&quot;USERNAME&quot;,&quot;COMMAND_TYPE&quot;,&quot;SQL_TEXT&quot;
+&quot;SALES_APP&quot;,&quot;DESCRIBE&quot;,&quot;DESCRIBE HR.JOB_HISTORY&quot;
+&quot;SALES_APP&quot;,&quot;SELECT&quot;,&quot;SELECT FIRST_NAME,EMAIL,JOB_ID FROM HR.EMPLOYEES WHERE JOB_ID LIKE :&quot;&quot;SYS_B_0&quot;&quot;&quot;
+&quot;SALES_APP&quot;,&quot;SELECT&quot;,&quot;SELECT * FROM HR.JOB_HISTORY&quot;
+&quot;SALES_APP&quot;,&quot;SELECT&quot;,&quot;SELECT FIRST_NAME FROM HR.EMPLOYEES WHERE EMPLOYEE_ID IN (:&quot;&quot;SYS_B_0&quot;&quot;,:&quot;&quot;SYS_B_1&quot;&quot;)&quot;
+&quot;SALES_APP&quot;,&quot;SELECT&quot;,&quot;SELECT DECODE (USER,:&quot;&quot;SYS_B_0&quot;&quot;,XS_SYS_CONTEXT (:&quot;&quot;SYS_B_1&quot;&quot;,:&quot;&quot;SYS_B_2&quot;&quot;),USER) FROM SYS.DUAL&quot;
+&quot;SALES_APP&quot;,&quot;SELECT&quot;,&quot;SELECT DECODE (USER,:&quot;&quot;SYS_B_0&quot;&quot;,XS_SYS_CONTEXT (:&quot;&quot;SYS_B_1&quot;&quot;,:&quot;&quot;SYS_B_2&quot;&quot;),USER) FROM SYS.DUAL&quot;
+&quot;SALES_APP&quot;,&quot;SELECT&quot;,&quot;SELECT JOB_ID FROM HR.JOB_HISTORY&quot;</p>
+<p>7 rows selected.</p>
+</div></blockquote>
+<p>また、DBA_SQL_FIREWALL_CAPTURE_LOGSにはSQL_SIGNATURE列があり、シグネチャが作成されていることが分かります。</p>
+<blockquote>
+<div><p>SQL&gt; SELECT SQL_SIGNATURE,  SQL_TEXT FROM DBA_SQL_FIREWALL_CAPTURE_LOGS;
+&quot;SQL_SIGNATURE&quot;,&quot;SQL_TEXT&quot;
+&quot;CE7BB58501B74B27A8E1839074BA3866D07C76F126DA7BC6C57B77DF6C55D4AC&quot;,&quot;DESCRIBE HR.JOB_HISTORY&quot;
+&quot;68D80167ADB6D37A341214538593A79D192612A3261CD26E51201721028FFC47&quot;,&quot;SELECT FIRST_NAME,EMAIL,JOB_ID FROM HR.EMPLOYEES WHERE JOB_ID LIKE :&quot;&quot;SYS_B_0&quot;&quot;&quot;
+&quot;D2955375D61F67FC60E03D3DD01FBD14A4FA0BEABC10610F5E3624575D07B119&quot;,&quot;SELECT * FROM HR.JOB_HISTORY&quot;
+&quot;CE83846971309C2BD065492F7D870A0C980AB72022723B732E262DF160E1F14A&quot;,&quot;SELECT FIRST_NAME FROM HR.EMPLOYEES WHERE EMPLOYEE_ID IN (:&quot;&quot;SYS_B_0&quot;&quot;,:&quot;&quot;SYS_B_1&quot;&quot;)&quot;
+&quot;8CD0E5550A8AF32553BDED7C77B8CC1FD103C51F438E11F1BC5F9CA315102794&quot;,&quot;SELECT DECODE (USER,:&quot;&quot;SYS_B_0&quot;&quot;,XS_SYS_CONTEXT (:&quot;&quot;SYS_B_1&quot;&quot;,:&quot;&quot;SYS_B_2&quot;&quot;),USER) FROM SYS.DUAL&quot;
+&quot;8CD0E5550A8AF32553BDED7C77B8CC1FD103C51F438E11F1BC5F9CA315102794&quot;,&quot;SELECT DECODE (USER,:&quot;&quot;SYS_B_0&quot;&quot;,XS_SYS_CONTEXT (:&quot;&quot;SYS_B_1&quot;&quot;,:&quot;&quot;SYS_B_2&quot;&quot;),USER) FROM SYS.DUAL&quot;
+&quot;C71BC97035DA56172F8F38C346D00906948E90E717ED309ADFD6B316BDD2101A&quot;,&quot;SELECT JOB_ID FROM HR.JOB_HISTORY&quot;</p>
+<p>7 rows selected.</p>
+</div></blockquote>
 </section>
 </section>
 
@@ -527,20 +423,20 @@ policy_function =&gt; 'get_app_predicate'</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="2_columnControl.html"
+       href="1_setup.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">2. VPDで列制御を行う</p>
+        <p class="prev-next-title">1. SQL Firewallの準備</p>
       </div>
     </a>
     <a class="right-next"
-       href="../sqlfirewall/1_setup.html"
+       href="3_allowTraffic.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">1. SQL Firewallの準備</p>
+        <p class="prev-next-title">3. SQLの許可リストを作成する</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -561,9 +457,7 @@ policy_function =&gt; 'get_app_predicate'</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">APPユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vpd">VPD関数の作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">SQLトラフィックをキャプチャする</a></li>
 </ul>
   </nav></div>
 
