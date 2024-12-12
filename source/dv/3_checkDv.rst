@@ -41,10 +41,11 @@ Database Vaultが有効化された環境では、SYSユーザーはユーザー
     Help: https://docs.oracle.com/error-help/db/ora-01031/
 
 
-**********************************************
+******************************************************
 HRユーザーおよびSALES_APPユーザーのアクセス確認
-**********************************************
+******************************************************
 レルム認可を行ったHRユーザーまたはSALES_APPユーザーからは、SYSユーザーではアクセスできなかったREGIONS表にアクセスできることを確認します。
+
 .. code-block:: sql
     :caption: HRユーザーまたはSALES_APPユーザー
 
@@ -68,6 +69,10 @@ APPユーザーにはIPアドレスによる制限付きで認可が付与され
 
 許可されたIPアドレスからのアクセスの場合
 ==============================================
+
+.. code-block:: sql
+    :caption: APPユーザー
+
     SQL> set markup csv on
     SQL> select SYS_CONTEXT('USERENV','IP_ADDRESS');
     "SYS_CONTEXT('USERENV','IP_ADDRESS')"
@@ -84,6 +89,9 @@ APPユーザーにはIPアドレスによる制限付きで認可が付与され
 
 許可されていないIPアドレスからのアクセスの場合
 ==============================================
+
+.. code-block:: sql
+    :caption: APPユーザー
 
     SQL> set markup csv on
     SQL> select SYS_CONTEXT('USERENV','IP_ADDRESS');

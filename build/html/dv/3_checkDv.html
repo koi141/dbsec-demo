@@ -336,8 +336,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sys">SYSユーザー</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hrsales-app">HRユーザーおよびSALES_APPユーザー</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sys">SYSユーザーのアクセス確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hrsales-app">HRユーザーおよびSALES_APPユーザーのアクセス確認</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">APPユーザー</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ip">許可されたIPアドレスからのアクセスの場合</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">許可されていないIPアドレスからのアクセスの場合</a></li>
@@ -364,85 +364,88 @@
 <li><p>APPユーザーのIPアドレス制限確認</p></li>
 </ul>
 <section id="sys">
-<h2>SYSユーザー<a class="headerlink" href="#sys" title="Link to this heading">#</a></h2>
-<p>ユーザーが作成できないことを確認します。</p>
-<p>SQL&gt; create user test;
-create user test
-*
-ERROR at line 1:
-ORA-01031: insufficient privileges
-Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-01031/">https://docs.oracle.com/error-help/db/ora-01031/</a></p>
-<dl class="simple">
-<dt>note</dt><dd><p>ユーザーはユーザー管理者である、C##ACCTMGRユーザーが作成することができます。</p>
-</dd>
-</dl>
+<h2>SYSユーザーのアクセス確認<a class="headerlink" href="#sys" title="Link to this heading">#</a></h2>
+<p>Database Vaultが有効化された環境では、SYSユーザーはユーザーを作成できません。
+この操作は、C##DVACCTMGR(アカウント管理者)ユーザーに委任されます。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+<span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">test</span>
+<span class="o">*</span>
+<span class="n">ERROR</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="n">ORA</span><span class="o">-</span><span class="mi">01031</span><span class="p">:</span><span class="w"> </span><span class="n">insufficient</span><span class="w"> </span><span class="k">privileges</span>
+<span class="n">Help</span><span class="p">:</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="p">.</span><span class="n">oracle</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">error</span><span class="o">-</span><span class="n">help</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">ora</span><span class="o">-</span><span class="mi">01031</span><span class="o">/</span>
+</pre></div>
+</div>
 <p>レルム内のオブジェクトにアクセスできないことを確認します。</p>
-<blockquote>
-<div><p>SQL&gt; select * from hr.regions;
-select * from hr.regions</p>
-<blockquote>
-<div><ul class="simple">
-<li></li>
-</ul>
-</div></blockquote>
-<p>ERROR at line 1:
-ORA-01031: insufficient privileges
-Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-01031/">https://docs.oracle.com/error-help/db/ora-01031/</a></p>
-</div></blockquote>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">regions</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">regions</span>
+<span class="w">                </span><span class="o">*</span>
+<span class="n">ERROR</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="n">ORA</span><span class="o">-</span><span class="mi">01031</span><span class="p">:</span><span class="w"> </span><span class="n">insufficient</span><span class="w"> </span><span class="k">privileges</span>
+<span class="n">Help</span><span class="p">:</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="p">.</span><span class="n">oracle</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">error</span><span class="o">-</span><span class="n">help</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">ora</span><span class="o">-</span><span class="mi">01031</span><span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="hrsales-app">
-<h2>HRユーザーおよびSALES_APPユーザー<a class="headerlink" href="#hrsales-app" title="Link to this heading">#</a></h2>
-<p>SYSユーザーではアクセスできなかったREGIONS表にアクセスできることを確認します。</p>
-<p>SQL&gt; select * from hr.regions;</p>
-<blockquote>
-<div><p>REGION_ID REGION_NAME</p>
-</div></blockquote>
-<dl class="simple">
-<dt>---------- -------------------------</dt><dd><p>10 Europe
-20 Americas
-30 Asia
-40 Oceania
-50 Africa</p>
-</dd>
-</dl>
+<h2>HRユーザーおよびSALES_APPユーザーのアクセス確認<a class="headerlink" href="#hrsales-app" title="Link to this heading">#</a></h2>
+<p>レルム認可を行ったHRユーザーまたはSALES_APPユーザーからは、SYSユーザーではアクセスできなかったREGIONS表にアクセスできることを確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">HRユーザーまたはSALES_APPユーザー</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">regions</span><span class="p">;</span>
+
+<span class="n">REGION_ID</span><span class="w"> </span><span class="n">REGION_NAME</span>
+<span class="c1">---------- -------------------------</span>
+<span class="w">        </span><span class="mi">10</span><span class="w"> </span><span class="n">Europe</span>
+<span class="w">        </span><span class="mi">20</span><span class="w"> </span><span class="n">Americas</span>
+<span class="w">        </span><span class="mi">30</span><span class="w"> </span><span class="n">Asia</span>
+<span class="w">        </span><span class="mi">40</span><span class="w"> </span><span class="n">Oceania</span>
+<span class="w">        </span><span class="mi">50</span><span class="w"> </span><span class="n">Africa</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="app">
 <h2>APPユーザー<a class="headerlink" href="#app" title="Link to this heading">#</a></h2>
-<p>許可されたIPアドレスのみでアクセスできることを確認します。</p>
+<p>APPユーザーにはIPアドレスによる制限付きで認可が付与されています。
+この設定に基づき、許可されたIPアドレスからのみアクセス可能であることを確認します。</p>
 <section id="ip">
 <h3>許可されたIPアドレスからのアクセスの場合<a class="headerlink" href="#ip" title="Link to this heading">#</a></h3>
-<blockquote>
-<div><p>SQL&gt; set markup csv on
-SQL&gt; select SYS_CONTEXT('USERENV','IP_ADDRESS');
-&quot;SYS_CONTEXT('USERENV','IP_ADDRESS')&quot;
-&quot;192.168.0.10&quot;</p>
-<p>SQL&gt; select * from hr.regions;
-&quot;REGION_ID&quot;,&quot;REGION_NAME&quot;
-10,&quot;Europe&quot;
-20,&quot;Americas&quot;
-30,&quot;Asia&quot;
-40,&quot;Oceania&quot;
-50,&quot;Africa&quot;</p>
-</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">APPユーザー</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">SYS_CONTEXT</span><span class="p">(</span><span class="s1">&#39;USERENV&#39;</span><span class="p">,</span><span class="s1">&#39;IP_ADDRESS&#39;</span><span class="p">);</span>
+<span class="ss">&quot;SYS_CONTEXT(&#39;USERENV&#39;,&#39;IP_ADDRESS&#39;)&quot;</span>
+<span class="ss">&quot;xxx.xxx.xxx.xxx&quot;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">regions</span><span class="p">;</span>
+<span class="ss">&quot;REGION_ID&quot;</span><span class="p">,</span><span class="ss">&quot;REGION_NAME&quot;</span>
+<span class="mi">10</span><span class="p">,</span><span class="ss">&quot;Europe&quot;</span>
+<span class="mi">20</span><span class="p">,</span><span class="ss">&quot;Americas&quot;</span>
+<span class="mi">30</span><span class="p">,</span><span class="ss">&quot;Asia&quot;</span>
+<span class="mi">40</span><span class="p">,</span><span class="ss">&quot;Oceania&quot;</span>
+<span class="mi">50</span><span class="p">,</span><span class="ss">&quot;Africa&quot;</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id1">
 <h3>許可されていないIPアドレスからのアクセスの場合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
-<blockquote>
-<div><p>SQL&gt; set markup csv on
-SQL&gt; select SYS_CONTEXT('USERENV','IP_ADDRESS');
-&quot;SYS_CONTEXT('USERENV','IP_ADDRESS')&quot;
-&quot;192.168.130.169&quot;</p>
-<p>SQL&gt; select * from hr.regions;
-select * from hr.regions</p>
-<blockquote>
-<div><ul class="simple">
-<li></li>
-</ul>
-</div></blockquote>
-<p>ERROR at line 1:
-ORA-47306: 20000: DV_Error: Can only be accessed from a specific IP address
-Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-47306/">https://docs.oracle.com/error-help/db/ora-47306/</a></p>
-</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">APPユーザー</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">SYS_CONTEXT</span><span class="p">(</span><span class="s1">&#39;USERENV&#39;</span><span class="p">,</span><span class="s1">&#39;IP_ADDRESS&#39;</span><span class="p">);</span>
+<span class="ss">&quot;SYS_CONTEXT(&#39;USERENV&#39;,&#39;IP_ADDRESS&#39;)&quot;</span>
+<span class="ss">&quot;yyy.yyy.yyy.yyy&quot;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">regions</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">regions</span>
+<span class="w">                </span><span class="o">*</span>
+<span class="n">ERROR</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="n">ORA</span><span class="o">-</span><span class="mi">47306</span><span class="p">:</span><span class="w"> </span><span class="mi">20000</span><span class="p">:</span><span class="w"> </span><span class="n">DV_Error</span><span class="p">:</span><span class="w"> </span><span class="n">Can</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">accessed</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">specific</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="n">address</span>
+<span class="n">Help</span><span class="p">:</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="p">.</span><span class="n">oracle</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">error</span><span class="o">-</span><span class="n">help</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">ora</span><span class="o">-</span><span class="mi">47306</span><span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>エラーメッセージに、レルム認可時に設定したカスタムエラーメッセージが表示されていることも分かります。</p>
 </section>
 </section>
 </section>
@@ -493,8 +496,8 @@ Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sys">SYSユーザー</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hrsales-app">HRユーザーおよびSALES_APPユーザー</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sys">SYSユーザーのアクセス確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hrsales-app">HRユーザーおよびSALES_APPユーザーのアクセス確認</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">APPユーザー</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ip">許可されたIPアドレスからのアクセスの場合</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">許可されていないIPアドレスからのアクセスの場合</a></li>

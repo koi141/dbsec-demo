@@ -13,23 +13,25 @@
 
 
 ********************************
-SYSユーザー
+SYSユーザーのアクセス確認
 ********************************
 
-ユーザーが作成できないことを確認します。
+Database Vaultが有効化された環境では、SYSユーザーはユーザーを作成できません。
+この操作は、C##DVACCTMGR(アカウント管理者)ユーザーに委任されます。
 
-SQL> create user test;
-create user test
-*
-ERROR at line 1:
-ORA-01031: insufficient privileges
-Help: https://docs.oracle.com/error-help/db/ora-01031/
+.. code-block:: sql
 
+    SQL> create user test;
+    create user test
+    *
+    ERROR at line 1:
+    ORA-01031: insufficient privileges
+    Help: https://docs.oracle.com/error-help/db/ora-01031/
 
-note
-    ユーザーはユーザー管理者である、C##ACCTMGRユーザーが作成することができます。
 
 レルム内のオブジェクトにアクセスできないことを確認します。
+
+.. code-block:: sql
 
     SQL> select * from hr.regions;
     select * from hr.regions
@@ -39,34 +41,42 @@ note
     Help: https://docs.oracle.com/error-help/db/ora-01031/
 
 
-********************************
-HRユーザーおよびSALES_APPユーザー
-********************************
-SYSユーザーではアクセスできなかったREGIONS表にアクセスできることを確認します。
+******************************************************
+HRユーザーおよびSALES_APPユーザーのアクセス確認
+******************************************************
+レルム認可を行ったHRユーザーまたはSALES_APPユーザーからは、SYSユーザーではアクセスできなかったREGIONS表にアクセスできることを確認します。
 
-SQL> select * from hr.regions;
+.. code-block:: sql
+    :caption: HRユーザーまたはSALES_APPユーザー
 
- REGION_ID REGION_NAME
----------- -------------------------
-        10 Europe
-        20 Americas
-        30 Asia
-        40 Oceania
-        50 Africa
+    SQL> select * from hr.regions;
+
+    REGION_ID REGION_NAME
+    ---------- -------------------------
+            10 Europe
+            20 Americas
+            30 Asia
+            40 Oceania
+            50 Africa
 
 
 ********************************
 APPユーザー
 ********************************
 
-許可されたIPアドレスのみでアクセスできることを確認します。
+APPユーザーにはIPアドレスによる制限付きで認可が付与されています。
+この設定に基づき、許可されたIPアドレスからのみアクセス可能であることを確認します。
 
 許可されたIPアドレスからのアクセスの場合
 ==============================================
+
+.. code-block:: sql
+    :caption: APPユーザー
+
     SQL> set markup csv on
     SQL> select SYS_CONTEXT('USERENV','IP_ADDRESS');
     "SYS_CONTEXT('USERENV','IP_ADDRESS')"
-    "192.168.0.10"
+    "xxx.xxx.xxx.xxx"
 
     SQL> select * from hr.regions;
     "REGION_ID","REGION_NAME"
@@ -80,10 +90,13 @@ APPユーザー
 許可されていないIPアドレスからのアクセスの場合
 ==============================================
 
+.. code-block:: sql
+    :caption: APPユーザー
+
     SQL> set markup csv on
     SQL> select SYS_CONTEXT('USERENV','IP_ADDRESS');
     "SYS_CONTEXT('USERENV','IP_ADDRESS')"
-    "192.168.130.169"
+    "yyy.yyy.yyy.yyy"
 
     SQL> select * from hr.regions;
     select * from hr.regions
@@ -91,3 +104,6 @@ APPユーザー
     ERROR at line 1:
     ORA-47306: 20000: DV_Error: Can only be accessed from a specific IP address
     Help: https://docs.oracle.com/error-help/db/ora-47306/
+
+エラーメッセージに、レルム認可時に設定したカスタムエラーメッセージが表示されていることも分かります。
+
