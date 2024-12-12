@@ -137,3 +137,4 @@ SQL許可リストを確認。IDを取得する。
 
 .. ここまでの一連の流れはすべてOCIサービスであるData Safeから行うことができます。手順5からはdata safeを用いてSQL Firewallを設定していきます。
 
+以上でSQL Firewallのデモは終了です。
