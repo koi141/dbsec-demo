@@ -59,8 +59,6 @@ dbsec-demo
    /sqlfirewall/2_learningTraffic
    /sqlfirewall/3_allowTraffic
    /sqlfirewall/4_checkFirewall
-   /sqlfirewall/5_setup-datasafe
-   /sqlfirewall/6_policycheck-datasafe
 
 .. toctree::
    :maxdepth: 2
