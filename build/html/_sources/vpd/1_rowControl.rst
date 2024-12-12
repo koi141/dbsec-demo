@@ -2,58 +2,45 @@
 1. VPDで行制御を行う
 ###########################
 
+この手順では、Virtual Private Database (VPD)を使用して、Oracle Databaseの行レベルアクセス制御を実装します。
+
 **実施内容**
 
-+ VPD関数の作成
-+ VPDのポリシーの作成
-+ HRユーザーまたはSYSユーザーでEMMPLOYEES表を確認
-+ SALES_APPユーザーでEMMPLOYEES表を確認
++ VPD関数を作成する
++ VPDポリシーを作成する
++ HRユーザーでEMMPLOYEES表を確認する
++ SALES_APPユーザーでEMMPLOYEES表を確認し、VPDが機能していることを確かめる
 
 
 ****************************
 VPD関数の作成
 ****************************
 
-HRスキーマに、SALES_APPユーザーであればSALESの従業員のみを表示させるようにします。
+最初に、アクセス制御の条件を定義するVPD関数を作成します。この関数は以下の動作を行います。
 
-VPDポリシーの対象列としては、外部キーであるJOB_IDがありますのでこれを使用することにします。
++ SALES_APPユーザーの場合: JOB_IDがSA_で始まる行のみを表示
++ その他のユーザーの場合: すべての行を表示
 
-.. code:: sql
-
-    SQL> desc hr.employees;
-    Name                                      Null?    Type
-    ----------------------------------------- -------- -----------------------
-    EMPLOYEE_ID                               NOT NULL NUMBER(6)
-    FIRST_NAME                                         VARCHAR2(20)
-    LAST_NAME                                 NOT NULL VARCHAR2(25)
-    EMAIL                                     NOT NULL VARCHAR2(25)
-    PHONE_NUMBER                                       VARCHAR2(20)
-    HIRE_DATE                                 NOT NULL DATE
-    JOB_ID                                    NOT NULL VARCHAR2(10)
-    ...
-
-
-VPD関数を作成します。
-SALES_APPユーザーであればJOB_IDがSA_から始まる行のみを取り出すようにwhere句の述語を設定します。
+VPDポリシーの対象列としては、外部キーであるJOB_IDを使用します。
 
 .. code:: sql
 
-CREATE OR REPLACE FUNCTION hr.get_sales_predicate( 
-    p_schema IN VARCHAR2,
-    p_table  IN VARCHAR2
-    )
-    RETURN VARCHAR2
-    IS
-        v_predicate VARCHAR2 (400);
-    BEGIN
-        IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN
-            v_predicate := 'JOB_ID LIKE ''SA_%''';
-        ELSE
-            v_predicate := '1=1';
-        END IF;
-        RETURN v_predicate;
-    END get_sales_predicate;
-/
+    CREATE OR REPLACE FUNCTION hr.get_sales_predicate( 
+        p_schema IN VARCHAR2,
+        p_table  IN VARCHAR2
+        )
+        RETURN VARCHAR2
+        IS
+            v_predicate VARCHAR2 (400);
+        BEGIN
+            IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN  
+                v_predicate := 'JOB_ID LIKE ''SA_%''';  -- SALESチームのみ表示
+            ELSE
+                v_predicate := '1=1'; -- その他のユーザーは全件表示
+            END IF;
+            RETURN v_predicate;
+        END get_sales_predicate;
+    /
 
 実行し、 ``Function created.`` が表示されることを確認します。
 
@@ -61,26 +48,25 @@ CREATE OR REPLACE FUNCTION hr.get_sales_predicate(
 VPDポリシーの作成
 ****************************
 
-それでは先ほど作成したVPD関数を指定してVPDポリシーを作成していきます。
-実行しているADD_POLICYプロシージャのそのほかのパラメータや詳細は `こちらから <https://docs.oracle.com/cd/F19136_01/arpls/DBMS_RLS.html#GUID-1E528A51-DE53-4961-8770-C53924E427CC>`__ ご確認ください。
+作成したVPD関数を指定してVPDポリシーを作成していきます。
+実行するADD_POLICYプロシージャのパラメータについての詳細は `こちらから <https://docs.oracle.com/cd/F19136_01/arpls/DBMS_RLS.html#GUID-1E528A51-DE53-4961-8770-C53924E427CC>`__ ご確認ください。
 
 .. code:: sql
 
-BEGIN
-DBMS_RLS.ADD_POLICY (
-    object_schema   => 'HR',
-    object_name     => 'EMPLOYEES',
-    policy_name     => 'employees_vpd_policy',
-    function_schema => 'HR',
-    policy_function => 'get_sales_predicate'
-    );
-END;
-/
+    BEGIN
+    DBMS_RLS.ADD_POLICY (
+        object_schema   => 'HR',
+        object_name     => 'EMPLOYEES',
+        policy_name     => 'employees_vpd_policy',
+        function_schema => 'HR',
+        policy_function => 'get_sales_predicate'
+        );
+    END;
+    /
 
 実行し、 ``PL/SQL procedure successfully completed.`` が表示されることを確認します。
 
-最後に作成したVPDポリシーを確認します。
-VPDポリシーは ``ALL_POLICIES`` ディクショナリビューから確認することができます。
+作成したVPDポリシーは ``ALL_POLICIES`` ディクショナリビューから確認できます。
 
 .. code:: sql
 
@@ -109,13 +95,13 @@ COMMON           ポリシーの適用範囲 (YES: すべてのPDB、NO: ロー�
 
 
 ****************************
-HRユーザーで確認
+HRユーザーで確認を行う
 ****************************
 
-作成したVPDポリシーが正しく機能しているかを確認します。
+HRユーザーで対象の表を参照し、作成したVPDポリシーが正しく機能しているかを確認します。
 
-
-.. code:: sql
+.. code-block:: sql
+    :caption: HRユーザーで実行
 
     SQL> set markup csv on
     SQL> select employee_id, first_name, salary, job_id from hr.employees;
@@ -124,13 +110,7 @@ HRユーザーで確認
     101          ,"Neena"     ,17000   ,"AD_VP"
     102          ,"Lex"       ,17000   ,"AD_VP"
     103          ,"Alexander" ,9000    ,"IT_PROG"
-    104          ,"Bruce"     ,6000    ,"IT_PROG"
-    105          ,"David"     ,4800    ,"IT_PROG"
-    106          ,"Valli"     ,4800    ,"IT_PROG"
     ...
-    200          ,"Jennifer"  ,4400    ,"AD_ASST"
-    201          ,"Michael"   ,13000   ,"MK_MAN"
-    202          ,"Pat"       ,6000    ,"MK_REP"
     203          ,"Susan"     ,6500    ,"HR_REP"
     204          ,"Hermann"   ,10000   ,"PR_REP"
     205          ,"Shelley"   ,12008   ,"AC_MGR"
@@ -138,14 +118,15 @@ HRユーザーで確認
 
 107 rows selected.
 
+HRユーザーでアクセスすると、VPD関数が'1=1'を返すため、全てのデータ（107行）が表示されます。
 
 ****************************
 SALES_APPユーザーで確認
 ****************************
+SALES_APPユーザーで同様のSQL文を実行し、VPDが動作していることを確認します。
 
-.. code:: sql
-
-    sqlplus sales_app/Welcome1#Welcome1#@localhost:1521/freepdb1
+.. code-block:: sql
+    :caption: SALES_APPユーザーで実行
 
     SQL> select employee_id, first_name, salary, job_id from hr.employees;
     "EMPLOYEE_ID","FIRST_NAME","SALARY","JOB_ID"
@@ -165,3 +146,7 @@ SALES_APPユーザーで確認
     179          ,"Charles"   ,0       ,"SA_REP"
 
     35 rows selected.
+
+この場合はVPDが動作し、where句に「JOB_ID LIKE 'SA_%'」が追加されるため、JOB_IDが'SA_'で始まる35行のみが表示されることが分かります。
+
+次のステップでは、VPDを使用した列レベル制御を行ってみます。

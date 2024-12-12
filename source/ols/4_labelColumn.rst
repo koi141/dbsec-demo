@@ -1,14 +1,21 @@
 ############################################
-4. ラベルデータの処理
+4. ラベルデータの処理とラベル列の非表示
 ############################################
 
+この手順では、データラベルを使用した操作（絞り込み・ソート）と、ラベル列の非表示オプションを適用する方法を解説します。
 
+**実施内容**
+
++ データラベルを使用した操作
++ ラベル列の非表示設定
 
 ****************************
 データ・ラベルの表示
 ****************************
 
-見ていただくとわかる通りですが、ラベル列の実態は見た通り、数字になりますので、不等号で結果を絞ることもできます。
+見ていただくとわかる通りですが、ラベル列は数値として管理されるため、不等号を使用した条件で絞り込みが可能です。
+
+.. code-block:: sql
 
     SQL> select JOB_ID, OLS_LABEL_DEMO from HR.JOB_HISTORY_4OLS where OLS_LABEL_DEMO >= 300;
 
@@ -23,7 +30,9 @@
 
     6 rows selected.
 
-ORDER BYでソートすることもできます。
+ラベル列を基準にORDER BYでデータをソートすることも可能です。
+
+.. code-block:: sql
 
     SQL> select JOB_ID, OLS_LABEL_DEMO from HR.JOB_HISTORY_4OLS order by OLS_LABEL_DEMO;
 
@@ -44,29 +53,32 @@ ORDER BYでソートすることもできます。
 
 
 ****************************
-ラベル列の非表示
+ラベル列の非表示設定
 ****************************
 
-HIDEオプションを表に適用することで、ポリシーを表す列を非表示にするように選択できます。
+HIDEオプションを表に適用することで、ポリシーを表す列を非表示にするように選択できます。しかし、以下の制約がありますのでご注意ください。
 
-HIDEポリシー構成オプションを指定できるのは、表にOracle Label Securityのポリシーを初めて適用するとき(つまり、表にポリシー列を追加するとき)です。このようにすると、ポリシーのラベルを含む列は表示されません。
-ポリシーを適用した後は、DROP_COLUMNパラメータをTRUEに設定してそのポリシーを削除しないかぎり、列の非表示(または表示)ステータスは変更できません。
-その後は、ポリシーを新規の非表示ステータスで再適用できます。
-
-一旦表に紐づけられている、既存ポリシーを削除します。
++ 非表示設定は初回のポリシー適用時のみ可能。
++ 一度ポリシーを削除して再適用する必要があります。
 
 
-BEGIN
-    SA_POLICY_ADMIN.REMOVE_TABLE_POLICY (
-        policy_name     => 'OLS_POL_DEMO',
-        schema_name     => 'HR',
-        table_name      => 'JOB_HISTORY_4OLS',
-        drop_column     => TRUE
-    );
-END;
-/
+以下のSQLでポリシーを削除し、OLS_LABEL_DEMO列を表から削除します。
+
+.. code-block:: sql
+
+    BEGIN
+        SA_POLICY_ADMIN.REMOVE_TABLE_POLICY (
+            policy_name     => 'OLS_POL_DEMO',
+            schema_name     => 'HR',
+            table_name      => 'JOB_HISTORY_4OLS',
+            drop_column     => TRUE
+        );
+    END;
+    /
 
 ラベル列が削除されたことを確認します
+
+.. code-block:: sql
 
     SQL> desc HR.JOB_HISTORY_4OLS;
     Name                                      Null?    Type
@@ -78,34 +90,46 @@ END;
     DEPARTMENT_ID                                      NUMBER(4)
 
 
+HIDEオプションを使用してポリシーを再適用します。
 
-BEGIN
-    SA_POLICY_ADMIN.APPLY_TABLE_POLICY (
-        policy_name    => 'OLS_POL_DEMO',
-        schema_name    => 'HR', 
-        table_name     => 'JOB_HISTORY_4OLS',
-        table_options  => 'READ_CONTROL, HIDE');
-END;
-/
+.. code-block:: sql
 
-SQL> desc HR.JOB_HISTORY_4OLS;
- Name                                      Null?    Type
- ----------------------------------------- -------- ----------------------------
- EMPLOYEE_ID                               NOT NULL NUMBER(6)
- START_DATE                                NOT NULL DATE
- END_DATE                                  NOT NULL DATE
- JOB_ID                                    NOT NULL VARCHAR2(10)
- DEPARTMENT_ID                                      NUMBER(4)
+    BEGIN
+        SA_POLICY_ADMIN.APPLY_TABLE_POLICY (
+            policy_name    => 'OLS_POL_DEMO',
+            schema_name    => 'HR', 
+            table_name     => 'JOB_HISTORY_4OLS',
+            table_options  => 'READ_CONTROL, HIDE');
+    END;
+    /
 
-SQL> select * from HR.JOB_HISTORY_4OLS;
+ポリシーの適用後、ラベル列は非表示になっていることが分かります。
 
-EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID
------------ --------- --------- ---------- -------------
-        102 13-JAN-11 24-JUL-16 IT_PROG               60
-        101 21-SEP-07 27-OCT-11 AC_ACCOUNT           110
-...
+.. code-block:: sql
+    
+    SQL> desc HR.JOB_HISTORY_4OLS;
+    Name                                      Null?    Type
+    ----------------------------------------- -------- ----------------------------
+    EMPLOYEE_ID                               NOT NULL NUMBER(6)
+    START_DATE                                NOT NULL DATE
+    END_DATE                                  NOT NULL DATE
+    JOB_ID                                    NOT NULL VARCHAR2(10)
+    DEPARTMENT_ID                                      NUMBER(4)
 
-しかし、明示的に列名を指定するとラベル列が存在していることが分かります。
+    SQL> select * from HR.JOB_HISTORY_4OLS;
+
+    EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID
+    ----------- --------- --------- ---------- -------------
+            102 13-JAN-11 24-JUL-16 IT_PROG               60
+            101 21-SEP-07 27-OCT-11 AC_ACCOUNT           110
+    ...
+
+
+非表示設定でも、明示的に列名を指定すればラベル列を参照することができます。
+（ここでは一度ポリシーを削除したため、再適用後のラベル列のデータは空になっています。）
+
+
+.. code-block:: sql
 
     SQL> select JOB_ID, OLS_LABEL_DEMO from HR.JOB_HISTORY_4OLS;
 
@@ -118,8 +142,9 @@ EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID
     ...
 
 
-ラベル列に何もないのはラベル列を一旦削除したためです。
-手順２のラベルデータを挿入し直すと以下のように確認できます。
+手順2と同様のデータ挿入手順でラベルデータを挿入し直すと、ラベル列のデータも確認できることが分かります。
+
+.. code-block:: sql
 
     SQL> select JOB_ID, OLS_LABEL_DEMO from HR.JOB_HISTORY_4OLS;
 
@@ -129,3 +154,6 @@ EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID
     AC_ACCOUNT            300
     AC_MGR                400
     MK_REP                300
+    ...
+
+以上でOracle Label Securityの動作確認は終了です。次の手順では構築したOLSの設定を削除していきます。

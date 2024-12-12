@@ -54,6 +54,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'vpd/4_cleanup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. SQL Firewallの準備" href="../sqlfirewall/1_setup.html" />
+    <link rel="prev" title="3. クライアント識別子を用いた制御" href="3_clientIdentifier.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -104,8 +106,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
@@ -167,16 +167,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../redact/3_note.html">3. Data Redactionの注意点</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Virtual Private Database:</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -325,18 +336,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">VPD関数の削除</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#object-name">OBJECT_NAME</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの削除</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-name">POLICY_NAME</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">行制御ポリシー</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">列制御ポリシー</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">VPD関数の削除</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの削除</a></li>
 </ul>
             </nav>
         </div>
@@ -350,71 +351,79 @@
                   
   <section id="vpd">
 <h1>4. VPDの設定を削除する<a class="headerlink" href="#vpd" title="Link to this heading">#</a></h1>
+<p>この手順では、VPDデモで作成した関数およびポリシーを削除し、競合を防ぐために設定をクリアします。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
 <li><p>VPD関数の削除</p></li>
 <li><p>VPDポリシーの削除</p></li>
+<li><p>削除結果の確認</p></li>
 </ul>
-<p>後のデモ内容と競合する可能性があるため、VPDデモで作成した関数・ポリシーを削除します。</p>
 <section id="id1">
 <h2>VPD関数の削除<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>SQL&gt; select object_name from all_objects where owner = 'HR' and object_type = 'FUNCTION';</p>
-<section id="object-name">
-<h3>OBJECT_NAME<a class="headerlink" href="#object-name" title="Link to this heading">#</a></h3>
-<p>GET_SALES_PREDICATE
-GET_MASKING_SALARY_COL</p>
-<p>drop function hr.get_sales_predicate;</p>
-<p>SQL&gt; drop function hr.get_sales_predicate;</p>
-<p>Function dropped.</p>
-<p>SQL&gt; drop function hr.get_masking_salary_col;</p>
-<p>Function dropped.</p>
-<p>削除されたかを確認します</p>
-<p>SQL&gt; select object_name from all_objects where owner = 'HR' and object_type = 'FUNCTION';</p>
-<p>no rows selected</p>
-</section>
+<p>以下のSQLを使用して、HRスキーマ内に作成された関数を確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">object_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">all_objects</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="k">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;FUNCTION&#39;</span><span class="p">;</span>
+
+<span class="n">OBJECT_NAME</span>
+<span class="c1">--------------------------------------------------------------------------------</span>
+<span class="n">GET_SALES_PREDICATE</span>
+<span class="n">GET_MASKING_SALARY_COL</span>
+</pre></div>
+</div>
+<p>確認した関数を削除します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">get_sales_predicate</span><span class="p">;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">get_masking_salary_col</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>再度関数を確認し、すべて削除されたことを確認します</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">object_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">all_objects</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="k">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;FUNCTION&#39;</span><span class="p">;</span>
+
+<span class="k">no</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span>
+</pre></div>
+</div>
 </section>
 <section id="id2">
 <h2>VPDポリシーの削除<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>ポリシーを確認します。
-SQL&gt; select POLICY_NAME from all_policies where object_owner  = 'HR';</p>
-<section id="policy-name">
-<h3>POLICY_NAME<a class="headerlink" href="#policy-name" title="Link to this heading">#</a></h3>
-<p>EMPLOYEES_SALARY_COL_VPD_POLICY
-EMPLOYEES_VPD_POLICY</p>
-<section id="id3">
-<h4>行制御ポリシー<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
-object_name   =&gt; 'EMPLOYEES',
-policy_name   =&gt; 'employees_vpd_policy'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-</section>
-<section id="id4">
-<h4>列制御ポリシー<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
-object_name   =&gt; 'EMPLOYEES',
-policy_name   =&gt; 'employees_salary_col_vpd_policy'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>削除されたかを確認します。</p>
-<p>SQL&gt; select POLICY_NAME from all_policies where object_owner  = 'HR';</p>
+<p>現在、作成されているポリシーを確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">policy_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">all_policies</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">object_owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">;</span>
+
+<span class="n">POLICY_NAME</span>
+<span class="c1">--------------------------------------------------------------------------------</span>
+<span class="n">EMPLOYEES_SALARY_COL_VPD_POLICY</span>
+<span class="n">EMPLOYEES_VPD_POLICY</span>
+</pre></div>
+</div>
+<p>確認したポリシーを削除します。</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">行制御ポリシーを削除</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">DROP_POLICY</span><span class="p">(</span>
+<span class="w">        </span><span class="n">object_schema</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;EMPLOYEES&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;employees_vpd_policy&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">列制御ポリシーを削除</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">DROP_POLICY</span><span class="p">(</span>
+<span class="w">        </span><span class="n">object_schema</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;EMPLOYEES&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;employees_salary_col_vpd_policy&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>ポリシーが削除されたことを確認します。</p>
+<p>SQL&gt; select policy_name from all_policies where object_owner = 'HR';</p>
 <p>no rows selected</p>
-</section>
-</section>
+<p>以上でVPDのデモは終了です。</p>
 </section>
 </section>
 
@@ -429,6 +438,24 @@ policy_name   =&gt; 'employees_salary_col_vpd_policy'</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="3_clientIdentifier.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">前へ</p>
+        <p class="prev-next-title">3. クライアント識別子を用いた制御</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../sqlfirewall/1_setup.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">次へ</p>
+        <p class="prev-next-title">1. SQL Firewallの準備</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -446,18 +473,8 @@ policy_name   =&gt; 'employees_salary_col_vpd_policy'</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">VPD関数の削除</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#object-name">OBJECT_NAME</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの削除</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-name">POLICY_NAME</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">行制御ポリシー</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">列制御ポリシー</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">VPD関数の削除</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの削除</a></li>
 </ul>
   </nav></div>
 

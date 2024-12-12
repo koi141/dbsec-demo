@@ -171,12 +171,23 @@
 <li class="toctree-l1"><a class="reference internal" href="1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -329,7 +340,11 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの作成</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hr">HRユーザーで確認</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">SALES_APPユーザーで確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app-sec-relevant-cols-opt-dbms-rls-all-rows">SALES_APPユーザーで確認（sec_relevant_cols_opt =&gt; dbms_rls.ALL_ROWSとした場合）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#null-dbms-rls-all-rows">列をNULL値で表示する方法（dbms_rls.ALL_ROWS）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ポリシーの削除と再作成</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">SALES_APPユーザーで確認する</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -343,223 +358,218 @@
                   
   <section id="vpd">
 <h1>2. VPDで列制御を行う<a class="headerlink" href="#vpd" title="Link to this heading">#</a></h1>
+<p>where句を使用すると行レベルでの制御になりますが、VPDでは列を制御することも可能です。
+この手順では、Virtual Private Database (VPD)を使用して、特定の列へのアクセスを制御します。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>VPD関数の作成</p></li>
-<li><p>VPDのポリシーの作成</p></li>
-<li><p>HRユーザーまたはSYSユーザーでEMMPLOYEES表を確認</p></li>
-<li><p>SALES_APPユーザーでEMMPLOYEES表を確認</p></li>
+<li><p>VPD関数を作成する</p></li>
+<li><p>VPDポリシーを作成する</p></li>
+<li><p>HRユーザーで EMPLOYEES 表を確認</p></li>
+<li><p>SALES_APPユーザーで EMPLOYEES 表を確認し、VPDが正しく機能していることを確認</p></li>
+<li><p>列を非表示ではなくNULL値で表示させる方法</p></li>
 </ul>
-<p>where句を使用すると行レベルでの制御になりますが、VPDでは列を制御することも可能です。
-この手順ではVPDを用いて列を制御してみます。</p>
-<p>SALES_APPユーザーには <code class="docutils literal notranslate"><span class="pre">salary</span></code> 列を見せる必要がないと想定して、設定を行っていきます。</p>
 <section id="id1">
 <h2>VPD関数の作成<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<dl>
-<dt>CREATE OR REPLACE FUNCTION hr.get_masking_salary_col(</dt><dd><p>p_schema IN VARCHAR2,
-p_table  IN VARCHAR2
-)
-RETURN VARCHAR2
-IS</p>
-<blockquote>
-<div><p>v_predicate VARCHAR2 (400);</p>
-</div></blockquote>
-<dl class="simple">
-<dt>BEGIN</dt><dd><p>IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'SALES_APP' THEN
-v_predicate := '1=2';</p>
-</dd>
-</dl>
-<p>END IF;
-RETURN v_predicate;</p>
-</dd>
-</dl>
-<p>END get_masking_salary_col;
-/</p>
-<p>実行し、 <code class="docutils literal notranslate"><span class="pre">Function</span> <span class="pre">created.</span></code> が表示されることを確認します。</p>
-<p>v_predicate が必ずfalseになるように設定します。</p>
+<p>列に対するフィルタ条件を定義するVPD関数を作成します。
+この例では、SALARY 列をSALES_APPユーザーから非表示にします。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">get_masking_salary_col</span><span class="p">(</span>
+<span class="w">    </span><span class="n">p_schema</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">p_table</span><span class="w">  </span><span class="k">IN</span><span class="w"> </span><span class="n">VARCHAR2</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="n">VARCHAR2</span>
+<span class="w">    </span><span class="k">IS</span>
+<span class="w">        </span><span class="n">v_predicate</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="w"> </span><span class="p">(</span><span class="mi">400</span><span class="p">);</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">SYS_CONTEXT</span><span class="p">(</span><span class="s1">&#39;USERENV&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;SESSION_USER&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;SALES_APP&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">        </span><span class="n">v_predicate</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;1=2&#39;</span><span class="p">;</span><span class="w"> </span><span class="c1">-- 常にfalseで列を非表示にする</span>
+<span class="w">    </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="n">v_predicate</span><span class="p">;</span>
+<span class="k">END</span><span class="w"> </span><span class="n">get_masking_salary_col</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+<p>実行し、 <code class="docutils literal notranslate"><span class="pre">Function</span> <span class="pre">created.</span></code> が表示されることを確認します。
+ここでは <code class="docutils literal notranslate"><span class="pre">v_predicate</span> <span class="pre">:=</span> <span class="pre">'1=2';</span></code> として、常にfalseを渡すことで、SALES_APPユーザーに対しては特定の列が非表示になるようにしています。</p>
 </section>
 <section id="id2">
 <h2>VPDポリシーの作成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.ADD_POLICY (</dt><dd><p>object_schema         =&gt; 'HR',
-object_name           =&gt; 'EMPLOYEES',
-policy_name           =&gt; 'employees_salary_col_vpd_policy',
-function_schema       =&gt; 'HR',
-policy_function       =&gt; 'get_masking_salary_col',
-sec_relevant_cols     =&gt; 'SALARY'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
+<p>作成した関数を使用し、SALARY 列にポリシーを適用します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">ADD_POLICY</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">object_schema</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;EMPLOYEES&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;employees_salary_col_vpd_policy&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">function_schema</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_function</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;get_masking_salary_col&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">sec_relevant_cols</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SALARY&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 <p>実行し、 <code class="docutils literal notranslate"><span class="pre">PL/SQL</span> <span class="pre">procedure</span> <span class="pre">successfully</span> <span class="pre">completed.</span></code> が表示されることを確認します。</p>
-<p>sec_relevant_cols_opt =&gt; dbms_rls.ALL_ROWS
-を選択すると、結果の値は返さないもののsalary列自体は返されるようになります。
-デフォルトではNULLとなっていますので、上記コマンドでは指定していません。</p>
-<p>作成したVPDポリシーを確認します。</p>
-<p>SQL&gt; set markup csv on
-SQL&gt; select object_owner, object_name, policy_name, function, sel, ins, upd, del, idx, policy_type, common from all_policies where object_owner  = 'HR';
-&quot;OBJECT_OWNER&quot;,&quot;OBJECT_NAME&quot;,&quot;POLICY_NAME&quot;                    ,&quot;FUNCTION&quot;              ,&quot;SEL&quot;,&quot;INS&quot;,&quot;UPD&quot;,&quot;DEL&quot;,&quot;IDX&quot;,&quot;POLICY_TYPE&quot;,&quot;COMMON&quot;
-&quot;HR&quot;          ,&quot;EMPLOYEES&quot;  ,&quot;EMPLOYEES_VPD_POLICY&quot;           ,&quot;GET_SALES_PREDICATE&quot;   ,&quot;YES&quot;,&quot;NO&quot; ,&quot;YES&quot;,&quot;YES&quot;,&quot;NO&quot; ,&quot;DYNAMIC&quot;    ,&quot;NO&quot;
-&quot;HR&quot;          ,&quot;EMPLOYEES&quot;  ,&quot;EMPLOYEES_SALARY_COL_VPD_POLICY&quot;,&quot;GET_MASKING_SALARY_COL&quot;,&quot;YES&quot;,&quot;NO&quot; ,&quot;NO&quot; ,&quot;NO&quot; ,&quot;NO&quot; ,&quot;DYNAMIC&quot;    ,&quot;NO&quot;</p>
+<p>作成したVPDポリシーは <code class="docutils literal notranslate"><span class="pre">ALL_POLICIES</span></code> ビューで確認できます。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">object_owner</span><span class="p">,</span><span class="w"> </span><span class="n">object_name</span><span class="p">,</span><span class="w"> </span><span class="n">policy_name</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">,</span><span class="w"> </span><span class="n">sel</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="p">,</span><span class="w"> </span><span class="n">upd</span><span class="p">,</span><span class="w"> </span><span class="n">del</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">policy_type</span><span class="p">,</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">all_policies</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">object_owner</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">;</span>
+<span class="ss">&quot;OBJECT_OWNER&quot;</span><span class="p">,</span><span class="ss">&quot;OBJECT_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;POLICY_NAME&quot;</span><span class="w">                    </span><span class="p">,</span><span class="ss">&quot;FUNCTION&quot;</span><span class="w">              </span><span class="p">,</span><span class="ss">&quot;SEL&quot;</span><span class="p">,</span><span class="ss">&quot;INS&quot;</span><span class="p">,</span><span class="ss">&quot;UPD&quot;</span><span class="p">,</span><span class="ss">&quot;DEL&quot;</span><span class="p">,</span><span class="ss">&quot;IDX&quot;</span><span class="p">,</span><span class="ss">&quot;POLICY_TYPE&quot;</span><span class="p">,</span><span class="ss">&quot;COMMON&quot;</span>
+<span class="ss">&quot;HR&quot;</span><span class="w">          </span><span class="p">,</span><span class="ss">&quot;EMPLOYEES&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;EMPLOYEES_VPD_POLICY&quot;</span><span class="w">           </span><span class="p">,</span><span class="ss">&quot;GET_SALES_PREDICATE&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;DYNAMIC&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span>
+<span class="ss">&quot;HR&quot;</span><span class="w">          </span><span class="p">,</span><span class="ss">&quot;EMPLOYEES&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;EMPLOYEES_SALARY_COL_VPD_POLICY&quot;</span><span class="p">,</span><span class="ss">&quot;GET_MASKING_SALARY_COL&quot;</span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;DYNAMIC&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span>
+</pre></div>
+</div>
 <p>前手順で作成した <code class="docutils literal notranslate"><span class="pre">EMPLOYEES_VPD_POLICY</span></code> に加えてポリシーが作成されたことを確認します。</p>
 </section>
 <section id="hr">
 <h2>HRユーザーで確認<a class="headerlink" href="#hr" title="Link to this heading">#</a></h2>
-<p>作成したVPDポリシーが正しく機能しているかを確認します。</p>
-<dl class="simple">
-<dt>SQL&gt; desc hr.employees</dt><dd><p>Name                                      Null?    Type
------------------------------------------ -------- ----------------------------
-EMPLOYEE_ID                               NOT NULL NUMBER(6)
-FIRST_NAME                                         VARCHAR2(20)
-LAST_NAME                                 NOT NULL VARCHAR2(25)
-EMAIL                                     NOT NULL VARCHAR2(25)
-PHONE_NUMBER                                       VARCHAR2(20)
-HIRE_DATE                                 NOT NULL DATE
-JOB_ID                                    NOT NULL VARCHAR2(10)
-SALARY                                             NUMBER(8,2)
-COMMISSION_PCT                                     NUMBER(2,2)
-MANAGER_ID                                         NUMBER(6)
-DEPARTMENT_ID                                      NUMBER(4)</p>
-</dd>
-</dl>
-<p>SQL&gt; select first_name, salary from hr.employees;
-&quot;FIRST_NAME&quot;,&quot;SALARY&quot;
-&quot;Steven&quot;,24000
-&quot;Neena&quot;,17000
-&quot;Lex&quot;,17000
-&quot;Alexander&quot;,9000
-&quot;Bruce&quot;,6000
-&quot;David&quot;,4800
-&quot;Valli&quot;,4800
-&quot;Diana&quot;,4200
-...
-&quot;Donald&quot;,2600
-&quot;Douglas&quot;,2600
-&quot;Jennifer&quot;,4400
-&quot;Michael&quot;,13000
-&quot;Pat&quot;,6000
-&quot;Susan&quot;,6500
-&quot;Hermann&quot;,10000
-&quot;Shelley&quot;,12008
-&quot;William&quot;,8300</p>
-<p>107 rows selected.</p>
-<p>SQL&gt; select * from hr.employees;
-&quot;EMPLOYEE_ID&quot;,&quot;FIRST_NAME&quot;,&quot;LAST_NAME&quot;,&quot;EMAIL&quot;,&quot;PHONE_NUMBER&quot;,&quot;HIRE_DATE&quot;,&quot;JOB_ID&quot;,&quot;SALARY&quot;,&quot;COMMISSION_PCT&quot;,&quot;MANAGER_ID&quot;,&quot;DEPARTMENT_ID&quot;
-100,&quot;Steven&quot;,&quot;King&quot;,&quot;SKING&quot;,&quot;1.515.555.0100&quot;,&quot;17-JUN-13&quot;,&quot;AD_PRES&quot;,24000,,,90
-101,&quot;Neena&quot;,&quot;Yang&quot;,&quot;NYANG&quot;,&quot;1.515.555.0101&quot;,&quot;21-SEP-15&quot;,&quot;AD_VP&quot;,17000,,100,90
-...</p>
+<p>作成したVPDポリシーが正しく機能しているかを確認します。
+念のため、HRユーザーでアクセスし、salary列および107行すべてが表示されることを確かめます。</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">HRユーザー</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+<span class="ss">&quot;FIRST_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;SALARY&quot;</span>
+<span class="ss">&quot;Steven&quot;</span><span class="p">,</span><span class="mi">24000</span>
+<span class="ss">&quot;Neena&quot;</span><span class="p">,</span><span class="mi">17000</span>
+<span class="ss">&quot;Lex&quot;</span><span class="p">,</span><span class="mi">17000</span>
+<span class="ss">&quot;Alexander&quot;</span><span class="p">,</span><span class="mi">9000</span>
+<span class="p">...</span>
+<span class="ss">&quot;Michael&quot;</span><span class="p">,</span><span class="mi">13000</span>
+<span class="ss">&quot;Pat&quot;</span><span class="p">,</span><span class="mi">6000</span>
+<span class="ss">&quot;Susan&quot;</span><span class="p">,</span><span class="mi">6500</span>
+<span class="ss">&quot;Hermann&quot;</span><span class="p">,</span><span class="mi">10000</span>
+<span class="ss">&quot;Shelley&quot;</span><span class="p">,</span><span class="mi">12008</span>
+<span class="ss">&quot;William&quot;</span><span class="p">,</span><span class="mi">8300</span>
+
+<span class="mi">107</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+<span class="ss">&quot;EMPLOYEE_ID&quot;</span><span class="p">,</span><span class="ss">&quot;FIRST_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;LAST_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;EMAIL&quot;</span><span class="p">,</span><span class="ss">&quot;PHONE_NUMBER&quot;</span><span class="p">,</span><span class="ss">&quot;HIRE_DATE&quot;</span><span class="p">,</span><span class="ss">&quot;JOB_ID&quot;</span><span class="p">,</span><span class="ss">&quot;SALARY&quot;</span><span class="p">,</span><span class="ss">&quot;COMMISSION_PCT&quot;</span><span class="p">,</span><span class="ss">&quot;MANAGER_ID&quot;</span><span class="p">,</span><span class="ss">&quot;DEPARTMENT_ID&quot;</span>
+<span class="mi">100</span><span class="p">,</span><span class="ss">&quot;Steven&quot;</span><span class="p">,</span><span class="ss">&quot;King&quot;</span><span class="p">,</span><span class="ss">&quot;SKING&quot;</span><span class="p">,</span><span class="ss">&quot;1.515.555.0100&quot;</span><span class="p">,</span><span class="ss">&quot;17-JUN-13&quot;</span><span class="p">,</span><span class="ss">&quot;AD_PRES&quot;</span><span class="p">,</span><span class="mi">24000</span><span class="p">,,,</span><span class="mi">90</span>
+<span class="mi">101</span><span class="p">,</span><span class="ss">&quot;Neena&quot;</span><span class="p">,</span><span class="ss">&quot;Yang&quot;</span><span class="p">,</span><span class="ss">&quot;NYANG&quot;</span><span class="p">,</span><span class="ss">&quot;1.515.555.0101&quot;</span><span class="p">,</span><span class="ss">&quot;21-SEP-15&quot;</span><span class="p">,</span><span class="ss">&quot;AD_VP&quot;</span><span class="p">,</span><span class="mi">17000</span><span class="p">,,</span><span class="mi">100</span><span class="p">,</span><span class="mi">90</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="sales-app">
 <h2>SALES_APPユーザーで確認<a class="headerlink" href="#sales-app" title="Link to this heading">#</a></h2>
-<dl class="simple">
-<dt>SQL&gt; desc hr.employees;</dt><dd><p>Name                                      Null?    Type
------------------------------------------ -------- ----------------------------
-EMPLOYEE_ID                               NOT NULL NUMBER(6)
-FIRST_NAME                                         VARCHAR2(20)
-LAST_NAME                                 NOT NULL VARCHAR2(25)
-EMAIL                                     NOT NULL VARCHAR2(25)
-PHONE_NUMBER                                       VARCHAR2(20)
-HIRE_DATE                                 NOT NULL DATE
-JOB_ID                                    NOT NULL VARCHAR2(10)
-SALARY                                             NUMBER(8,2)
-COMMISSION_PCT                                     NUMBER(2,2)
-MANAGER_ID                                         NUMBER(6)
-DEPARTMENT_ID                                      NUMBER(4)</p>
-</dd>
-</dl>
-<p>SQL&gt; select first_name, salary from hr.employees;</p>
-<p>no rows selected</p>
-<p>SQL&gt; select * from hr.employees;</p>
-<p>no rows selected</p>
-<p>SQL&gt; select first_name from hr.employees;
-&quot;FIRST_NAME&quot;
-&quot;Ellen&quot;
-&quot;Sundar&quot;
-&quot;Amit&quot;
-&quot;Elizabeth&quot;
-&quot;David&quot;
-&quot;Harrison&quot;
-&quot;Gerald&quot;
-&quot;Nanette&quot;
-&quot;Louise&quot;
-...
-&quot;John&quot;
-&quot;Lindsey&quot;
-&quot;William&quot;
-&quot;Patrick&quot;
-&quot;Jonathon&quot;
-&quot;Sean&quot;
-&quot;Oliver&quot;
-&quot;Clara&quot;
-&quot;Eleni&quot;</p>
-<p>35 rows selected.</p>
-<p>salary列が選択されたときにVPDポリシーが発動します。</p>
+<p>SALES_APPユーザーでは、SALARY 列が含まれるクエリを実行すると、VPDによる制御が適用されます。</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">salary列を含むクエリ</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+
+<span class="k">no</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+
+<span class="k">no</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">salary列を含まないクエリ</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+<span class="ss">&quot;FIRST_NAME&quot;</span>
+<span class="ss">&quot;Ellen&quot;</span>
+<span class="ss">&quot;Sundar&quot;</span>
+<span class="ss">&quot;Amit&quot;</span>
+<span class="ss">&quot;Elizabeth&quot;</span>
+<span class="ss">&quot;David&quot;</span>
+<span class="ss">&quot;Harrison&quot;</span>
+<span class="ss">&quot;Gerald&quot;</span>
+<span class="p">...</span>
+<span class="ss">&quot;William&quot;</span>
+<span class="ss">&quot;Patrick&quot;</span>
+<span class="ss">&quot;Jonathon&quot;</span>
+<span class="ss">&quot;Sean&quot;</span>
+<span class="ss">&quot;Oliver&quot;</span>
+<span class="ss">&quot;Clara&quot;</span>
+<span class="ss">&quot;Eleni&quot;</span>
+
+<span class="mi">35</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
+</div>
 </section>
-<section id="sales-app-sec-relevant-cols-opt-dbms-rls-all-rows">
-<h2>SALES_APPユーザーで確認（sec_relevant_cols_opt =&gt; dbms_rls.ALL_ROWSとした場合）<a class="headerlink" href="#sales-app-sec-relevant-cols-opt-dbms-rls-all-rows" title="Link to this heading">#</a></h2>
-<p>ポリシーを再作成する際は、以下を実行して削除してから、また作成します。</p>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_RLS.DROP_POLICY(</dt><dd><p>object_schema =&gt; 'HR',
-object_name   =&gt; 'EMPLOYEES',
-policy_name   =&gt; 'employees_salary_col_vpd_policy'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
+<section id="null-dbms-rls-all-rows">
+<h2>列をNULL値で表示する方法（dbms_rls.ALL_ROWS）<a class="headerlink" href="#null-dbms-rls-all-rows" title="Link to this heading">#</a></h2>
 <dl class="simple">
-<dt>SQL&gt; desc hr.employees</dt><dd><p>Name                                      Null?    Type
------------------------------------------ -------- ----------------------------
-EMPLOYEE_ID                               NOT NULL NUMBER(6)
-FIRST_NAME                                         VARCHAR2(20)
-LAST_NAME                                 NOT NULL VARCHAR2(25)
-EMAIL                                     NOT NULL VARCHAR2(25)
-PHONE_NUMBER                                       VARCHAR2(20)
-HIRE_DATE                                 NOT NULL DATE
-JOB_ID                                    NOT NULL VARCHAR2(10)
-SALARY                                             NUMBER(8,2)
-COMMISSION_PCT                                     NUMBER(2,2)
-MANAGER_ID                                         NUMBER(6)
-DEPARTMENT_ID                                      NUMBER(4)</p>
+<dt>VPDポリシーを作成する際、デフォルトでは対象列が選択された際にVPDが動作し、先ほどの結果のように値が条件を満たした行しか表示されませんが、</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sec_relevant_cols_opt</span> <span class="pre">=&gt;</span> <span class="pre">dbms_rls.ALL_ROWS</span></code> を指定することで、列を非表示ではなくNULL値で表示することができます。</p>
 </dd>
 </dl>
-<p>SQL&gt; select first_name, salary from hr.employees;
-&quot;FIRST_NAME&quot;,&quot;SALARY&quot;
-&quot;John&quot;,
-&quot;Karen&quot;,
-&quot;Alberto&quot;,
-&quot;Gerald&quot;,
-&quot;Eleni&quot;,
-&quot;Sean&quot;,
-&quot;David&quot;,
-&quot;Peter&quot;,
-&quot;Christopher&quot;,
-&quot;Nanette&quot;,
-...
-&quot;Tayler&quot;,
-&quot;William&quot;,
-&quot;Elizabeth&quot;,
-&quot;Sundita&quot;,
-&quot;Ellen&quot;,
-&quot;Alyssa&quot;,
-&quot;Jonathon&quot;,
-&quot;Jack&quot;,
-&quot;Kimberely&quot;,
-&quot;Charles&quot;,</p>
-<p>35 rows selected.</p>
-<p>SQL&gt; select * from hr.employees;
-&quot;EMPLOYEE_ID&quot;,&quot;FIRST_NAME&quot;,&quot;LAST_NAME&quot;,&quot;EMAIL&quot;,&quot;PHONE_NUMBER&quot;,&quot;HIRE_DATE&quot;,&quot;JOB_ID&quot;,&quot;SALARY&quot;,&quot;COMMISSION_PCT&quot;,&quot;MANAGER_ID&quot;,&quot;DEPARTMENT_ID&quot;
-145,&quot;John&quot;,&quot;Singh&quot;,&quot;JSINGH&quot;,&quot;44.1632.960000&quot;,&quot;01-OCT-14&quot;,&quot;SA_MAN&quot;,,0,100,80
-146,&quot;Karen&quot;,&quot;Partners&quot;,&quot;KPARTNER&quot;,&quot;44.1632.960001&quot;,&quot;05-JAN-15&quot;,&quot;SA_MAN&quot;,,0,100,80
-...</p>
-<p>このようにsalary列の存在が確認できます。</p>
+<section id="id3">
+<h3>ポリシーの削除と再作成<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>既存のVPDポリシーを削除し、新たに作成します。</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">VPDポリシーを削除</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">DROP_POLICY</span><span class="p">(</span>
+<span class="w">        </span><span class="n">object_schema</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;EMPLOYEES&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;employees_salary_col_vpd_policy&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">VPDポリシーを再作成</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">ADD_POLICY</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">object_schema</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;EMPLOYEES&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;employees_salary_col_vpd_policy&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">function_schema</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">policy_function</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;get_masking_salary_col&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">sec_relevant_cols</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SALARY&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">sec_relevant_cols_opt</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dbms_rls</span><span class="p">.</span><span class="n">ALL_ROWS</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id4">
+<h3>SALES_APPユーザーで確認する<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>SALES_APPユーザーで確認します。
+ポリシー再作成後、SALARY 列がNULL値として表示されます。</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">SALES_APPユーザー</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">first_name</span><span class="p">,</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+<span class="ss">&quot;FIRST_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;SALARY&quot;</span>
+<span class="ss">&quot;John&quot;</span><span class="w">      </span><span class="p">,</span>
+<span class="ss">&quot;Karen&quot;</span><span class="w">     </span><span class="p">,</span>
+<span class="ss">&quot;Alberto&quot;</span><span class="w">   </span><span class="p">,</span>
+<span class="ss">&quot;Gerald&quot;</span><span class="w">    </span><span class="p">,</span>
+<span class="ss">&quot;Eleni&quot;</span><span class="w">     </span><span class="p">,</span>
+<span class="ss">&quot;Sean&quot;</span><span class="w">      </span><span class="p">,</span>
+<span class="ss">&quot;David&quot;</span><span class="w">     </span><span class="p">,</span>
+<span class="ss">&quot;Peter&quot;</span><span class="w">     </span><span class="p">,</span>
+<span class="p">...</span>
+<span class="ss">&quot;Tayler&quot;</span><span class="w">    </span><span class="p">,</span>
+<span class="ss">&quot;William&quot;</span><span class="w">   </span><span class="p">,</span>
+<span class="ss">&quot;Elizabeth&quot;</span><span class="w"> </span><span class="p">,</span>
+<span class="ss">&quot;Sundita&quot;</span><span class="w">   </span><span class="p">,</span>
+<span class="ss">&quot;Ellen&quot;</span><span class="w">     </span><span class="p">,</span>
+<span class="ss">&quot;Alyssa&quot;</span><span class="w">    </span><span class="p">,</span>
+<span class="ss">&quot;Jonathon&quot;</span><span class="w">  </span><span class="p">,</span>
+<span class="ss">&quot;Jack&quot;</span><span class="w">      </span><span class="p">,</span>
+<span class="ss">&quot;Kimberely&quot;</span><span class="w"> </span><span class="p">,</span>
+<span class="ss">&quot;Charles&quot;</span><span class="w">   </span><span class="p">,</span>
+
+<span class="mi">35</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">employees</span><span class="p">;</span>
+<span class="ss">&quot;EMPLOYEE_ID&quot;</span><span class="p">,</span><span class="ss">&quot;FIRST_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;LAST_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;EMAIL&quot;</span><span class="p">,</span><span class="ss">&quot;PHONE_NUMBER&quot;</span><span class="p">,</span><span class="ss">&quot;HIRE_DATE&quot;</span><span class="p">,</span><span class="ss">&quot;JOB_ID&quot;</span><span class="p">,</span><span class="ss">&quot;SALARY&quot;</span><span class="p">,</span><span class="ss">&quot;COMMISSION_PCT&quot;</span><span class="p">,</span><span class="ss">&quot;MANAGER_ID&quot;</span><span class="p">,</span><span class="ss">&quot;DEPARTMENT_ID&quot;</span>
+<span class="mi">145</span><span class="p">,</span><span class="ss">&quot;John&quot;</span><span class="p">,</span><span class="ss">&quot;Singh&quot;</span><span class="p">,</span><span class="ss">&quot;JSINGH&quot;</span><span class="p">,</span><span class="ss">&quot;44.1632.960000&quot;</span><span class="p">,</span><span class="ss">&quot;01-OCT-14&quot;</span><span class="p">,</span><span class="ss">&quot;SA_MAN&quot;</span><span class="p">,,</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">80</span>
+<span class="mi">146</span><span class="p">,</span><span class="ss">&quot;Karen&quot;</span><span class="p">,</span><span class="ss">&quot;Partners&quot;</span><span class="p">,</span><span class="ss">&quot;KPARTNER&quot;</span><span class="p">,</span><span class="ss">&quot;44.1632.960001&quot;</span><span class="p">,</span><span class="ss">&quot;05-JAN-15&quot;</span><span class="p">,</span><span class="ss">&quot;SA_MAN&quot;</span><span class="p">,,</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">80</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</div>
+<p>このように、salary列はNULLになっていますが、SALES_APPユーザーでも他の列は通常どおり表示されていることがわかります。</p>
+</section>
 </section>
 </section>
 
@@ -613,7 +623,11 @@ DEPARTMENT_ID                                      NUMBER(4)</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">VPDポリシーの作成</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hr">HRユーザーで確認</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">SALES_APPユーザーで確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app-sec-relevant-cols-opt-dbms-rls-all-rows">SALES_APPユーザーで確認（sec_relevant_cols_opt =&gt; dbms_rls.ALL_ROWSとした場合）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#null-dbms-rls-all-rows">列をNULL値で表示する方法（dbms_rls.ALL_ROWS）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ポリシーの削除と再作成</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">SALES_APPユーザーで確認する</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
