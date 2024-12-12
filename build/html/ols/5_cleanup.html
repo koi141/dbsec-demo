@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>5. OLSの設定を削除する &#8212; dbsec-demo  ドキュメント</title>
+    <title>5. OLS設定の削除手順 &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'ols/5_cleanup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="prev" title="4. ラベルデータの処理" href="4_labelColumn.html" />
+    <link rel="prev" title="4. ラベルデータの処理とラベル列の非表示" href="4_labelColumn.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -170,20 +170,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -314,7 +325,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>5. OLSの設定を削除する</h1>
+    <h1>5. OLS設定の削除手順</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -324,12 +335,12 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">ポリシーの無効化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">ポリシーの無効化とスキーマからの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ユーザーラベルの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ラベルの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レベルの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ポリシーの削除</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">OLSを無効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#olspdb">OLSの無効化とPDBの再起動</a></li>
 </ul>
             </nav>
         </div>
@@ -342,116 +353,128 @@
                 <article class="bd-article">
                   
   <section id="ols">
-<h1>5. OLSの設定を削除する<a class="headerlink" href="#ols" title="Link to this heading">#</a></h1>
+<h1>5. OLS設定の削除手順<a class="headerlink" href="#ols" title="Link to this heading">#</a></h1>
+<p>以下の手順では、OLSのデモで設定したポリシー、ラベル、レベル、ユーザーアクセス権を削除し、そしてOLSを無効化します。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>VPD関数の削除</p></li>
-<li><p>VPDポリシーの削除</p></li>
+<li><p>ポリシーの無効化とスキーマからの削除</p></li>
+<li><p>ユーザーラベルの削除</p></li>
+<li><p>ラベルの削除</p></li>
+<li><p>レベルの削除</p></li>
+<li><p>ポリシーの削除</p></li>
+<li><p>OLSの無効化とPDBの再起動</p></li>
 </ul>
-<p>後のデモ内容と競合する可能性があるため、OLSデモで設定した関数・ポリシーを削除します。</p>
-<p>いきなり表を削除してもいいですが、念のためこれまでと逆の手順を踏む形で進めていきます。</p>
 <section id="id1">
-<h2>ポリシーの無効化<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>ポリシーの無効化とスキーマからの削除<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>指定したポリシーをスキーマから削除します。</p>
-<p>ポリシーはスキーマ内のすべての表から削除され、オプションでポリシーのラベル列がすべての表から削除されます。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_POLICY_ADMIN.REMOVE_SCHEMA_POLICY(</dt><dd><p>policy_name      =&gt; 'OLS_POL_DEMO',
-schema_name      =&gt; 'HR',
-drop_column      =&gt; TRUE);</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<p>スキーマ内のすべての表からポリシーを削除し、ラベル列もオプションで削除します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_POLICY_ADMIN</span><span class="p">.</span><span class="n">REMOVE_SCHEMA_POLICY</span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">schema_name</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">drop_column</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="id2">
 <h2>ユーザーラベルの削除<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>指定したユーザーからOracle Label Securityのすべての認可と権限を削除します。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_USER_ADMIN.DROP_USER_ACCESS (</dt><dd><p>policy_name   =&gt; 'OLS_POL_DEMO',
-user_name     =&gt; 'HR');</p>
-</dd>
-<dt>SA_USER_ADMIN.DROP_USER_ACCESS (</dt><dd><p>policy_name   =&gt; 'OLS_POL_DEMO',
-user_name     =&gt; 'SALES_APP');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<p>指定したユーザーから、OLSポリシーに関連するすべての認可を削除します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_USER_ADMIN</span><span class="p">.</span><span class="n">DROP_USER_ACCESS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">user_name</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_USER_ADMIN</span><span class="p">.</span><span class="n">DROP_USER_ACCESS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">user_name</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SALES_APP&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="id3">
 <h2>ラベルの削除<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_LABEL_ADMIN.DROP_LABEL (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-label_value  =&gt; 'SENS');</p>
-</dd>
-<dt>SA_LABEL_ADMIN.DROP_LABEL (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-label_value  =&gt; 'CONF');</p>
-</dd>
-<dt>SA_LABEL_ADMIN.DROP_LABEL (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-label_value  =&gt; 'INTL');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<p>ポリシー内で作成されたラベルを削除します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_LABEL_ADMIN</span><span class="p">.</span><span class="n">DROP_LABEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_value</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SENS&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_LABEL_ADMIN</span><span class="p">.</span><span class="n">DROP_LABEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_value</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;CONF&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_LABEL_ADMIN</span><span class="p">.</span><span class="n">DROP_LABEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_value</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTL&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="id4">
 <h2>レベルの削除<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<dl>
-<dt>BEGIN</dt><dd><p>SA_COMPONENTS.DROP_LEVEL (
-policy_name =&gt; 'OLS_POL_DEMO',
-short_name  =&gt; 'SENS');</p>
-<p>SA_COMPONENTS.DROP_LEVEL (
-policy_name =&gt; 'OLS_POL_DEMO',
-short_name  =&gt; 'CONF');</p>
-<p>SA_COMPONENTS.DROP_LEVEL (
-policy_name =&gt; 'OLS_POL_DEMO',
-short_name  =&gt; 'INTL');</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>注意：データ・ラベルまたはユーザー・ラベルで使用されているレベルは削除できません。</p>
+<p>ポリシーで使用されているレベルを削除します。ただし、データまたはユーザーラベルで使用中のレベルは削除できません。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_COMPONENTS</span><span class="p">.</span><span class="n">DROP_LEVEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">short_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SENS&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_COMPONENTS</span><span class="p">.</span><span class="n">DROP_LEVEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">short_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;CONF&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_COMPONENTS</span><span class="p">.</span><span class="n">DROP_LEVEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">short_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTL&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="id5">
 <h2>ポリシーの削除<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<p>無効化するプロシージャもありますが、削除する前に無効化する必要はありませんので、いきなり削除します。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_SYSDBA.DROP_POLICY (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-drop_column  =&gt; True);</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<p>ポリシーを削除します。削除の前に無効化する必要はありません。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_SYSDBA</span><span class="p">.</span><span class="n">DROP_POLICY</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">drop_column</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">True</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
-<section id="id6">
-<h2>OLSを無効化する<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
-<p>Database Vaultを使用している場合は無効化しないでください。</p>
-<p>EXEC LBACSYS.OLS_ENFORCEMENT.DISABLE_OLS;</p>
-<p>SQL&gt; col status for a20
-SQL&gt; col DESCRIPTION for a50
-SQL&gt; set lines 100
-SQL&gt; SELECT * FROM DBA_OLS_STATUS;</p>
-<p>NAME                 STATUS               DESCRIPTION
--------------------- -------------------- --------------------------------------------------
-OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
-OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
+<section id="olspdb">
+<h2>OLSの無効化とPDBの再起動<a class="headerlink" href="#olspdb" title="Link to this heading">#</a></h2>
+<p>OLSポリシーの施行を無効にします。
+ただし、Database Vaultを使用している場合は無効化しないでください。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">EXEC</span><span class="w"> </span><span class="n">LBACSYS</span><span class="p">.</span><span class="n">OLS_ENFORCEMENT</span><span class="p">.</span><span class="n">DISABLE_OLS</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>状態を確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a20</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">description</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a50</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">lines</span><span class="w"> </span><span class="mi">100</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_OLS_STATUS</span><span class="p">;</span>
+
+<span class="n">NAME</span><span class="w">                 </span><span class="n">STATUS</span><span class="w">               </span><span class="n">DESCRIPTION</span>
+<span class="c1">-------------------- -------------------- --------------------------------------------------</span>
+<span class="n">OLS_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">TRUE</span><span class="w">                 </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">configured</span>
+<span class="n">OLS_ENABLE_STATUS</span><span class="w">    </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span>
+</pre></div>
+</div>
 <p>FALSEとなり、無効化されたことが分かります。</p>
 <p>設定を完全に反映させるためにPDBの再起動を行います。</p>
-<p>SQL&gt; alter pluggable database freepdb1 close immediate;</p>
-<p>Pluggable database altered.</p>
-<p>SQL&gt; alter pluggable database freepdb1 open;</p>
-<p>Pluggable database altered.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">CDBにて実行</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">close</span><span class="w"> </span><span class="k">immediate</span><span class="p">;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">open</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
 <p>以上でOracle Label Securityのデモは終了です。</p>
 </section>
 </section>
@@ -473,7 +496,7 @@ OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">4. ラベルデータの処理</p>
+        <p class="prev-next-title">4. ラベルデータの処理とラベル列の非表示</p>
       </div>
     </a>
 </div>
@@ -493,12 +516,12 @@ OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">ポリシーの無効化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">ポリシーの無効化とスキーマからの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ユーザーラベルの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ラベルの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レベルの削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ポリシーの削除</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">OLSを無効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#olspdb">OLSの無効化とPDBの再起動</a></li>
 </ul>
   </nav></div>
 

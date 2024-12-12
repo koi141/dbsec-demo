@@ -186,8 +186,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="dv/1_setup.html">1. Database Vaultの有効化</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dv/2_authRealm.html">2. Database Vaultの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dv/3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dv/3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
@@ -195,8 +195,8 @@
 <li class="toctree-l1"><a class="reference internal" href="ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ols/3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ols/4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ols/5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -482,22 +482,21 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dv/1_setup.html">1. Database Vaultの有効化</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#dv">DVの構成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#cdb-root-dv">(CDB$ROOT) DV管理者ユーザーを作成する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#id1">(CDB$ROOT) DVの構成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#id2">(CDB$ROOT) DVを有効化する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#pdb">(PDB) 設定の確認</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#pdb-dv">(PDB) DVを有効化する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#id1">Database Vault の構成前確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#cdb-root-database-vault">(CDB$ROOT) Database Vault管理者ユーザーの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#id2">(CDB$ROOT) Database Vaultの構成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#id3">(CDB$ROOT) Database Vaultを有効化する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/1_setup.html#pdb-database-vault">(PDB) Database Vaultの構成と有効化</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dv/2_authRealm.html">2. Database Vaultの準備</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id1">確認</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id2">レルムを作成する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id3">レルムにオブジェクトを登録する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id4">レルム認可を行う</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#sys">SYSユーザーでの制約確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id1">レルムの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id2">オブジェクトのレルムへの登録</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dv/2_authRealm.html#id3">レルム認可の設定</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dv/3_checkDv.html">3. Database Vaultを確認する</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="dv/3_checkDv.html">3. Database Vaultの動作を確認する</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dv/3_checkDv.html#sys">SYSユーザー</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dv/3_checkDv.html#hrsales-app">HRユーザーおよびSALES_APPユーザー</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dv/3_checkDv.html#app">APPユーザー</a></li>
@@ -517,17 +516,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ols/1_setup.html">1. Oracle Label Securityの準備</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#id1">表の準備</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#id2">設定の確認</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#ols">OLSを有効化する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#id3">ポリシーを有効化する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#ols">OLSの構成確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#id2">OLSを有効化する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#id3">OLS設定に必要な権限の準備</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/1_setup.html#id4">OLSポリシーを作成し有効化する</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ols/2_setupPolicy.html">2. OLSポリシーの準備</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id1">レベルを作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id2">データ・ラベルを作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id3">ユーザー・ラベルを作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id2">データ・ラベルの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id3">ユーザー・ラベルの作成</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id4">表にポリシーを適用する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id5">データにラベルを付けていく</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/2_setupPolicy.html#id5">データにラベルを適用</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ols/3_checkOls.html">3. ラベル制御の確認</a><ul>
@@ -535,18 +535,18 @@
 <li class="toctree-l2"><a class="reference internal" href="ols/3_checkOls.html#sales-app">SALES_APPユーザーで接続する</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="ols/4_labelColumn.html">4. ラベルデータの処理</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="ols/4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ols/4_labelColumn.html#id2">データ・ラベルの表示</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/4_labelColumn.html#id3">ラベル列の非表示</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/4_labelColumn.html#id3">ラベル列の非表示設定</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="ols/5_cleanup.html">5. OLSの設定を削除する</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id1">ポリシーの無効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ols/5_cleanup.html">5. OLS設定の削除手順</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id1">ポリシーの無効化とスキーマからの削除</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id2">ユーザーラベルの削除</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id3">ラベルの削除</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id4">レベルの削除</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id5">ポリシーの削除</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#id6">OLSを無効化する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/5_cleanup.html#olspdb">OLSの無効化とPDBの再起動</a></li>
 </ul>
 </li>
 </ul>

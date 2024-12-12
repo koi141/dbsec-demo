@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>3. Database Vaultを確認する &#8212; dbsec-demo  ドキュメント</title>
+    <title>3. Database Vaultの動作を確認する &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -55,7 +55,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="4. Database Vaultを無効化する" href="4_cleanup.html" />
-    <link rel="prev" title="2. Database Vaultの準備" href="2_authRealm.html" />
+    <link rel="prev" title="2. Database Vaultの準備 (レルムの作成と認可)" href="2_authRealm.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -171,18 +171,22 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Database Vaultの有効化</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_authRealm.html">2. Database Vaultの準備</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Database Vaultの動作を確認する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
@@ -190,8 +194,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ols/3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -322,7 +326,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>3. Database Vaultを確認する</h1>
+    <h1>3. Database Vaultの動作を確認する</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -351,10 +355,13 @@
                 <article class="bd-article">
                   
   <section id="database-vault">
-<h1>3. Database Vaultを確認する<a class="headerlink" href="#database-vault" title="Link to this heading">#</a></h1>
+<h1>3. Database Vaultの動作を確認する<a class="headerlink" href="#database-vault" title="Link to this heading">#</a></h1>
+<p>レルムのアクセス制御、SYSユーザーの制限、そしてIPアドレス制限を使用したアクセス制御の動作を確認します。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>許可リストを作成する</p></li>
+<li><p>SYSユーザーのアクセス制限確認</p></li>
+<li><p>HRユーザーおよびSALES_APPユーザーのアクセス確認</p></li>
+<li><p>APPユーザーのIPアドレス制限確認</p></li>
 </ul>
 <section id="sys">
 <h2>SYSユーザー<a class="headerlink" href="#sys" title="Link to this heading">#</a></h2>
@@ -457,7 +464,7 @@ Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">2. Database Vaultの準備</p>
+        <p class="prev-next-title">2. Database Vaultの準備 (レルムの作成と認可)</p>
       </div>
     </a>
     <a class="right-next"

@@ -55,7 +55,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. OLSポリシーの準備" href="2_setupPolicy.html" />
-    <link rel="prev" title="4. Data SafeからSQL Firewallを設定する" href="../sqlfirewall/4_policycheck-datasafe.html" />
+    <link rel="prev" title="4. Database Vaultを無効化する" href="../dv/4_cleanup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -171,20 +171,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -326,12 +337,10 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">表の準備</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">設定の確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLSを有効化する</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#con-name">CON_NAME</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ポリシーを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLSの構成確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">OLSを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">OLS設定に必要な権限の準備</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">OLSポリシーを作成し有効化する</a></li>
 </ul>
             </nav>
         </div>
@@ -345,202 +354,158 @@
                   
   <section id="oracle-label-security">
 <h1>1. Oracle Label Securityの準備<a class="headerlink" href="#oracle-label-security" title="Link to this heading">#</a></h1>
+<p>この手順では、Oracle Label Security (OLS) を有効化し、ポリシーを作成・設定します。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
 <li><p>表の準備</p></li>
-<li><p>OLSの設定の確認</p></li>
+<li><p>OLSの構成確認</p></li>
+<li><p>OLSの有効化</p></li>
+<li><p>ポリシーの作成と有効化</p></li>
 </ul>
 <section id="id1">
 <h2>表の準備<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>ラベルを設定する表を別で作成してみます。</p>
-<p>今回はHRスキーマのJOB_HISTORY_LABELを使用することにします。</p>
-<p>SQL&gt; CREATE TABLE hr.job_history_4ols AS SELECT * FROM hr.job_history WHERE 1=0;  2</p>
-<p>Table created.</p>
-<p>SQL&gt; INSERT INTO hr.job_history_4ols SELECT * FROM hr.job_history;</p>
-<p>10 rows created.</p>
-<p>表ができたことを確認します</p>
-<p>SQL&gt; select * from hr.job_history_4ols;</p>
-<p>EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID
------------ --------- --------- ---------- -------------</p>
-<blockquote>
-<div><p>102 13-JAN-11 24-JUL-16 IT_PROG               60
-101 21-SEP-07 27-OCT-11 AC_ACCOUNT           110
-101 28-OCT-11 15-MAR-15 AC_MGR               110
-201 17-FEB-14 19-DEC-17 MK_REP                20
-114 24-MAR-16 31-DEC-17 ST_CLERK              50
-122 01-JAN-17 31-DEC-17 ST_CLERK              50
-200 17-SEP-05 17-JUN-11 AD_ASST               90
-176 24-MAR-16 31-DEC-16 SA_REP                80
-176 01-JAN-17 31-DEC-17 SA_MAN                80
-200 01-JUL-12 31-DEC-16 AC_ACCOUNT            90</p>
-</div></blockquote>
-<p>10 rows selected.</p>
-<dl>
-<dt>insert into HR.JOB_HISTORY_LABEL</dt><dd><dl>
-<dt>nologging</dt><dd><dl>
-<dt>select PROD_ID,</dt><dd><blockquote>
-<div><p>CUST_ID,
-TIME_ID+15*365+3, -- 年月日のデータを15年間進める
-CHANNEL_ID,
-PROMO_ID,
-QUANTITY_SOLD,
-AMOUNT_SOLD,
-rpad(to_char(mod(CUST_ID,30)),100,'dummy1'),
-rpad(to_char(mod(CUST_ID,30)),110,'dummy2')</p>
-</div></blockquote>
-<p>from SH.JOB_HISTORY;</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>commit;</p>
-</section>
-<section id="id2">
-<h2>設定の確認<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>OLSが構成されているかを確認します。DBA_SA_USER_PRIVSデータ・ディクショナリ・ビューを使用</p>
-<p>SQL&gt; col status for a20
-SQL&gt; col DESCRIPTION for a50
-SQL&gt; set lines 100
-SQL&gt; SELECT * FROM DBA_OLS_STATUS;</p>
-<p>NAME                 STATUS               DESCRIPTION
--------------------- -------------------- --------------------------------------------------
-OLS_CONFIGURE_STATUS FALSE                Determines if OLS is configured
-OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
-<p>ステータスの意味はそれぞれ以下の通りです。</p>
-<p>OLS_CONFIGURE_STATUS: Oracle Label Securityが構成されているかどうかを判断します。
-OLS_ENABLE_STATUS: Oracle Label Securityが有効化されているかどうかを判断します。</p>
-<p>CDBから各PDBの設定を見るには以下のようにします</p>
-<p>SQL&gt; set lines 200
-SQL&gt; SELECT * FROM CDB_OLS_STATUS;</p>
-<p>NAME                 STATUS               DESCRIPTION                                            CON_ID
--------------------- -------------------- -------------------------------------------------- ----------
-OLS_CONFIGURE_STATUS FALSE                Determines if OLS is configured                             1
-OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled                                1
-OLS_CONFIGURE_STATUS FALSE                Determines if OLS is configured                             3
-OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled                                3</p>
+<p>JOB_HISTORY表をコピーし、ラベルを設定する表を <code class="docutils literal notranslate"><span class="pre">HR.JOB_HISTORY_4OLS</span></code> として別途用意します。</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">FREEPDB1</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">job_history_4ols</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">job_history</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="mi">1</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">job_history_4ols</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">job_history</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>作成した表を確認します</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">FREEPDB1</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">job_history_4ols</span><span class="p">;</span>
+
+<span class="n">EMPLOYEE_ID</span><span class="w"> </span><span class="n">START_DAT</span><span class="w"> </span><span class="n">END_DATE</span><span class="w">  </span><span class="n">JOB_ID</span><span class="w">     </span><span class="n">DEPARTMENT_ID</span>
+<span class="c1">----------- --------- --------- ---------- -------------</span>
+<span class="w">        </span><span class="mi">102</span><span class="w"> </span><span class="mi">13</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">JUL</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">IT_PROG</span><span class="w">               </span><span class="mi">60</span>
+<span class="w">        </span><span class="mi">101</span><span class="w"> </span><span class="mi">21</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">07</span><span class="w"> </span><span class="mi">27</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="n">AC_ACCOUNT</span><span class="w">           </span><span class="mi">110</span>
+<span class="w">        </span><span class="mi">101</span><span class="w"> </span><span class="mi">28</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="mi">15</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">15</span><span class="w"> </span><span class="n">AC_MGR</span><span class="w">               </span><span class="mi">110</span>
+<span class="w">        </span><span class="mi">201</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">FEB</span><span class="o">-</span><span class="mi">14</span><span class="w"> </span><span class="mi">19</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">MK_REP</span><span class="w">                </span><span class="mi">20</span>
+<span class="w">        </span><span class="mi">114</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">ST_CLERK</span><span class="w">              </span><span class="mi">50</span>
+<span class="w">        </span><span class="mi">122</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">ST_CLERK</span><span class="w">              </span><span class="mi">50</span>
+<span class="w">        </span><span class="mi">200</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">05</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">JUN</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="n">AD_ASST</span><span class="w">               </span><span class="mi">90</span>
+<span class="w">        </span><span class="mi">176</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">SA_REP</span><span class="w">                </span><span class="mi">80</span>
+<span class="w">        </span><span class="mi">176</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">SA_MAN</span><span class="w">                </span><span class="mi">80</span>
+<span class="w">        </span><span class="mi">200</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JUL</span><span class="o">-</span><span class="mi">12</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">AC_ACCOUNT</span><span class="w">            </span><span class="mi">90</span>
+
+<span class="mi">10</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="ols">
-<h2>OLSを有効化する<a class="headerlink" href="#ols" title="Link to this heading">#</a></h2>
-<p>有効化していきます</p>
-<p>SQL&gt; show user con_name
-USER is &quot;SYS&quot;</p>
-<section id="con-name">
-<h3>CON_NAME<a class="headerlink" href="#con-name" title="Link to this heading">#</a></h3>
-<p>FREEPDB1</p>
-<p>SQL&gt; EXEC LBACSYS.CONFIGURE_OLS;</p>
-<p>PL/SQL procedure successfully completed.</p>
-<p>Oracle Label Securityをデータベースに登録する</p>
-<p>OLS機能のインストール、初期設定、および必要なDBオブジェクトの作成が含まれる。</p>
-<p>SQL&gt;  SELECT * FROM DBA_OLS_STATUS;</p>
-<p>NAME                 STATUS               DESCRIPTION
--------------------- -------------------- --------------------------------------------------
-OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
-OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled</p>
-<p>SQL&gt; EXEC LBACSYS.OLS_ENFORCEMENT.ENABLE_OLS;</p>
-<p>PL/SQL procedure successfully completed.</p>
-<p>ENABLE_OLSプロシージャは、OLSポリシーの施行を有効にします。これにより、設定されたラベルセキュリティポリシーがデータベース内で実際に適用され、ユーザーアクセスの制御が開始されます。</p>
-<p>SQL&gt; SELECT * FROM DBA_OLS_STATUS;</p>
-<p>NAME                 STATUS               DESCRIPTION
--------------------- -------------------- --------------------------------------------------
-OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
-OLS_ENABLE_STATUS    TRUE                 Determines if OLS is enabled</p>
-<p>権限を付与されたユーザーの確認
-LBAC_DBAはSA_SYSDBA PL/SQLパッケージの使用権限を提供する、事前定義ロールです</p>
-<p>SQL&gt; set markup csv on
-SQL&gt;  select * from dba_role_privs where granted_role = 'LBAC_DBA';
-&quot;GRANTEE&quot;,&quot;GRANTED_ROLE&quot;,&quot;ADMIN_OPTION&quot;,&quot;DELEGATE_OPTION&quot;,&quot;DEFAULT_ROLE&quot;,&quot;COMMON&quot;,&quot;INHERITED&quot;
-&quot;SYS&quot;,&quot;LBAC_DBA&quot;,&quot;YES&quot;,&quot;NO&quot;,&quot;YES&quot;,&quot;YES&quot;,&quot;YES&quot;
-&quot;LBACSYS&quot;,&quot;LBAC_DBA&quot;,&quot;YES&quot;,&quot;NO&quot;,&quot;YES&quot;,&quot;YES&quot;,&quot;YES&quot;</p>
-<p>設定を完全に反映させるためにPDBの再起動を行います。</p>
-<p>SQL&gt; alter pluggable database freepdb1 close immediate;</p>
-<p>Pluggable database altered.</p>
-<p>SQL&gt; alter pluggable database freepdb1 open;</p>
-<p>Pluggable database altered.</p>
+<h2>OLSの構成確認<a class="headerlink" href="#ols" title="Link to this heading">#</a></h2>
+<p>現在、OLSが構成されているかを確認します。DBA_SA_USER_PRIVSデータ・ディクショナリ・ビューを使用</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">FREEPDB1</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a20</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">DESCRIPTION</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a50</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">lines</span><span class="w"> </span><span class="mi">200</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_OLS_STATUS</span><span class="p">;</span>
+
+<span class="n">NAME</span><span class="w">                 </span><span class="n">STATUS</span><span class="w">               </span><span class="n">DESCRIPTION</span>
+<span class="c1">-------------------- -------------------- --------------------------------------------------</span>
+<span class="n">OLS_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">configured</span>
+<span class="n">OLS_ENABLE_STATUS</span><span class="w">    </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span>
+</pre></div>
+</div>
+</div>
+<p>ステータスの意味はそれぞれ以下になります。</p>
+<ul class="simple">
+<li><p>OLS_CONFIGURE_STATUS: Oracle Label Securityが構成されているかどうかを判断します。</p></li>
+<li><p>OLS_ENABLE_STATUS: Oracle Label Securityが有効化されているかどうかを判断します。</p></li>
+</ul>
+<p>CDB_OLS_STATUSビューを使用することで、CDB全体のOLS構成を確認することもできます。</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">CDB_OLS_STATUS</span><span class="p">;</span>
+
+<span class="n">NAME</span><span class="w">                 </span><span class="n">STATUS</span><span class="w">               </span><span class="n">DESCRIPTION</span><span class="w">                                            </span><span class="n">CON_ID</span>
+<span class="c1">-------------------- -------------------- -------------------------------------------------- ----------</span>
+<span class="n">OLS_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">configured</span><span class="w">                             </span><span class="mi">1</span>
+<span class="n">OLS_ENABLE_STATUS</span><span class="w">    </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span><span class="w">                                </span><span class="mi">1</span>
+<span class="n">OLS_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">configured</span><span class="w">                             </span><span class="mi">3</span>
+<span class="n">OLS_ENABLE_STATUS</span><span class="w">    </span><span class="k">FALSE</span><span class="w">                </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span><span class="w">                                </span><span class="mi">3</span>
+</pre></div>
+</div>
+</div>
 </section>
+<section id="id2">
+<h2>OLSを有効化する<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>SYSユーザーでFREEPDB1にて以下を実行し、OLSを構成します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- ユーザー名とDBの確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">con_name</span>
+<span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;SYS&quot;</span>
+
+<span class="n">CON_NAME</span>
+<span class="c1">------------------------------</span>
+<span class="n">FREEPDB1</span>
+
+<span class="c1">-- OLSを構成する</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">EXEC</span><span class="w"> </span><span class="n">LBACSYS</span><span class="p">.</span><span class="n">CONFIGURE_OLS</span><span class="p">;</span>
+
+<span class="c1">-- OLSを有効化する</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">EXEC</span><span class="w"> </span><span class="n">LBACSYS</span><span class="p">.</span><span class="n">OLS_ENFORCEMENT</span><span class="p">.</span><span class="n">ENABLE_OLS</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>再度 DBA_OLS_STATUS を確認し、2つの設定がTRUEになっていることを確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_OLS_STATUS</span><span class="p">;</span>
+
+<span class="n">NAME</span><span class="w">                 </span><span class="n">STATUS</span><span class="w">               </span><span class="n">DESCRIPTION</span>
+<span class="c1">-------------------- -------------------- --------------------------------------------------</span>
+<span class="n">OLS_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">TRUE</span><span class="w">                 </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">configured</span>
+<span class="n">OLS_ENABLE_STATUS</span><span class="w">    </span><span class="k">TRUE</span><span class="w">                 </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span>
+</pre></div>
+</div>
+<p>設定を完全に反映させるため、FREEPDB1の再起動を行います。</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">CDBにて実行</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">close</span><span class="w"> </span><span class="k">immediate</span><span class="p">;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">open</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id3">
-<h2>ポリシーを有効化する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>新規のOracle Label Securityポリシーを作成し、
-ポリシー固有の列名を定義して、デフォルト・ポリシー・オプションを指定します。</p>
-<p>ポリシーを作成すると、そのロールが作成され、ユーザーに付与されます。
-ラベルやセキュリティポリシーを管理するための論理的なグループである「ポリシーコンテナ」を作成します。
-ポリシーコンテナは、これらのポリシーとラベル、そしてその他の関連する設定を論理的にまとめたものです。つまり、ポリシーコンテナは、データに付加されるラベルや、これらラベルに基づくアクセス制御ルールの適用方法を一元管理する「枠組み」を提供します。</p>
-<p>主にラベルとポリシーから構成されます。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_SYSDBA.CREATE_POLICY (</dt><dd><p>policy_name      =&gt; 'OLS_POL_DEMO',
-column_name      =&gt; 'OLS_LABEL_DEMO');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>sysユーザーで構成しようとすると以下のエラーがでます</p>
-<p>ORA-06598: insufficient INHERIT PRIVILEGES privilege
-ORA-06512: at &quot;LBACSYS.SA_SYSDBA&quot;, line 1
-ORA-06512: at line 2
-Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-06598/">https://docs.oracle.com/error-help/db/ora-06598/</a></p>
-<p>LABACSYSユーザーでPL/SQLの権限</p>
-<p>「実行者権限プログラム」とは、プログラムを実行したユーザーの権限で実行される PL/SQL プログラムのこと</p>
-<p>PL/SQLは所有者の権限で実行されるため、強い権限を持つユーザーAのプログラムの実行権限を他ユーザーBに与えてしまった際、BはAの持っている強力な権限を使って処理を実行することができてしまいます。これは非常に危険で、誤った設定により予期しない権限を第三者に与える可能性が出てきます。
-Oracle のデフォルトの仕組みでは、プログラムの所有者が「実行してもいいよ」と一方的に許可するだけで実行が可能になります。</p>
-<p>そこで12cより、INHERIT PRIVILEGES権限が登場しました。この権限は、どのスキーマの「実行者権限」プログラムを実行してもよいかを、実行ユーザー側で制御するためのものです。</p>
-<p>SYS ユーザーが LBACSYS の権限を継承してそのパッケージを利用することを許可する設定（INHERIT PRIVILEGES）が明示的に付与されていないため、エラーが発生しているのです。</p>
-<p>INHERIT PRIVILEGES はユーザーが他のユーザーから権限を「継承」して実行するかどうかを制御するためのもので、特に高権限のユーザーに対するセキュリティ強化のために導入されました。
-デフォルトでは、INHERIT PRIVILEGES 権限は PUBLIC に付与されているため、すべてのユーザーが他のユーザーのプログラムを継承して実行できる設定になっていますが、高権限ユーザーに対してはこの権限が制限されています。</p>
-<p>SYSユーザーにはPUBLICからSYSにINHERIT PRIVILEGES 権限が付与されていないことが分かります。</p>
-<blockquote>
-<div><p>SQL&gt; SELECT grantee, grantor, privilege FROM   DBA_tab_privs WHERE  privilege = 'INHERIT PRIVILEGES';
-&quot;GRANTEE&quot;,&quot;GRANTOR&quot;,&quot;PRIVILEGE&quot;
-&quot;GSMADMIN_INTERNAL&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;CTXSYS&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;XDB&quot;,&quot;SYS&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;PUBLIC&quot;,&quot;PUBLIC&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;CTXSYS&quot;,&quot;GSMADMIN_INTERNAL&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;XDB&quot;,&quot;GSMADMIN_INTERNAL&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;GSMADMIN_INTERNAL&quot;,&quot;GSMCATUSER&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;CTXSYS&quot;,&quot;XDB&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;PUBLIC&quot;,&quot;HR&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;PUBLIC&quot;,&quot;SALES_APP&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;PUBLIC&quot;,&quot;LBAC_TRIGGER&quot;,&quot;INHERIT PRIVILEGES&quot;
-&quot;PUBLIC&quot;,&quot;XS$NULL&quot;,&quot;INHERIT PRIVILEGES&quot;</p>
-</div></blockquote>
-<p>そのため、SYS ユーザーはデフォルトでは他のスキーマが所有する「実行者権限」のプログラムを実行するための継承権限を持っていないことがわかります。</p>
-<p>以下が確認できます:</p>
-<p>PUBLIC に対しては複数のユーザー（例: HR, SALES_APP, LBAC_TRIGGER など）から INHERIT PRIVILEGES が付与されていますが、SYS に対してはそのような付与が行われていません。
-これは、SYS ユーザーのような非常に強力な権限を持つユーザーが、他のユーザーの持つプログラムを無制限に実行してしまうことを防ぐためです。
-このため、SYS ユーザーで LBACSYS の CREATE_POLICY を実行しようとした場合、INHERIT PRIVILEGES が付与されていないためにエラーが発生します。
-このセキュリティ設定により、権限の強いユーザーであっても、明示的な許可なしには他のスキーマの権限を使用できないようにすることで、データベースの安全性が向上しています。</p>
-<p>SYS ユーザーに対して LBACSYS からの INHERIT PRIVILEGES 権限を付与します。以下のSQLを使って付与できます。</p>
-<blockquote>
-<div><p>GRANT INHERIT PRIVILEGES ON USER SYS TO LBACSYS</p>
-</div></blockquote>
-<p>結果の <code class="docutils literal notranslate"><span class="pre">Grant</span> <span class="pre">succeeded.</span></code> を確認し、再度実行します。</p>
-<blockquote>
-<div><dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_SYSDBA.CREATE_POLICY (</dt><dd><p>policy_name      =&gt; 'OLS_POL_DEMO',
-column_name      =&gt; 'OLS_LABEL_DEMO');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-</div></blockquote>
-<p><code class="docutils literal notranslate"><span class="pre">PL/SQL</span> <span class="pre">procedure</span> <span class="pre">successfully</span> <span class="pre">completed.</span></code> が表示され、無事実行できるはずです。</p>
-<p><a class="reference external" href="https://connor-mcdonald.com/2018/10/31/the-strange-place-for-inherit-privileges/">https://connor-mcdonald.com/2018/10/31/the-strange-place-for-inherit-privileges/</a></p>
-<dl class="simple">
-<dt>取り消す場合は以下です</dt><dd><p>REVOKE INHERIT PRIVILEGES ON USER SYS FROM LBACSYS;</p>
-</dd>
-</dl>
-<p>ではポリシーを有効にします。</p>
-<blockquote>
-<div><p>EXEC SA_SYSDBA.ENABLE_POLICY ('OLS_POL_DEMO');</p>
-</div></blockquote>
+<h2>OLS設定に必要な権限の準備<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>OLSを操作するためのロール、LBAC_DBAロールを持っているユーザーを確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dba_role_privs</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">granted_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;LBAC_DBA&#39;</span><span class="p">;</span>
+<span class="ss">&quot;GRANTEE&quot;</span><span class="p">,</span><span class="ss">&quot;GRANTED_ROLE&quot;</span><span class="p">,</span><span class="ss">&quot;ADMIN_OPTION&quot;</span><span class="p">,</span><span class="ss">&quot;DELEGATE_OPTION&quot;</span><span class="p">,</span><span class="ss">&quot;DEFAULT_ROLE&quot;</span><span class="p">,</span><span class="ss">&quot;COMMON&quot;</span><span class="p">,</span><span class="ss">&quot;INHERITED&quot;</span>
+<span class="ss">&quot;SYS&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;LBAC_DBA&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="w">         </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w">             </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="w">         </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span>
+<span class="ss">&quot;LBACSYS&quot;</span><span class="p">,</span><span class="ss">&quot;LBAC_DBA&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="w">         </span><span class="p">,</span><span class="ss">&quot;NO&quot;</span><span class="w">             </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="w">         </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;YES&quot;</span>
+</pre></div>
+</div>
+<p>今後のOLS操作をSYSユーザーで行う場合、SA_SYSDBAパッケージの実行に対して以下のエラーが発生するため、INHERIT PRIVILEGES権限が必要になります。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ORA</span><span class="o">-</span><span class="mi">06598</span><span class="p">:</span><span class="w"> </span><span class="n">insufficient</span><span class="w"> </span><span class="n">INHERIT</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="n">privilege</span>
+</pre></div>
+</div>
+<p>そのため、SYS ユーザーがLBACSYSの権限を継承できるよう、INHERIT PRIVILEGES を付与します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span><span class="w"> </span><span class="n">INHERIT</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SYS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">LBACSYS</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2>OLSポリシーを作成し有効化する<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>OLSポリシー（またはポリシーコンテナ）を作成します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_SYSDBA</span><span class="p">.</span><span class="n">CREATE_POLICY</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">column_name</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_LABEL_DEMO&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">PL/SQL</span> <span class="pre">procedure</span> <span class="pre">successfully</span> <span class="pre">completed.</span></code> が表示され、無事実行されたことを確認します。</p>
+<p>作成したポリシーを有効化します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">EXEC</span><span class="w"> </span><span class="n">SA_SYSDBA</span><span class="p">.</span><span class="n">ENABLE_POLICY</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>これでOracle Label Securityの準備および設定は完了です。</p>
 </section>
 </section>
 
@@ -556,12 +521,12 @@ column_name      =&gt; 'OLS_LABEL_DEMO');</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../sqlfirewall/4_policycheck-datasafe.html"
+       href="../dv/4_cleanup.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">4. Data SafeからSQL Firewallを設定する</p>
+        <p class="prev-next-title">4. Database Vaultを無効化する</p>
       </div>
     </a>
     <a class="right-next"
@@ -591,12 +556,10 @@ column_name      =&gt; 'OLS_LABEL_DEMO');</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">表の準備</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">設定の確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLSを有効化する</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#con-name">CON_NAME</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ポリシーを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLSの構成確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">OLSを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">OLS設定に必要な権限の準備</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">OLSポリシーを作成し有効化する</a></li>
 </ul>
   </nav></div>
 

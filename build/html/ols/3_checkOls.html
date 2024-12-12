@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'ols/3_checkOls';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="4. ラベルデータの処理" href="4_labelColumn.html" />
+    <link rel="next" title="4. ラベルデータの処理とラベル列の非表示" href="4_labelColumn.html" />
     <link rel="prev" title="2. OLSポリシーの準備" href="2_setupPolicy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -171,20 +171,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -340,74 +351,90 @@
                   
   <section id="id1">
 <h1>3. ラベル制御の確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>OLSのポリシーがユーザーごとに適切に適用されていることを確認します。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>HRユーザーで接続する</p></li>
-<li><p>SALES_APPユーザーで接続する</p></li>
+<li><p>HRユーザーでのラベル制御確認</p></li>
+<li><p>SALES_APPユーザーでのラベル制御確認</p></li>
 </ul>
 <section id="hr">
 <h2>HRユーザーで接続する<a class="headerlink" href="#hr" title="Link to this heading">#</a></h2>
-<p>SQL&gt; select * from HR.JOB_HISTORY_4OLS;</p>
-<p>EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID OLS_LABEL_DEMO
------------ --------- --------- ---------- ------------- --------------</p>
-<blockquote>
-<div><p>102 13-JAN-11 24-JUL-16 IT_PROG               60            200
-101 21-SEP-07 27-OCT-11 AC_ACCOUNT           110            300
-101 28-OCT-11 15-MAR-15 AC_MGR               110            400
-201 17-FEB-14 19-DEC-17 MK_REP                20            300
-114 24-MAR-16 31-DEC-17 ST_CLERK              50            200
-122 01-JAN-17 31-DEC-17 ST_CLERK              50            200
-200 17-SEP-05 17-JUN-11 AD_ASST               90            200
-176 24-MAR-16 31-DEC-16 SA_REP                80            300
-176 01-JAN-17 31-DEC-17 SA_MAN                80            400
-200 01-JUL-12 31-DEC-16 AC_ACCOUNT            90            300</p>
-</div></blockquote>
-<p>10 rows selected.</p>
-<p>SQL&gt; col label for a20
-SQL&gt; select JOB_ID, LABEL_TO_CHAR(OLS_LABEL_DEMO) LABEL  from HR.JOB_HISTORY_4OLS;</p>
-<p>JOB_ID     LABEL
----------- --------------------
-IT_PROG    INTL
-AC_ACCOUNT CONF
-AC_MGR     SENS
-MK_REP     CONF
-ST_CLERK   INTL
-ST_CLERK   INTL
-AD_ASST    INTL
-SA_REP     CONF
-SA_MAN     SENS
-AC_ACCOUNT CONF</p>
-<p>10 rows selected.</p>
+<p>HRユーザーで接続し、JOB_HISTORY_4OLS表を参照します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span><span class="p">;</span>
+
+<span class="n">EMPLOYEE_ID</span><span class="w"> </span><span class="n">START_DAT</span><span class="w"> </span><span class="n">END_DATE</span><span class="w">  </span><span class="n">JOB_ID</span><span class="w">     </span><span class="n">DEPARTMENT_ID</span><span class="w"> </span><span class="n">OLS_LABEL_DEMO</span>
+<span class="c1">----------- --------- --------- ---------- ------------- --------------</span>
+<span class="w">        </span><span class="mi">102</span><span class="w"> </span><span class="mi">13</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">JUL</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">IT_PROG</span><span class="w">               </span><span class="mi">60</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">101</span><span class="w"> </span><span class="mi">21</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">07</span><span class="w"> </span><span class="mi">27</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="n">AC_ACCOUNT</span><span class="w">           </span><span class="mi">110</span><span class="w">            </span><span class="mi">300</span>
+<span class="w">        </span><span class="mi">101</span><span class="w"> </span><span class="mi">28</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="mi">15</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">15</span><span class="w"> </span><span class="n">AC_MGR</span><span class="w">               </span><span class="mi">110</span><span class="w">            </span><span class="mi">400</span>
+<span class="w">        </span><span class="mi">201</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">FEB</span><span class="o">-</span><span class="mi">14</span><span class="w"> </span><span class="mi">19</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">MK_REP</span><span class="w">                </span><span class="mi">20</span><span class="w">            </span><span class="mi">300</span>
+<span class="w">        </span><span class="mi">114</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">ST_CLERK</span><span class="w">              </span><span class="mi">50</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">122</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">ST_CLERK</span><span class="w">              </span><span class="mi">50</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">200</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">05</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">JUN</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="n">AD_ASST</span><span class="w">               </span><span class="mi">90</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">176</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">SA_REP</span><span class="w">                </span><span class="mi">80</span><span class="w">            </span><span class="mi">300</span>
+<span class="w">        </span><span class="mi">176</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">SA_MAN</span><span class="w">                </span><span class="mi">80</span><span class="w">            </span><span class="mi">400</span>
+<span class="w">        </span><span class="mi">200</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JUL</span><span class="o">-</span><span class="mi">12</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">AC_ACCOUNT</span><span class="w">            </span><span class="mi">90</span><span class="w">            </span><span class="mi">300</span>
+
+<span class="mi">10</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a20</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">JOB_ID</span><span class="p">,</span><span class="w"> </span><span class="n">LABEL_TO_CHAR</span><span class="p">(</span><span class="n">OLS_LABEL_DEMO</span><span class="p">)</span><span class="w"> </span><span class="n">LABEL</span><span class="w">  </span><span class="k">from</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span><span class="p">;</span>
+
+<span class="n">JOB_ID</span><span class="w">     </span><span class="n">LABEL</span>
+<span class="c1">---------- --------------------</span>
+<span class="n">IT_PROG</span><span class="w">    </span><span class="n">INTL</span>
+<span class="n">AC_ACCOUNT</span><span class="w"> </span><span class="n">CONF</span>
+<span class="n">AC_MGR</span><span class="w">     </span><span class="n">SENS</span>
+<span class="n">MK_REP</span><span class="w">     </span><span class="n">CONF</span>
+<span class="n">ST_CLERK</span><span class="w">   </span><span class="n">INTL</span>
+<span class="n">ST_CLERK</span><span class="w">   </span><span class="n">INTL</span>
+<span class="n">AD_ASST</span><span class="w">    </span><span class="n">INTL</span>
+<span class="n">SA_REP</span><span class="w">     </span><span class="n">CONF</span>
+<span class="n">SA_MAN</span><span class="w">     </span><span class="n">SENS</span>
+<span class="n">AC_ACCOUNT</span><span class="w"> </span><span class="n">CONF</span>
+
+<span class="mi">10</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
+<p>HRユーザーは最大レベルSENSから最小レベルINTLのすべてのデータを表示可能です。</p>
 </section>
 <section id="sales-app">
 <h2>SALES_APPユーザーで接続する<a class="headerlink" href="#sales-app" title="Link to this heading">#</a></h2>
-<p>SQL&gt; select * from HR.JOB_HISTORY_4OLS;</p>
-<p>EMPLOYEE_ID START_DAT END_DATE  JOB_ID     DEPARTMENT_ID OLS_LABEL_DEMO
------------ --------- --------- ---------- ------------- --------------</p>
-<blockquote>
-<div><p>102 13-JAN-11 24-JUL-16 IT_PROG               60            200
-101 21-SEP-07 27-OCT-11 AC_ACCOUNT           110            300
-201 17-FEB-14 19-DEC-17 MK_REP                20            300
-114 24-MAR-16 31-DEC-17 ST_CLERK              50            200
-122 01-JAN-17 31-DEC-17 ST_CLERK              50            200
-200 17-SEP-05 17-JUN-11 AD_ASST               90            200
-176 24-MAR-16 31-DEC-16 SA_REP                80            300
-200 01-JUL-12 31-DEC-16 AC_ACCOUNT            90            300</p>
-</div></blockquote>
-<p>8 rows selected.</p>
-<p>SQL&gt; col label for a20
-SQL&gt; select JOB_ID, LABEL_TO_CHAR(OLS_LABEL_DEMO) LABEL  from HR.JOB_HISTORY_4OLS;</p>
-<p>JOB_ID     LABEL
----------- --------------------
-IT_PROG    INTL
-AC_ACCOUNT CONF
-MK_REP     CONF
-ST_CLERK   INTL
-ST_CLERK   INTL
-AD_ASST    INTL
-SA_REP     CONF
-AC_ACCOUNT CONF</p>
-<p>8 rows selected.</p>
+<p>一方、SALES_APPユーザーで接続し、JOB_HISTORY_4OLS表を参照します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span><span class="p">;</span>
+
+<span class="n">EMPLOYEE_ID</span><span class="w"> </span><span class="n">START_DAT</span><span class="w"> </span><span class="n">END_DATE</span><span class="w">  </span><span class="n">JOB_ID</span><span class="w">     </span><span class="n">DEPARTMENT_ID</span><span class="w"> </span><span class="n">OLS_LABEL_DEMO</span>
+<span class="c1">----------- --------- --------- ---------- ------------- --------------</span>
+<span class="w">        </span><span class="mi">102</span><span class="w"> </span><span class="mi">13</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">JUL</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">IT_PROG</span><span class="w">               </span><span class="mi">60</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">101</span><span class="w"> </span><span class="mi">21</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">07</span><span class="w"> </span><span class="mi">27</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="n">AC_ACCOUNT</span><span class="w">           </span><span class="mi">110</span><span class="w">            </span><span class="mi">300</span>
+<span class="w">        </span><span class="mi">201</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">FEB</span><span class="o">-</span><span class="mi">14</span><span class="w"> </span><span class="mi">19</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">MK_REP</span><span class="w">                </span><span class="mi">20</span><span class="w">            </span><span class="mi">300</span>
+<span class="w">        </span><span class="mi">114</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">ST_CLERK</span><span class="w">              </span><span class="mi">50</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">122</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JAN</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">17</span><span class="w"> </span><span class="n">ST_CLERK</span><span class="w">              </span><span class="mi">50</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">200</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">05</span><span class="w"> </span><span class="mi">17</span><span class="o">-</span><span class="n">JUN</span><span class="o">-</span><span class="mi">11</span><span class="w"> </span><span class="n">AD_ASST</span><span class="w">               </span><span class="mi">90</span><span class="w">            </span><span class="mi">200</span>
+<span class="w">        </span><span class="mi">176</span><span class="w"> </span><span class="mi">24</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">SA_REP</span><span class="w">                </span><span class="mi">80</span><span class="w">            </span><span class="mi">300</span>
+<span class="w">        </span><span class="mi">200</span><span class="w"> </span><span class="mi">01</span><span class="o">-</span><span class="n">JUL</span><span class="o">-</span><span class="mi">12</span><span class="w"> </span><span class="mi">31</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">16</span><span class="w"> </span><span class="n">AC_ACCOUNT</span><span class="w">            </span><span class="mi">90</span><span class="w">            </span><span class="mi">300</span>
+
+<span class="mi">8</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a20</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">JOB_ID</span><span class="p">,</span><span class="w"> </span><span class="n">LABEL_TO_CHAR</span><span class="p">(</span><span class="n">OLS_LABEL_DEMO</span><span class="p">)</span><span class="w"> </span><span class="n">LABEL</span><span class="w">  </span><span class="k">from</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span><span class="p">;</span>
+
+<span class="n">JOB_ID</span><span class="w">     </span><span class="n">LABEL</span>
+<span class="c1">---------- --------------------</span>
+<span class="n">IT_PROG</span><span class="w">    </span><span class="n">INTL</span>
+<span class="n">AC_ACCOUNT</span><span class="w"> </span><span class="n">CONF</span>
+<span class="n">MK_REP</span><span class="w">     </span><span class="n">CONF</span>
+<span class="n">ST_CLERK</span><span class="w">   </span><span class="n">INTL</span>
+<span class="n">ST_CLERK</span><span class="w">   </span><span class="n">INTL</span>
+<span class="n">AD_ASST</span><span class="w">    </span><span class="n">INTL</span>
+<span class="n">SA_REP</span><span class="w">     </span><span class="n">CONF</span>
+<span class="n">AC_ACCOUNT</span><span class="w"> </span><span class="n">CONF</span>
+
+<span class="mi">8</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
+<p>SALES_APPユーザーは最大レベルCONFから最小レベルINTLのデータのみ表示可能です。
+そのため、SENSレベルのデータ（AC_MGRやSA_MANなど）は表示されていません。</p>
 </section>
 </section>
 
@@ -436,7 +463,7 @@ AC_ACCOUNT CONF</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">4. ラベルデータの処理</p>
+        <p class="prev-next-title">4. ラベルデータの処理とラベル列の非表示</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

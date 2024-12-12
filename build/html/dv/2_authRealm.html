@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>2. Database Vaultの準備 &#8212; dbsec-demo  ドキュメント</title>
+    <title>2. Database Vaultの準備 (レルムの作成と認可) &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'dv/2_authRealm';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="3. Database Vaultを確認する" href="3_checkDv.html" />
+    <link rel="next" title="3. Database Vaultの動作を確認する" href="3_checkDv.html" />
     <link rel="prev" title="1. Database Vaultの有効化" href="1_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -171,18 +171,22 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Database Vaultの有効化</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Database Vaultの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
@@ -190,8 +194,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ols/3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -322,7 +326,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>2. Database Vaultの準備</h1>
+    <h1>2. Database Vaultの準備 (レルムの作成と認可)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -332,10 +336,10 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルムを作成する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルムにオブジェクトを登録する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レルム認可を行う</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sys">SYSユーザーでの制約確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">レルムの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">オブジェクトのレルムへの登録</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルム認可の設定</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hr">所有者(HR)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">参加者(SALES_APPユーザー)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#app">参加者(APPユーザー)</a></li>
@@ -353,222 +357,232 @@
                 <article class="bd-article">
                   
   <section id="database-vault">
-<h1>2. Database Vaultの準備<a class="headerlink" href="#database-vault" title="Link to this heading">#</a></h1>
+<h1>2. Database Vaultの準備 (レルムの作成と認可)<a class="headerlink" href="#database-vault" title="Link to this heading">#</a></h1>
+<p>DB Vaultのレルムを作成し、指定したオブジェクトをレルムに追加します。
+また、ユーザーにアクセス権を付与し、条件付きでアクセスを制御する、レルム認可を設定します。</p>
 <p><strong>実施内容</strong></p>
-<ul class="simple">
-<li><p>許可リストを作成する</p></li>
+<ul>
+<li><p>SYSユーザーでの制約確認</p></li>
+<li><p>レルムの作成とオブジェクト登録</p></li>
+<li><p>レルム認可の設定</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>所有者としての認可</p></li>
+<li><p>参加者としての認可</p></li>
+<li><p>IP制限付き認可の設定</p></li>
 </ul>
+</div></blockquote>
+</li>
+</ul>
+<section id="sys">
+<h2>SYSユーザーでの制約確認<a class="headerlink" href="#sys" title="Link to this heading">#</a></h2>
+<p>Database Vaultを有効化した時点でSYSユーザーによる管理操作が制限され、ユーザーが作成できないことが分かります。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span>
+<span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;SYS&quot;</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+<span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">test</span>
+<span class="o">*</span>
+<span class="n">ERROR</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="n">ORA</span><span class="o">-</span><span class="mi">01031</span><span class="p">:</span><span class="w"> </span><span class="n">insufficient</span><span class="w"> </span><span class="k">privileges</span>
+<span class="n">Help</span><span class="p">:</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="p">.</span><span class="n">oracle</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">error</span><span class="o">-</span><span class="n">help</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">ora</span><span class="o">-</span><span class="mi">01031</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>この時点ではレルムはまだ作成していないため、表は参照できます。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">jobs</span><span class="p">;</span>
+
+<span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="c1">----------</span>
+<span class="w">        </span><span class="mi">19</span>
+</pre></div>
+</div>
+</section>
 <section id="id1">
-<h2>確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>有効化した時点でSYSユーザーではユーザーが作成できないことが確認できます。</p>
-<blockquote>
-<div><p>SQL&gt; show user
-USER is &quot;SYS&quot;
-SQL&gt; create user test;
-create user test
-*
-ERROR at line 1:
-ORA-01031: insufficient privileges
-Help: <a class="reference external" href="https://docs.oracle.com/error-help/db/ora-01031/">https://docs.oracle.com/error-help/db/ora-01031/</a></p>
-</div></blockquote>
-<p>レルムはまだ作成していないので、表を参照することはできます。</p>
-<blockquote>
-<div><p>SQL&gt; select count(*) from hr.jobs;</p>
-<blockquote>
-<div><p>19</p>
-</div></blockquote>
-</div></blockquote>
+<h2>レルムの作成<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>以下のSQLで、デモ用のレルムを作成します。(*)はデフォルトで設定されるもののため、明示的に設定する必要はありません。</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">CREATE_REALM</span><span class="p">(</span>
+<span class="w">        </span><span class="n">realm_name</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span><span class="w">              </span><span class="c1">-- レルム名</span>
+<span class="w">        </span><span class="n">description</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;This realm is created for demonstration&#39;</span><span class="p">,</span><span class="w">  </span><span class="c1">-- レルムの説明</span>
+<span class="w">        </span><span class="n">enabled</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_YES</span><span class="p">,</span><span class="w">             </span><span class="c1">-- (*)作成直後から有効化</span>
+<span class="w">        </span><span class="n">audit_options</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_REALM_AUDIT_OFF</span><span class="p">,</span><span class="w"> </span><span class="c1">-- (*)レルムの監査を無効</span>
+<span class="w">        </span><span class="n">realm_type</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">                             </span><span class="c1">-- 必須レルムを有効化</span>
+<span class="w">        </span><span class="n">realm_scope</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_SCOPE_LOCAL</span><span class="p">,</span><span class="w">     </span><span class="c1">-- (*)レルムはローカルの範囲で動作</span>
+<span class="w">        </span><span class="n">pl_sql_stack</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">FALSE</span><span class="w">                          </span><span class="c1">-- (*)PL/SQLスタック検証は行わない</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>作成したレルムは <code class="docutils literal notranslate"><span class="pre">DVSYS.DBA_DV_REALM</span></code> から確認することができます。</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">realm_type</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dvsys</span><span class="p">.</span><span class="n">dba_dv_realm</span><span class="p">;</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">                                             </span><span class="p">,</span><span class="ss">&quot;DESCRIPTION&quot;</span><span class="w">                                                                                                                                       </span><span class="p">,</span><span class="ss">&quot;REALM_TYPE&quot;</span>
+<span class="ss">&quot;Oracle Database Vault&quot;</span><span class="w">                            </span><span class="p">,</span><span class="ss">&quot;Defines the realm for the Oracle Database Vault schemas - DVSYS and DVF where Database Vault access control configuration and roles are contained.&quot;</span><span class="p">,</span><span class="ss">&quot;MANDATORY&quot;</span>
+<span class="ss">&quot;Oracle Label Security&quot;</span><span class="w">                            </span><span class="p">,</span><span class="ss">&quot;Defines the realm for the Oracle Label Security schemas and roles - LBACSYS and LBAC_DBA.&quot;</span><span class="w">                                                         </span><span class="p">,</span><span class="ss">&quot;MANDATORY&quot;</span>
+<span class="ss">&quot;Database Vault Account Management&quot;</span><span class="w">                </span><span class="p">,</span><span class="ss">&quot;Defines the realm for administrators who create and manage database accounts and profiles.&quot;</span><span class="w">                                                        </span><span class="p">,</span><span class="ss">&quot;REGULAR&quot;</span>
+<span class="ss">&quot;Oracle Enterprise Manager&quot;</span><span class="w">                        </span><span class="p">,</span><span class="ss">&quot;Defines the Enterprise Manager monitoring and management realm.&quot;</span><span class="w">                                                                                   </span><span class="p">,</span><span class="ss">&quot;REGULAR&quot;</span>
+<span class="ss">&quot;Oracle Default Schema Protection Realm&quot;</span><span class="w">           </span><span class="p">,</span><span class="ss">&quot;Defines the realm for the Oracle Default schemas.&quot;</span><span class="w">                                                                                                 </span><span class="p">,</span><span class="ss">&quot;REGULAR&quot;</span>
+<span class="ss">&quot;Oracle System Privilege and Role Management Realm&quot;</span><span class="p">,</span><span class="ss">&quot;Defines the realm to control granting of system privileges and database administrator roles.&quot;</span><span class="w">                                                      </span><span class="p">,</span><span class="ss">&quot;REGULAR&quot;</span>
+<span class="ss">&quot;Oracle Default Component Protection Realm&quot;</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;Defines the realm to protect default components of the Oracle database.&quot;</span><span class="w">                                                                           </span><span class="p">,</span><span class="ss">&quot;REGULAR&quot;</span>
+<span class="ss">&quot;Oracle Audit&quot;</span><span class="w">                                     </span><span class="p">,</span><span class="ss">&quot;Defines the realm to protect audit related objects of the Oracle database.&quot;</span><span class="w">                                                                        </span><span class="p">,</span><span class="ss">&quot;MANDATORY&quot;</span>
+<span class="ss">&quot;Oracle GoldenGate Protection Realm&quot;</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;Defines the realm to protect GoldenGate-related objects of the Oracle database.&quot;</span><span class="w">                                                                   </span><span class="p">,</span><span class="ss">&quot;MANDATORY&quot;</span>
+<span class="ss">&quot;Realm for demo&quot;</span><span class="w">                                   </span><span class="p">,</span><span class="ss">&quot;This realm is created for demonstration&quot;</span><span class="w">                                                                                                           </span><span class="p">,</span><span class="ss">&quot;MANDATORY&quot;</span>
+
+<span class="mi">10</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id2">
-<h2>レルムを作成する<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>他の機能と競合しないよう、念のため今回はHRスキーマのREGIONS表とCOUNTRIES表をレルムに追加します。</p>
-<p>DV管理者で以下を実行します。</p>
-<dl>
-<dt>BEGIN</dt><dd><dl>
-<dt>DBMS_MACADM.CREATE_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',              -- レルム名
-description       =&gt; 'This realm is created for demonstration',  -- レルムの説明
-enabled           =&gt; DBMS_MACUTL.G_YES,             -- (*)作成直後から有効化</p>
-<blockquote>
-<div><p>audit_options     =&gt; DBMS_MACUTL.G_REALM_AUDIT_OFF, -- (*)レルムの監査を無効
-realm_type        =&gt; 1,                             -- 必須レルムを有効化
-realm_scope       =&gt; DBMS_MACUTL.G_SCOPE_LOCAL,     -- (*)レルムはローカルの範囲で動作
-pl_sql_stack      =&gt; FALSE                          -- (*)PL/SQLスタック検証は行わない</p>
-</div></blockquote>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>作成したレルムは <code class="docutils literal notranslate"><span class="pre">DVSYS.DBA_DV_REALM</span></code> から確認することができます。</p>
-<blockquote>
-<div><p>SQL&gt; select name, description, realm_type from dvsys.dba_dv_realm;
-&quot;NAME&quot;,&quot;DESCRIPTION&quot;,&quot;REALM_TYPE&quot;
-&quot;Oracle Database Vault&quot;,&quot;Defines the realm for the Oracle Database Vault schemas - DVSYS and DVF where Database Vault access control configuration and roles are contained.&quot;,&quot;MANDATORY&quot;
-&quot;Oracle Label Security&quot;,&quot;Defines the realm for the Oracle Label Security schemas and roles - LBACSYS and LBAC_DBA.&quot;,&quot;MANDATORY&quot;
-&quot;Database Vault Account Management&quot;,&quot;Defines the realm for administrators who create and manage database accounts and profiles.&quot;,&quot;REGULAR&quot;
-&quot;Oracle Enterprise Manager&quot;,&quot;Defines the Enterprise Manager monitoring and management realm.&quot;,&quot;REGULAR&quot;
-&quot;Oracle Default Schema Protection Realm&quot;,&quot;Defines the realm for the Oracle Default schemas.&quot;,&quot;REGULAR&quot;
-&quot;Oracle System Privilege and Role Management Realm&quot;,&quot;Defines the realm to control granting of system privileges and database administrator roles.&quot;,&quot;REGULAR&quot;
-&quot;Oracle Default Component Protection Realm&quot;,&quot;Defines the realm to protect default components of the Oracle database.&quot;,&quot;REGULAR&quot;
-&quot;Oracle Audit&quot;,&quot;Defines the realm to protect audit related objects of the Oracle database.&quot;,&quot;MANDATORY&quot;
-&quot;Oracle GoldenGate Protection Realm&quot;,&quot;Defines the realm to protect GoldenGate-related objects of the Oracle database.&quot;,&quot;MANDATORY&quot;
-&quot;Realm for demo&quot;,&quot;This realm is created for demonstration&quot;,&quot;MANDATORY&quot;</p>
-<p>10 rows selected.</p>
-</div></blockquote>
+<h2>オブジェクトのレルムへの登録<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>レルム認可を必要とするオブジェクトを登録します。</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- HR.COUNTRIES表を登録</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_OBJECT_TO_REALM</span><span class="p">(</span>
+<span class="w">        </span><span class="n">realm_name</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_owner</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;COUNTRIES&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_type</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;TABLE&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+
+<span class="c1">-- HR.REGIONS表を登録</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_OBJECT_TO_REALM</span><span class="p">(</span>
+<span class="w">        </span><span class="n">realm_name</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_owner</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_name</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;REGIONS&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">object_type</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;TABLE&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>object_name, object_typeではワイルドカード'%'が使用することができますので、HRスキーマ内のオブジェクトを一括で登録することも可能です。</p>
+<p>登録したオブジェクトは以下のコマンドで確認できます。</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">REALM_NAME</span><span class="p">,</span><span class="w"> </span><span class="k">OWNER</span><span class="p">,</span><span class="w"> </span><span class="n">OBJECT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">OBJECT_TYPE</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">DVSYS</span><span class="p">.</span><span class="n">DBA_DV_REALM_OBJECT</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">realm_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">;</span>
+<span class="ss">&quot;REALM_NAME&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;OWNER&quot;</span><span class="p">,</span><span class="ss">&quot;OBJECT_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;OBJECT_TYPE&quot;</span>
+<span class="ss">&quot;Realm for demo&quot;</span><span class="p">,</span><span class="ss">&quot;HR&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;COUNTRIES&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;TABLE&quot;</span>
+<span class="ss">&quot;Realm for demo&quot;</span><span class="p">,</span><span class="ss">&quot;HR&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;REGIONS&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;TABLE&quot;</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id3">
-<h2>レルムにオブジェクトを登録する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>レルム認可を必要とするオブジェクトを登録します。</p>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_MACADM.ADD_OBJECT_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',
-object_owner      =&gt; 'HR',
-object_name       =&gt; 'COUNTRIES',
-object_type       =&gt; 'TABLE'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_MACADM.ADD_OBJECT_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',
-object_owner      =&gt; 'HR',
-object_name       =&gt; 'REGIONS',
-object_type       =&gt; 'TABLE'</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>object_name, object_typeではワイルドカード'%'が使用することができますので、HRスキーマ内のオブジェクトを一括で登録することが可能です。</p>
-<p>登録したオブジェクトは以下のコマンドで確認できます。</p>
-<blockquote>
-<div><p>SQL&gt; select REALM_NAME, OWNER, OBJECT_NAME, OBJECT_TYPE from DVSYS.DBA_DV_REALM_OBJECT where realm_name = 'Realm for demo';
-&quot;REALM_NAME&quot;,&quot;OWNER&quot;,&quot;OBJECT_NAME&quot;,&quot;OBJECT_TYPE&quot;
-&quot;Realm for demo&quot;,&quot;HR&quot;,&quot;COUNTRIES&quot;,&quot;TABLE&quot;
-&quot;Realm for demo&quot;,&quot;HR&quot;,&quot;REGIONS&quot;,&quot;TABLE&quot;</p>
-</div></blockquote>
-</section>
-<section id="id4">
-<h2>レルム認可を行う<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>レルム認可の設定<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>このままではオブジェクトの持ち主であるHRユーザーでさえも、レルム内のオブジェクトにアクセスすることができません。
-そのため、レルム認可を行い、オブジェクトにアクセスする権限を付与します。</p>
+そのためレルム認可を設定し、レルム内のオブジェクトにアクセスする権限を付与します。</p>
 <section id="hr">
 <h3>所有者(HR)<a class="headerlink" href="#hr" title="Link to this heading">#</a></h3>
-<dl>
-<dt>BEGIN</dt><dd><blockquote>
-<div><dl class="simple">
-<dt>DBMS_MACADM.ADD_AUTH_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',   -- レルム名
-grantee           =&gt; 'HR',               -- 権限を付与するユーザ名またはロール名
-auth_options      =&gt; DBMS_MACUTL.G_REALM_AUTH_OWNER  -- ユーザーを「所有者」として認可する</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_AUTH_TO_REALM</span><span class="p">(</span>
+<span class="w">        </span><span class="n">realm_name</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span><span class="w">   </span><span class="c1">-- レルム名</span>
+<span class="w">        </span><span class="n">grantee</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span><span class="w">               </span><span class="c1">-- 権限を付与するユーザ名またはロール名</span>
+<span class="w">        </span><span class="n">auth_options</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_REALM_AUTH_OWNER</span><span class="w">  </span><span class="c1">-- ユーザーを「所有者」として認可する</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="sales-app">
 <h3>参加者(SALES_APPユーザー)<a class="headerlink" href="#sales-app" title="Link to this heading">#</a></h3>
-<dl>
-<dt>BEGIN</dt><dd><blockquote>
-<div><dl class="simple">
-<dt>DBMS_MACADM.ADD_AUTH_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',   -- レルム名
-grantee           =&gt; 'SALES_APP',           -- 権限を付与するユーザ名またはロール名
-auth_options      =&gt; DBMS_MACUTL.G_REALM_AUTH_PARTICIPANT  -- ユーザーを「参加者」として認可する</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_AUTH_TO_REALM</span><span class="p">(</span>
+<span class="w">        </span><span class="n">realm_name</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span><span class="w">   </span><span class="c1">-- レルム名</span>
+<span class="w">        </span><span class="n">grantee</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SALES_APP&#39;</span><span class="p">,</span><span class="w">        </span><span class="c1">-- 権限を付与するユーザ名またはロール名</span>
+<span class="w">        </span><span class="n">auth_options</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_REALM_AUTH_PARTICIPANT</span><span class="w">  </span><span class="c1">-- ユーザーを「参加者」として認可する</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="app">
 <h3>参加者(APPユーザー)<a class="headerlink" href="#app" title="Link to this heading">#</a></h3>
-<p>APPユーザーに対してはIPアドレスでの制限を追加してみます。</p>
-<p>ルールを作成します
-BEGIN</p>
-<blockquote>
-<div><dl>
-<dt>DBMS_MACADM.CREATE_RULE(</dt><dd><blockquote>
-<div><p>rule_name       =&gt; 'Rule to restrict APP to specific IP',</p>
-</div></blockquote>
-<p>rule_expr       =&gt; 'SYS_CONTEXT(''USERENV'',''IP_ADDRESS'') = ''192.168.0.10''',
-scope           =&gt; DBMS_MACUTL.G_SCOPE_LOCAL</p>
-</dd>
-</dl>
-<p>);</p>
-</div></blockquote>
-<p>END;
-/</p>
-<p>ルールを束ねたルールセットを作成します。
-BEGIN</p>
-<blockquote>
-<div><dl class="simple">
-<dt>DBMS_MACADM.CREATE_RULE_SET(</dt><dd><p>rule_set_name    =&gt; 'Ruleset for APP',
-description      =&gt; 'Rule to restrict APP to specific IP',
-enabled          =&gt; DBMS_MACUTL.G_YES,   -- (*)
-eval_options     =&gt; DBMS_MACUTL.G_RULESET_EVAL_ALL,    -- (*)
-audit_options    =&gt; DBMS_MACUTL.G_RULESET_AUDIT_OFF,   -- (*)
-fail_options     =&gt; DBMS_MACUTL.G_RULESET_FAIL_SHOW,   -- (*)
-fail_message     =&gt; 'DV_Error: Can only be accessed from a specific IP address',
-fail_code        =&gt; 20000,
-handler_options  =&gt; DBMS_MACUTL.G_RULESET_HANDLER_OFF,   -- (*)
-handler          =&gt; '',
-is_static        =&gt; FALSE, -- (*)
-scope            =&gt; DBMS_MACUTL.G_SCOPE_LOCAL</p>
-</dd>
-</dl>
-<p>);</p>
-</div></blockquote>
-<p>END;
-/</p>
-<p>ルールセットにルールを追加します。</p>
-<dl>
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_MACADM.ADD_RULE_TO_RULE_SET(</dt><dd><p>rule_set_name  =&gt; 'Ruleset for APP',
-rule_name      =&gt; 'Rule to restrict APP to specific IP',
-rule_order     =&gt; 1,
-enabled        =&gt; DBMS_MACUTL.G_YES -- (*)</p>
-</dd>
-</dl>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<dl>
-<dt>BEGIN</dt><dd><blockquote>
-<div><dl class="simple">
-<dt>DBMS_MACADM.ADD_AUTH_TO_REALM(</dt><dd><p>realm_name        =&gt; 'Realm for demo',   -- レルム名
-grantee           =&gt; 'APP',           -- 権限を付与するユーザ名またはロール名</p>
-</dd>
-<dt>rule_set_name     =&gt; 'Ruleset for APP',</dt><dd><p>auth_options      =&gt; DBMS_MACUTL.G_REALM_AUTH_PARTICIPANT  -- ユーザーを「参加者」として認可する</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>);</p>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>レルム認可は以下のコマンドで見ることができます。
-SQL&gt; select realm_name, grantee, AUTH_OPTIONS,AUTH_RULE_SET_NAME from DVSYS.DBA_DV_REALM_AUTH where realm_name = 'Realm for demo';
-&quot;REALM_NAME&quot;,&quot;GRANTEE&quot;,&quot;AUTH_OPTIONS&quot;,&quot;AUTH_RULE_SET_NAME&quot;
-&quot;Realm for demo&quot;,&quot;APP&quot;,&quot;Participant&quot;,&quot;Ruleset for APP&quot;
-&quot;Realm for demo&quot;,&quot;SALES_APP&quot;,&quot;Participant&quot;,
-&quot;Realm for demo&quot;,&quot;HR&quot;,&quot;Owner&quot;,</p>
+<p>APPユーザーに対してはIPアドレスでの制限を追加します。</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- ルールを作成</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">CREATE_RULE</span><span class="p">(</span>
+<span class="w">        </span><span class="n">rule_name</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Rule to restrict APP to specific IP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">rule_expr</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SYS_CONTEXT(&#39;&#39;USERENV&#39;&#39;,&#39;&#39;IP_ADDRESS&#39;&#39;) = &#39;&#39;&lt;xxx.xxx.xxx.xxx&gt;&#39;&#39;&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">scope</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_SCOPE_LOCAL</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+
+<span class="c1">-- ルールを束ねたルールセットを作成</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">CREATE_RULE_SET</span><span class="p">(</span>
+<span class="w">        </span><span class="n">rule_set_name</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Ruleset for APP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">description</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Rule to restrict APP to specific IP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">enabled</span><span class="w">          </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_YES</span><span class="p">,</span><span class="w">                 </span><span class="c1">-- (*)</span>
+<span class="w">        </span><span class="n">eval_options</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_RULESET_EVAL_ALL</span><span class="p">,</span><span class="w">    </span><span class="c1">-- (*)</span>
+<span class="w">        </span><span class="n">audit_options</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_RULESET_AUDIT_OFF</span><span class="p">,</span><span class="w">   </span><span class="c1">-- (*)</span>
+<span class="w">        </span><span class="n">fail_options</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_RULESET_FAIL_SHOW</span><span class="p">,</span><span class="w">   </span><span class="c1">-- (*)</span>
+<span class="w">        </span><span class="n">fail_message</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;DV_Error: Can only be accessed from a specific IP address&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">fail_code</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">20000</span><span class="p">,</span>
+<span class="w">        </span><span class="n">handler_options</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_RULESET_HANDLER_OFF</span><span class="p">,</span><span class="w"> </span><span class="c1">-- (*)</span>
+<span class="w">        </span><span class="k">handler</span><span class="w">          </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">is_static</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span><span class="w">                             </span><span class="c1">-- (*)</span>
+<span class="w">        </span><span class="k">scope</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_SCOPE_LOCAL</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+
+<span class="c1">-- ルールセットにルールを追加します。</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_RULE_TO_RULE_SET</span><span class="p">(</span>
+<span class="w">        </span><span class="n">rule_set_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Ruleset for APP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">rule_name</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Rule to restrict APP to specific IP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">rule_order</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="n">enabled</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_YES</span><span class="w">     </span><span class="c1">-- (*)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+
+<span class="c1">-- ルールセットを指定してレルム認可を作成する</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_AUTH_TO_REALM</span><span class="p">(</span>
+<span class="w">        </span><span class="n">realm_name</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span><span class="w">   </span><span class="c1">-- レルム名</span>
+<span class="w">        </span><span class="n">grantee</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;APP&#39;</span><span class="p">,</span><span class="w">           </span><span class="c1">-- 権限を付与するユーザ名またはロール名</span>
+<span class="w">        </span><span class="n">rule_set_name</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Ruleset for APP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">auth_options</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_REALM_AUTH_PARTICIPANT</span><span class="w">  </span><span class="c1">-- ユーザーを「参加者」として認可する</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>設定したレルム認可を確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">realm_name</span><span class="p">,</span><span class="w"> </span><span class="n">grantee</span><span class="p">,</span><span class="w"> </span><span class="n">AUTH_OPTIONS</span><span class="p">,</span><span class="n">AUTH_RULE_SET_NAME</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">DVSYS</span><span class="p">.</span><span class="n">DBA_DV_REALM_AUTH</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">realm_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">;</span>
+<span class="ss">&quot;REALM_NAME&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;GRANTEE&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;AUTH_OPTIONS&quot;</span><span class="p">,</span><span class="ss">&quot;AUTH_RULE_SET_NAME&quot;</span>
+<span class="ss">&quot;Realm for demo&quot;</span><span class="p">,</span><span class="ss">&quot;APP&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;Participant&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;Ruleset for APP&quot;</span>
+<span class="ss">&quot;Realm for demo&quot;</span><span class="p">,</span><span class="ss">&quot;SALES_APP&quot;</span><span class="p">,</span><span class="ss">&quot;Participant&quot;</span><span class="w"> </span><span class="p">,</span>
+<span class="ss">&quot;Realm for demo&quot;</span><span class="p">,</span><span class="ss">&quot;HR&quot;</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;Owner&quot;</span><span class="w">       </span><span class="p">,</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -598,7 +612,7 @@ SQL&gt; select realm_name, grantee, AUTH_OPTIONS,AUTH_RULE_SET_NAME from DVSYS.D
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">3. Database Vaultを確認する</p>
+        <p class="prev-next-title">3. Database Vaultの動作を確認する</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -619,10 +633,10 @@ SQL&gt; select realm_name, grantee, AUTH_OPTIONS,AUTH_RULE_SET_NAME from DVSYS.D
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルムを作成する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルムにオブジェクトを登録する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レルム認可を行う</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sys">SYSユーザーでの制約確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">レルムの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">オブジェクトのレルムへの登録</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルム認可の設定</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hr">所有者(HR)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sales-app">参加者(SALES_APPユーザー)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#app">参加者(APPユーザー)</a></li>

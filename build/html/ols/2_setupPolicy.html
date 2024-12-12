@@ -171,20 +171,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../vpd/1_rowControl.html">1. VPDで行制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/2_columnControl.html">2. VPDで列制御を行う</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vpd/3_clientIdentifier.html">3. クライアント識別子を用いた制御</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vpd/4_cleanup.html">4. VPDの設定を削除する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">SQL Firewall:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/1_setup.html">1. SQL Firewallの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_setup-datasafe.html">1. Data Safeの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_policycheck-datasafe.html">4. Data SafeからSQL Firewallを設定する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/2_learningTraffic.html">2. SQLをキャプチャし、学習する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/3_allowTraffic.html">3. SQLの許可リストを作成する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallを体験する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/5_setup-datasafe.html">5. Data Safeの準備</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/6_policycheck-datasafe.html">6. Data SafeからSQL Firewallを設定する</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -326,10 +337,10 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">レベルを作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データ・ラベルを作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザー・ラベルを作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データ・ラベルの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザー・ラベルの作成</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">表にポリシーを適用する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データにラベルを付けていく</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データにラベルを適用</a></li>
 </ul>
             </nav>
         </div>
@@ -345,184 +356,192 @@
 <h1>2. OLSポリシーの準備<a class="headerlink" href="#ols" title="Link to this heading">#</a></h1>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>レベル作成</p></li>
-<li><p>ラベル作成</p></li>
-<li><p>表にOLSを適用</p></li>
-<li><p>データに対してラベルを適用</p></li>
+<li><p>レベルの作成</p></li>
+<li><p>ラベルの作成</p></li>
+<li><p>ユーザーラベルの作成</p></li>
+<li><p>表にポリシーを適用</p></li>
+<li><p>データにラベルを適用</p></li>
 </ul>
 <section id="id1">
 <h2>レベルを作成<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>レベルを作成します</p>
-<p><a class="reference external" href="https://docs.oracle.com/cd/G11854_01/olsag/oracle-label-security-pl-sql-packages.html#GUID-C266B7C5-DAF4-4A97-B17F-AF39D286F17D">https://docs.oracle.com/cd/G11854_01/olsag/oracle-label-security-pl-sql-packages.html#GUID-C266B7C5-DAF4-4A97-B17F-AF39D286F17D</a></p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_COMPONENTS.CREATE_LEVEL (</dt><dd><p>policy_name =&gt; 'OLS_POL_DEMO',
-level_num   =&gt; 4000,
-short_name  =&gt; 'SENS',
-long_name   =&gt; 'SENSITIVE');</p>
-</dd>
-<dt>SA_COMPONENTS.CREATE_LEVEL (</dt><dd><p>policy_name =&gt; 'OLS_POL_DEMO',
-level_num   =&gt; 3000,
-short_name  =&gt; 'CONF',
-long_name   =&gt; 'CONFIDENTIAL');</p>
-</dd>
-<dt>SA_COMPONENTS.CREATE_LEVEL (</dt><dd><p>policy_name =&gt; 'OLS_POL_DEMO',
-level_num   =&gt; 2000,
-short_name  =&gt; 'INTL',
-long_name   =&gt; 'INTERNAL');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<p>レベルはアクセス制御の範囲を定義するラベルの構成要素の1つです。</p>
+<p>ラベルは「レベル」「区分」「グループ」の３つから構成されますが、ここでは必須となるレベルのみを作成します</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="n">SA_COMPONENTS</span><span class="p">.</span><span class="n">CREATE_LEVEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">level_num</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">4000</span><span class="p">,</span>
+<span class="w">    </span><span class="n">short_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SENS&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">long_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SENSITIVE&#39;</span><span class="p">);</span>
+
+<span class="n">SA_COMPONENTS</span><span class="p">.</span><span class="n">CREATE_LEVEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">level_num</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span>
+<span class="w">    </span><span class="n">short_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;CONF&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">long_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;CONFIDENTIAL&#39;</span><span class="p">);</span>
+
+<span class="n">SA_COMPONENTS</span><span class="p">.</span><span class="n">CREATE_LEVEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">level_num</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span>
+<span class="w">    </span><span class="n">short_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTL&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">long_name</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTERNAL&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+<p>SA_COMPONENTS.CREATE_LEVELプロシージャについては <a class="reference external" href="https://docs.oracle.com/cd/G11854_01/olsag/oracle-label-security-pl-sql-packages.html#GUID-C266B7C5-DAF4-4A97-B17F-AF39D286F17D">こちら</a> をご参照ください。</p>
 <p>作成したレベルを確認します</p>
-<p>SQL&gt; select * from ALL_SA_LEVELS;
-&quot;POLICY_NAME&quot;,&quot;LEVEL_NUM&quot;,&quot;SHORT_NAME&quot;,&quot;LONG_NAME&quot;
-&quot;OLS_POL_DEMO&quot;,3000,&quot;CONF&quot;,&quot;CONFIDENTIAL&quot;
-&quot;OLS_POL_DEMO&quot;,2000,&quot;INTL&quot;,&quot;INTERNAL&quot;
-&quot;OLS_POL_DEMO&quot;,4000,&quot;SENS&quot;,&quot;SENSITIVE&quot;</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">ALL_SA_LEVELS</span><span class="p">;</span>
+<span class="ss">&quot;POLICY_NAME&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;LEVEL_NUM&quot;</span><span class="p">,</span><span class="ss">&quot;SHORT_NAME&quot;</span><span class="p">,</span><span class="ss">&quot;LONG_NAME&quot;</span>
+<span class="ss">&quot;OLS_POL_DEMO&quot;</span><span class="p">,</span><span class="mi">3000</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;CONF&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;CONFIDENTIAL&quot;</span>
+<span class="ss">&quot;OLS_POL_DEMO&quot;</span><span class="p">,</span><span class="mi">2000</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;INTL&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;INTERNAL&quot;</span>
+<span class="ss">&quot;OLS_POL_DEMO&quot;</span><span class="p">,</span><span class="mi">4000</span><span class="w">       </span><span class="p">,</span><span class="ss">&quot;SENS&quot;</span><span class="w">      </span><span class="p">,</span><span class="ss">&quot;SENSITIVE&quot;</span>
+</pre></div>
+</div>
 </section>
 <section id="id2">
-<h2>データ・ラベルを作成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>ラベルを作成します</p>
-<p>どのようなラベルを設定するかを作成します。
-今回作成するラベルは先ほど作成したレベルしか用いませんので、先ほどのレベルと同じ内容です</p>
-<p><a class="reference external" href="https://docs.oracle.com/cd/G11854_01/olsag/oracle-label-security-pl-sql-packages.html#GUID-6EE1DD6A-C893-4C01-88A9-C1AE36F224E3">https://docs.oracle.com/cd/G11854_01/olsag/oracle-label-security-pl-sql-packages.html#GUID-6EE1DD6A-C893-4C01-88A9-C1AE36F224E3</a></p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_LABEL_ADMIN.CREATE_LABEL (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-label_tag    =&gt; 400,
-label_value  =&gt; 'SENS',
-data_label   =&gt; TRUE);</p>
-</dd>
-<dt>SA_LABEL_ADMIN.CREATE_LABEL (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-label_tag    =&gt; 300,
-label_value  =&gt; 'CONF',
-data_label   =&gt; TRUE);</p>
-</dd>
-<dt>SA_LABEL_ADMIN.CREATE_LABEL (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-label_tag    =&gt; 200,
-label_value  =&gt; 'INTL',
-data_label   =&gt; TRUE);</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>確認します</p>
-<p>SQL&gt; select * from ALL_SA_LABELS;
-&quot;POLICY_NAME&quot;,&quot;LABEL&quot;,&quot;LABEL_TAG&quot;,&quot;LABEL_TYPE&quot;
-&quot;OLS_POL_DEMO&quot;,&quot;SENS&quot;,400,&quot;USER/DATA LABEL&quot;
-&quot;OLS_POL_DEMO&quot;,&quot;CONF&quot;,300,&quot;USER/DATA LABEL&quot;
-&quot;OLS_POL_DEMO&quot;,&quot;INTL&quot;,200,&quot;USER/DATA LABEL&quot;</p>
+<h2>データ・ラベルの作成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>データに付与する具体的なラベルを作成します。
+今回作成するラベルは先ほど作成したレベルしか用いませんので、先ほどのレベルと同じ内容のラベルを作成します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_LABEL_ADMIN</span><span class="p">.</span><span class="n">CREATE_LABEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_tag</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_value</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SENS&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">data_label</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_LABEL_ADMIN</span><span class="p">.</span><span class="n">CREATE_LABEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_tag</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_value</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;CONF&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">data_label</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_LABEL_ADMIN</span><span class="p">.</span><span class="n">CREATE_LABEL</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_tag</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label_value</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTL&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">data_label</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+<p>SA_LABEL_ADMIN.CREATE_LABELプロシージャについては <a class="reference external" href="https://docs.oracle.com/cd/G11854_01/olsag/oracle-label-security-pl-sql-packages.html#GUID-6EE1DD6A-C893-4C01-88A9-C1AE36F224E3">こちら</a> をご参照ください。</p>
+<p>作成されたラベルを確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">ALL_SA_LABELS</span><span class="p">;</span>
+<span class="ss">&quot;POLICY_NAME&quot;</span><span class="w"> </span><span class="p">,</span><span class="ss">&quot;LABEL&quot;</span><span class="p">,</span><span class="ss">&quot;LABEL_TAG&quot;</span><span class="p">,</span><span class="ss">&quot;LABEL_TYPE&quot;</span>
+<span class="ss">&quot;OLS_POL_DEMO&quot;</span><span class="p">,</span><span class="ss">&quot;SENS&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">400</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;USER/DATA LABEL&quot;</span>
+<span class="ss">&quot;OLS_POL_DEMO&quot;</span><span class="p">,</span><span class="ss">&quot;CONF&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">300</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;USER/DATA LABEL&quot;</span>
+<span class="ss">&quot;OLS_POL_DEMO&quot;</span><span class="p">,</span><span class="ss">&quot;INTL&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">200</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;USER/DATA LABEL&quot;</span>
+</pre></div>
+</div>
 </section>
 <section id="id3">
-<h2>ユーザー・ラベルを作成<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>ユーザーに閲覧できるレベルの幅を割り当てます。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_USER_ADMIN.SET_LEVELS (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-user_name    =&gt; 'HR',
-max_level    =&gt; 'SENS',
-min_level    =&gt; 'INTL');</p>
-</dd>
-<dt>SA_USER_ADMIN.SET_LEVELS (</dt><dd><p>policy_name  =&gt; 'OLS_POL_DEMO',
-user_name    =&gt; 'SALES_APP',
-max_level    =&gt; 'CONF',
-min_level    =&gt; 'INTL');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<h2>ユーザー・ラベルの作成<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>各ユーザーに許可されるアクセス範囲（最大/最小レベル）を割り当てます。
+割り当てるユーザーはHRユーザーとSALES_APPユーザーです。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_USER_ADMIN</span><span class="p">.</span><span class="n">SET_LEVELS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">user_name</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">max_level</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SENS&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">min_level</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTL&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SA_USER_ADMIN</span><span class="p">.</span><span class="n">SET_LEVELS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">user_name</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;SALES_APP&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">max_level</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;CONF&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">min_level</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;INTL&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="id4">
 <h2>表にポリシーを適用する<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<p>作成したOLSポリシーをhr.job_history_4ols表に適用します。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_POLICY_ADMIN.APPLY_TABLE_POLICY (</dt><dd><p>policy_name    =&gt; 'OLS_POL_DEMO',
-schema_name    =&gt; 'HR',
-table_name     =&gt; 'JOB_HISTORY_4OLS',
-table_options  =&gt; 'READ_CONTROL');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>READ_CONTROLは、ユーザーが後で実行するすべての問合せにポリシーの施行を適用します。
-SELECT、UPDATE文とDELETE文の処理にはかならず適用されます。</p>
-<p>この時点でJOB_HISTORY_4OLS表を見てみましょう。</p>
-<blockquote>
-<div><p>SQL&gt; desc hr.JOB_HISTORY_4OLS;
-Name                                      Null?    Type
------------------------------------------ -------- ----------------------------
-EMPLOYEE_ID                               NOT NULL NUMBER(6)
-START_DATE                                NOT NULL DATE
-END_DATE                                  NOT NULL DATE
-JOB_ID                                    NOT NULL VARCHAR2(10)
-DEPARTMENT_ID                                      NUMBER(4)
-OLS_LABEL_DEMO                                     NUMBER(10)</p>
-</div></blockquote>
+<p>作成したOLSポリシーをJOB_HISTORY_4OLS表に適用します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_POLICY_ADMIN</span><span class="p">.</span><span class="n">APPLY_TABLE_POLICY</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">schema_name</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">table_name</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;JOB_HISTORY_4OLS&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">table_options</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;READ_CONTROL&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+<p>READ_CONTROLを指定すると、ユーザーが後で実行するすべての問合せにポリシーが適用されます。</p>
+<p>ポリシーを適用すると、JOB_HISTORY_4OLS表にラベル用の列が追加されていることがわかります。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">desc</span><span class="w"> </span><span class="n">hr</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span><span class="p">;</span>
+<span class="n">Name</span><span class="w">                                      </span><span class="k">Null</span><span class="o">?</span><span class="w">    </span><span class="k">Type</span>
+<span class="c1">----------------------------------------- -------- ----------------------------</span>
+<span class="n">EMPLOYEE_ID</span><span class="w">                               </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">START_DATE</span><span class="w">                                </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="nb">DATE</span>
+<span class="n">END_DATE</span><span class="w">                                  </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="nb">DATE</span>
+<span class="n">JOB_ID</span><span class="w">                                    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">DEPARTMENT_ID</span><span class="w">                                      </span><span class="nb">NUMBER</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">OLS_LABEL_DEMO</span><span class="w">                                     </span><span class="nb">NUMBER</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>OLS_LABEL_DEMO列が追加され、NUMBER型であることが確認できます。</p>
 <p>OLSポリシーでの制御を有効化します。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>SA_POLICY_ADMIN.ENABLE_TABLE_POLICY (</dt><dd><p>policy_name =&gt; 'OLS_POL_DEMO',
-schema_name =&gt; 'HR',
-table_name  =&gt; 'JOB_HISTORY_4OLS');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>CHAR_TO_LABELファンクションはラベル文字列をラベル（数字）に変換します。
-対して、LABEL_TO_CHARファンクションはラベル（数字）を文字列に戻します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">SA_POLICY_ADMIN</span><span class="p">.</span><span class="n">ENABLE_TABLE_POLICY</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">policy_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">schema_name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;HR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">table_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;JOB_HISTORY_4OLS&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
 </section>
 <section id="id5">
-<h2>データにラベルを付けていく<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<p>今回はJOB_ID が
-AC_MGR や SA_MAN のレコードは SENSITIVE ラベルを設定します。</p>
-<p>UPDATE HR.JOB_HISTORY_4OLS
-SET    OLS_LABEL_DEMO = CHAR_TO_LABEL('OLS_POL_DEMO','SENS')
-WHERE  JOB_ID LIKE '%_MGR'
-OR     JOB_ID LIKE '%_MAN';</p>
-<p>2 rows updated. されます。</p>
-<p>JOB_ID が AC_ACCOUNT, MK_REP のレコードに対しては CONFIDENTIAL ラベルを設定します。</p>
-<p>UPDATE HR.JOB_HISTORY_4OLS
-SET    OLS_LABEL_DEMO = CHAR_TO_LABEL('OLS_POL_DEMO','CONF')
-WHERE  JOB_ID LIKE '%_ACCOUNT'
-OR     JOB_ID LIKE '%_REP';</p>
-<p>4 rows updated. されます。</p>
-<p>IT_PROG または ST_CLERK のレコードは INTERNAL に分類。
-UPDATE HR.JOB_HISTORY_4OLS
-SET    OLS_LABEL_DEMO = CHAR_TO_LABEL('OLS_POL_DEMO','INTL')
-WHERE  JOB_ID LIKE '%_PROG'
-OR     JOB_ID LIKE '%_CLERK'
-OR     JOB_ID LIKE '%_ASST';</p>
-<p>4 rows updated. されます。</p>
-<p>最後にcommitをします。</p>
-<p>SQL&gt; commit;</p>
-<p>Commit complete.</p>
-<p>正しく結果が反映されたことを確認します。</p>
-<p>SQL&gt; select JOB_ID, OLS_LABEL_DEMO from HR.JOB_HISTORY_4OLS;
-&quot;JOB_ID&quot;,&quot;OLS_LABEL_DEMO&quot;
-&quot;IT_PROG&quot;,200
-&quot;AC_ACCOUNT&quot;,300
-&quot;AC_MGR&quot;,400
-&quot;MK_REP&quot;,300
-&quot;ST_CLERK&quot;,200
-&quot;ST_CLERK&quot;,200
-&quot;AD_ASST&quot;,200
-&quot;SA_REP&quot;,300
-&quot;SA_MAN&quot;,400
-&quot;AC_ACCOUNT&quot;,300</p>
-<p>10 rows selected.</p>
+<h2>データにラベルを適用<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>以下を順に実行して、条件ごとにデータに適切なラベルを設定します。</p>
+<p>JOB_IDがAC_MGRやSA_MANのレコードは <code class="docutils literal notranslate"><span class="pre">SENSITIVE</span></code> ラベルを設定します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span>
+<span class="k">SET</span><span class="w">    </span><span class="n">OLS_LABEL_DEMO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CHAR_TO_LABEL</span><span class="p">(</span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span><span class="s1">&#39;SENS&#39;</span><span class="p">)</span>
+<span class="k">WHERE</span><span class="w">  </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_MGR&#39;</span>
+<span class="k">OR</span><span class="w">     </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_MAN&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">rows</span> <span class="pre">updated.</span></code> されるのを確認します。</p>
+<p>JOB_IDがAC_ACCOUNTとMK_REPのレコードに対しては <code class="docutils literal notranslate"><span class="pre">CONFIDENTIAL</span></code> ラベルを設定します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span>
+<span class="k">SET</span><span class="w">    </span><span class="n">OLS_LABEL_DEMO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CHAR_TO_LABEL</span><span class="p">(</span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span><span class="s1">&#39;CONF&#39;</span><span class="p">)</span>
+<span class="k">WHERE</span><span class="w">  </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_ACCOUNT&#39;</span>
+<span class="k">OR</span><span class="w">     </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_REP&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">rows</span> <span class="pre">updated.</span></code> されるのを確認します。</p>
+<p>IT_PROGまたはST_CLERK のレコードは <code class="docutils literal notranslate"><span class="pre">INTERNAL</span></code> ラベルを設定します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span>
+<span class="k">SET</span><span class="w">    </span><span class="n">OLS_LABEL_DEMO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CHAR_TO_LABEL</span><span class="p">(</span><span class="s1">&#39;OLS_POL_DEMO&#39;</span><span class="p">,</span><span class="s1">&#39;INTL&#39;</span><span class="p">)</span>
+<span class="k">WHERE</span><span class="w">  </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_PROG&#39;</span>
+<span class="k">OR</span><span class="w">     </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_CLERK&#39;</span>
+<span class="k">OR</span><span class="w">     </span><span class="n">JOB_ID</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%_ASST&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">rows</span> <span class="pre">updated.</span></code> されるのを確認します。</p>
+<p>最後にcommitをし、ラベルの設定を保存します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">commit</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>最後にラベルが正しく設定されたかを確認します。</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">JOB_ID</span><span class="p">,</span><span class="w"> </span><span class="n">OLS_LABEL_DEMO</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">HR</span><span class="p">.</span><span class="n">JOB_HISTORY_4OLS</span><span class="p">;</span>
+<span class="ss">&quot;JOB_ID&quot;</span><span class="w">    </span><span class="p">,</span><span class="ss">&quot;OLS_LABEL_DEMO&quot;</span>
+<span class="ss">&quot;IT_PROG&quot;</span><span class="w">   </span><span class="p">,</span><span class="mi">200</span>
+<span class="ss">&quot;AC_ACCOUNT&quot;</span><span class="p">,</span><span class="mi">300</span>
+<span class="ss">&quot;AC_MGR&quot;</span><span class="w">    </span><span class="p">,</span><span class="mi">400</span>
+<span class="ss">&quot;MK_REP&quot;</span><span class="w">    </span><span class="p">,</span><span class="mi">300</span>
+<span class="ss">&quot;ST_CLERK&quot;</span><span class="w">  </span><span class="p">,</span><span class="mi">200</span>
+<span class="ss">&quot;ST_CLERK&quot;</span><span class="w">  </span><span class="p">,</span><span class="mi">200</span>
+<span class="ss">&quot;AD_ASST&quot;</span><span class="w">   </span><span class="p">,</span><span class="mi">200</span>
+<span class="ss">&quot;SA_REP&quot;</span><span class="w">    </span><span class="p">,</span><span class="mi">300</span>
+<span class="ss">&quot;SA_MAN&quot;</span><span class="w">    </span><span class="p">,</span><span class="mi">400</span>
+<span class="ss">&quot;AC_ACCOUNT&quot;</span><span class="p">,</span><span class="mi">300</span>
+
+<span class="mi">10</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -573,10 +592,10 @@ OR     JOB_ID LIKE '%_ASST';</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">レベルを作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データ・ラベルを作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザー・ラベルを作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データ・ラベルの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザー・ラベルの作成</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">表にポリシーを適用する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データにラベルを付けていく</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データにラベルを適用</a></li>
 </ul>
   </nav></div>
 

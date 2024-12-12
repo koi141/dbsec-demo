@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'dv/1_setup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. Database Vaultの準備" href="2_authRealm.html" />
+    <link rel="next" title="2. Database Vaultの準備 (レルムの作成と認可)" href="2_authRealm.html" />
     <link rel="prev" title="6. Data SafeからSQL Firewallを設定する" href="../sqlfirewall/6_policycheck-datasafe.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -185,8 +185,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Database Vaultの有効化</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_authRealm.html">2. Database Vaultの準備</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultを確認する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_cleanup.html">4. Database Vaultを無効化する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
@@ -194,8 +194,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../ols/1_setup.html">1. Oracle Label Securityの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ols/2_setupPolicy.html">2. OLSポリシーの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ols/3_checkOls.html">3. ラベル制御の確認</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLSの設定を削除する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/4_labelColumn.html">4. ラベルデータの処理とラベル列の非表示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ols/5_cleanup.html">5. OLS設定の削除手順</a></li>
 </ul>
 
     </div>
@@ -336,12 +336,11 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dv">DVの構成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdb-root-dv">(CDB$ROOT) DV管理者ユーザーを作成する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">(CDB$ROOT) DVの構成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">(CDB$ROOT) DVを有効化する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pdb">(PDB) 設定の確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pdb-dv">(PDB) DVを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Database Vault の構成前確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdb-root-database-vault">(CDB$ROOT) Database Vault管理者ユーザーの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">(CDB$ROOT) Database Vaultの構成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">(CDB$ROOT) Database Vaultを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pdb-database-vault">(PDB) Database Vaultの構成と有効化</a></li>
 </ul>
             </nav>
         </div>
@@ -355,21 +354,28 @@
                   
   <section id="database-vault">
 <h1>1. Database Vaultの有効化<a class="headerlink" href="#database-vault" title="Link to this heading">#</a></h1>
+<p>Database Vault (DB Vault) の有効化、管理者ユーザーの作成、および各種構成作業を実施します。</p>
 <p><strong>実施内容</strong></p>
 <ul class="simple">
-<li><p>許可リストを作成する</p></li>
+<li><p>Database Vault の構成前確認</p></li>
+<li><p>Database Vault 管理者ユーザーの作成</p></li>
+<li><p>Database Vault の構成</p></li>
+<li><p>Database Vault の有効化</p></li>
+<li><p>PDBでの構成と有効化</p></li>
 </ul>
-<section id="dv">
-<h2>DVの構成<a class="headerlink" href="#dv" title="Link to this heading">#</a></h2>
-<p>Oracle Database Vaultを有効化する前には、Database VaultおよびOracle Label Security (OLS) のための構築スクリプトを実行し、関連するオブジェクトやスキーマをデータベース上に作成・初期化する必要があります。
-構成および有効化プロセスでは、Oracle Label Securityがまだ有効ではない場合、有効になります。Oracle Label SecurityはOracle Database Vaultに必要ですが、別にOracle Label Securityの使用を開始してOracle Label Securityポリシーを作成する場合を除き、別個のライセンスは必要ありません。</p>
-<p>関連するPDBで同じアクションを実行する前に、CDBルートでOracle Database Vaultを構成して有効化する必要があります。</p>
+<section id="id1">
+<h2>Database Vault の構成前確認<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Oracle Database Vaultを有効化する前に、Database VaultおよびOracle Label Security(OLS)のための構築スクリプトを実行する必要があります。
+DB Vault構成時にOLSが有効化されます。別にOLSを使用する場合を除いて、OLSのライセンスは必要ありません。</p>
+<p>また、マルチテナントでの使用の場合、CDBでDB Vaultを構成および有効化した後で、PDBでも同様の操作を行う必要があります。</p>
 <p>CDBルートでDV_OWNERロールとDV_ACCTMGRロールを割り当てられた共通ユーザーも、PDBで同じロールを持つことができます。
 PDBでは、同じ共通ユーザーを使用してDatabase Vaultを構成および有効化することも、別のPDBローカル・ユーザーを使用することもできます。DV_ACCTMGRロールは、CDBルートの共通ユーザーに共通に付与されます。
 Database VaultをCDBルートに構成および有効化するときに、DV_OWNERをローカルに、またはCDBルート共通ユーザーに共通に付与できます。
 DV_OWNERを共通ユーザーにローカルに付与すると、共通DV_OWNERユーザーは、どのPDBでもこのロールを使用できなくなります。</p>
 <p>今回はDV管理者としては共通ユーザを使用することとします。</p>
-<p>CDB$ROOTに接続し、オプションの設定を確認します。</p>
+<p>CDB$ROOTに接続し、Database Vaultの構成および有効化状況を確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">CDB_DV_STATUS</span><span class="p">;</span>
 
 <span class="n">NAME</span><span class="w">                </span><span class="n">STATUS</span><span class="w">             </span><span class="n">CON_ID</span>
@@ -384,86 +390,81 @@ DV_OWNERを共通ユーザーにローカルに付与すると、共通DV_OWNER�
 <span class="mi">6</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
 </pre></div>
 </div>
+</div>
 </section>
-<section id="cdb-root-dv">
-<h2>(CDB$ROOT) DV管理者ユーザーを作成する<a class="headerlink" href="#cdb-root-dv" title="Link to this heading">#</a></h2>
-<p>DV管理ユーザーを作成します。
-登録プロセス中に、Oracle Database Vault 所有者と Oracle Database Vault アカウント マネージャのアカウントを作成する必要があります。</p>
-<p>インストール中に、Oracle Database Vault 所有者アカウントのアカウント名とパスワードを指定する必要があります。Oracle Database Vault アカウント マネージャの作成はオプションですが、職務の分離を改善するために強く推奨されます。</p>
-<p>Oracle Database Vault 所有者アカウントにDV_OWNERロールが付与されます。このアカウントは、Oracle Database Vault のロールと構成を管理できます。</p>
-<p>Oracle Database Vault アカウント マネージャ アカウントにDV_ACCTMGRロールが付与されます。このアカウントは、職務の分離を容易にするためにデータベース ユーザー アカウントを管理するために使用されます。</p>
-<p>インストール中に Oracle Database Vault アカウント マネージャ アカウントを作成しないことを選択した場合は、DV_OWNERと の両方のDV_ACCTMGRロールが Oracle Database Vault 所有者ユーザー アカウントに付与されます。</p>
-<p>ここでは以下の2つのユーザーを作成します。ロール名と名前が似ていますので注意してください。</p>
-<p>CDBの共通ユーザとして作成することも可能ですが、ここではローカルユーザーを作成していきます。</p>
-<p>共通ユーザの接頭辞を確認します。</p>
-<blockquote>
-<div><p>SQL&gt; set markup csv on
-SQL&gt; select name, value from v$parameter where name = 'common_user_prefix';
-&quot;NAME&quot;,&quot;VALUE&quot;
-&quot;common_user_prefix&quot;,&quot;C##&quot;</p>
-</div></blockquote>
-<p>Database Vault所有者(DV_OWNERロール)およびDatabase Vaultアカウント・マネージャ(DV_ACCTMGRロール)のアカウント用に使用されるユーザー・アカウントを選択(または新規ユーザーを作成)選択します。
-ロールごとに2つのアカウントを維持することをお薦めします。一方のアカウントはその名前付きユーザーのプライマリ・アカウントであり、日常的に使用されます。他方のアカウントは、プライマリ・アカウントのパスワードを忘れてしまいリセットする必要がある場合に備えたバックアップ・アカウントとして使用されます。
-アカウントのバックアップがない場合は、パスワードをリセットできません。</p>
-<dl>
-<dt><strong>C##DVOWNER</strong></dt><dd><p>セキュリティ管理者
-ロール: DV_OWNER</p>
-</dd>
-<dt><strong>C##DVACCTMGR</strong></dt><dd><p>アカウント管理者
-アカウントを作成する</p>
-<blockquote>
-<div><p>ロール: DV_ACCMGR</p>
-</div></blockquote>
-</dd>
-</dl>
-<p>GRANT CREATE SESSION TO DVOWNER IDENTIFIED BY Welcome1#Welcome1#;</p>
-<p>grant create session, set container to C##DVOWNER identified by Welcome1#Welcome1# container = all;
-grant create session, set container to C##DVACCTMGR identified by Welcome1#Welcome1# container = all;</p>
-</section>
-<section id="id1">
-<h2>(CDB$ROOT) DVの構成<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>作成した2つのユーザーを指定して、DVを構成します。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>CONFIGURE_DV (</dt><dd><p>dvowner_uname        =&gt; 'C##DVOWNER',
-dvacctmgr_uname      =&gt; 'C##DVACCTMGR',
-force_local_dvowner  =&gt; FALSE);</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-<p>この例では、force_local_dvownerをFALSEに設定すると、共通ユーザーは、このCDBルートに関連付けられているPDBのDV_OWNER権限を持つことができます。
-TRUEに設定すると、共通DV_OWNERユーザーはCDBルートにのみDV_OWNERロール権限を持つように制限されます。</p>
-<p>構成ステータスがTrueになっていることが分かります</p>
-<blockquote>
-<div><p>SQL&gt; SELECT * FROM CDB_DV_STATUS;
-&quot;NAME&quot;,&quot;STATUS&quot;,&quot;CON_ID&quot;
-&quot;DV_CONFIGURE_STATUS&quot;,&quot;TRUE&quot;,1
-&quot;DV_ENABLE_STATUS&quot;,&quot;FALSE&quot;,1
-&quot;DV_APP_PROTECTION&quot;,&quot;NOT CONFIGURED&quot;,1
-&quot;DV_CONFIGURE_STATUS&quot;,&quot;FALSE&quot;,3
-&quot;DV_ENABLE_STATUS&quot;,&quot;FALSE&quot;,3
-&quot;DV_APP_PROTECTION&quot;,&quot;NOT CONFIGURED&quot;,3</p>
-<p>6 rows selected.</p>
-</div></blockquote>
-<p>utlrp.sqlスクリプトを実行し、無効化状態となっているオブジェクトをコンパイルします。</p>
-<blockquote>
-<div><p>SQL&gt; &#64;?/rdbms/admin/utlrp.sql
-...
-&quot;OBJECTS WITH ERRORS&quot;
-0
-...
-&quot;ERRORS DURING RECOMPILATION&quot;
-0
-...</p>
-</div></blockquote>
-<p>問題なく、実行が完了することを確認します。</p>
+<section id="cdb-root-database-vault">
+<h2>(CDB$ROOT) Database Vault管理者ユーザーの作成<a class="headerlink" href="#cdb-root-database-vault" title="Link to this heading">#</a></h2>
+<p>Database Vaultを有効化する際、DB Vault所有者 (DV_OWNERロール) と アカウント管理者 (DV_ACCTMGRロール) の2つのアカウントを指定する必要があります。
+ここでは以下のユーザーを用いるため、2つのユーザーをそれぞれ作成します。</p>
+<ul class="simple">
+<li><p><strong>C##DVOWNER</strong>: Database Vaultのロールや構成を管理します。</p></li>
+<li><p><strong>C##DVACCTMGR</strong>: データベースのユーザーアカウントを管理します。</p></li>
+</ul>
+<p>PDBで有効化する際も管理者アカウントを指定する必要がありますが、CDBの共通ユーザを指定することも可能のため、ここでは共通ユーザーをPDBでも繰り返し使用します。</p>
+<p>念のため、共通ユーザの接頭辞を確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">v$parameter</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;common_user_prefix&#39;</span><span class="p">;</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">              </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span>
+<span class="ss">&quot;common_user_prefix&quot;</span><span class="p">,</span><span class="ss">&quot;C##&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>以下を実行してユーザーをそれぞれ作成します。</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">grant</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">session</span><span class="p">,</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">C</span><span class="o">##</span><span class="n">DVOWNER</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">Welcome1</span><span class="o">#</span><span class="n">Welcome1</span><span class="o">#</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">all</span><span class="p">;</span>
+<span class="k">grant</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">session</span><span class="p">,</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">C</span><span class="o">##</span><span class="n">DVACCTMGR</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">Welcome1</span><span class="o">#</span><span class="n">Welcome1</span><span class="o">#</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">all</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id2">
-<h2>(CDB$ROOT) DVを有効化する<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>Oracle Database Vault (DB Vault)をマルチテナント環境(CDB)で有効化する際には、大きく分けて「通常(非厳密)モード」と「厳密モード」の2つの動作モードを選択できます。
+<h2>(CDB$ROOT) Database Vaultの構成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>作成した2つのユーザーを指定して、Database Vaultを構成します。</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">CONFIGURE_DV</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">dvowner_uname</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;C##DVOWNER&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">dvacctmgr_uname</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;C##DVACCTMGR&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">force_local_dvowner</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">FALSE</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>force_local_dvownerをFALSEに設定すると、共通ユーザーは、このCDBルートに関連付けられているPDBのDV_OWNER権限を持つことができます。
+TRUEに設定すると、共通DV_OWNERユーザーはCDBルートにのみDV_OWNERロール権限を持つように制限されます。</p>
+<p>CDBの構成ステータスが TRUE になっていることを確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">CDB_DV_STATUS</span><span class="p">;</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span><span class="w">          </span><span class="p">,</span><span class="mi">1</span>
+<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span><span class="w">         </span><span class="p">,</span><span class="mi">1</span>
+<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span><span class="p">,</span><span class="mi">1</span>
+<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span><span class="w">         </span><span class="p">,</span><span class="mi">3</span>
+<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span><span class="w">         </span><span class="p">,</span><span class="mi">3</span>
+<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span><span class="p">,</span><span class="mi">3</span>
+
+<span class="mi">6</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span><span class="p">.</span>
+</pre></div>
+</div>
+</div>
+<p>utlrp.sqlスクリプトを実行し、無効化状態となっているオブジェクトをコンパイルします。</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">@?/</span><span class="n">rdbms</span><span class="o">/</span><span class="k">admin</span><span class="o">/</span><span class="n">utlrp</span><span class="p">.</span><span class="k">sql</span>
+</pre></div>
+</div>
+</div>
+<p>問題なく、実行が完了することを確認します。</p>
+</section>
+<section id="id3">
+<h2>(CDB$ROOT) Database Vaultを有効化する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>DB Vaultをマルチテナント環境(CDB)で有効化する際には、大きく分けて「通常(非厳密)モード」と「厳密モード」の2つの動作モードを選択できます。
 これらのモードは、CDB全体でDB Vaultが有効化されている際に、PDB(Pluggable Database)ごとのDB Vault有効化状態がどのように扱われるかを制御します。</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -480,137 +481,167 @@ TRUEに設定すると、共通DV_OWNERユーザーはCDBルートにのみDV_OW
 </li>
 </ul>
 <p>今回はPDBだけDVを有効化していきますので、「通常モード」で有効化していきます。</p>
-<p>先ほど作成し、DV管理者として指定したC##DVOWNERでCDBに接続します。</p>
-<blockquote>
-<div><p>$ sqlplus C##DVOWNER/Welcome1#Welcome1#</p>
-<p>SQL&gt; show user con_name
-USER is &quot;C##DVOWNER&quot;</p>
-<p>CDB$ROOT</p>
-</div></blockquote>
+<p>先ほど作成し、DV管理者として指定した <code class="docutils literal notranslate"><span class="pre">C##DVOWNER</span></code> ユーザーでCDBに接続します。</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="err">$</span><span class="w"> </span><span class="n">sqlplus</span><span class="w"> </span><span class="k">C</span><span class="o">##</span><span class="n">DVOWNER</span><span class="o">/&lt;</span><span class="n">password</span><span class="o">&gt;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">con_name</span>
+<span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;C##DVOWNER&quot;</span>
+
+<span class="n">CON_NAME</span>
+<span class="c1">------------------------------</span>
+<span class="n">CDB$ROOT</span>
+</pre></div>
+</div>
+</div>
 <p>通常モードで有効化します。</p>
-<blockquote>
-<div><p>SQL&gt; EXEC DBMS_MACADM.ENABLE_DV;</p>
-<p>PL/SQL procedure successfully completed.</p>
-</div></blockquote>
-<p>有効化ステータスがTRUEになっていることが確認できます</p>
-<blockquote>
-<div><p>SQL&gt; SELECT * FROM CDB_DV_STATUS;
-&quot;NAME&quot;,&quot;STATUS&quot;,&quot;CON_ID&quot;
-&quot;DV_CONFIGURE_STATUS&quot;,&quot;TRUE&quot;,1
-&quot;DV_ENABLE_STATUS&quot;,&quot;TRUE&quot;,1
-&quot;DV_APP_PROTECTION&quot;,&quot;NOT CONFIGURED&quot;,1</p>
-</div></blockquote>
-<p>SYSユーザーで再び接続し、DBを再起動します。</p>
-<blockquote>
-<div><p>SQL&gt; shutdown immediate
-SQL&gt; startup
--- PDBがオープンされていることを確認
-SQL&gt; show pdbs;</p>
-<blockquote>
-<div><p>CON_ID CON_NAME                       OPEN MODE  RESTRICTED</p>
-</div></blockquote>
-<dl class="simple">
-<dt>---------- ------------------------------ ---------- ----------</dt><dd><p>2 PDB$SEED                       READ ONLY  NO
-3 FREEPDB1                       READ WRITE NO</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>再起動後、DVとOLSが有効化されていることを最後に確認します</p>
-<blockquote>
-<div><p>SQL&gt; set markup csv on
-SQL&gt; SELECT parameter, VALUE FROM V$OPTION WHERE PARAMETER IN ('Oracle Database Vault','Oracle Label Security');
-&quot;PARAMETER&quot;,&quot;VALUE&quot;
-&quot;Oracle Label Security&quot;,&quot;TRUE&quot;
-&quot;Oracle Database Vault&quot;,&quot;TRUE&quot;</p>
-</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ENABLE_DV</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>CDB_DV_STATUSを確認し、有効化されていることを確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">CDB_DV_STATUS</span><span class="p">;</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span><span class="w">          </span><span class="p">,</span><span class="mi">1</span>
+<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span><span class="w">          </span><span class="p">,</span><span class="mi">1</span>
+<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span><span class="p">,</span><span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<p>SYSユーザーで再び接続し、DB Vaultの設定を完全に反映させるためCDBを再起動します。</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">shutdown</span><span class="w"> </span><span class="k">immediate</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">startup</span>
+
+<span class="c1">-- PDBがオープンされていることを確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="n">pdbs</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">CON_ID</span><span class="w"> </span><span class="n">CON_NAME</span><span class="w">                       </span><span class="k">OPEN</span><span class="w"> </span><span class="k">MODE</span><span class="w">  </span><span class="n">RESTRICTED</span>
+<span class="c1">---------- ------------------------------ ---------- ----------</span>
+<span class="w">        </span><span class="mi">2</span><span class="w"> </span><span class="n">PDB$SEED</span><span class="w">                       </span><span class="k">READ</span><span class="w"> </span><span class="k">ONLY</span><span class="w">  </span><span class="k">NO</span>
+<span class="w">        </span><span class="mi">3</span><span class="w"> </span><span class="n">FREEPDB1</span><span class="w">                       </span><span class="k">READ</span><span class="w"> </span><span class="k">WRITE</span><span class="w"> </span><span class="k">NO</span>
+
+<span class="c1">-- 再起動後、DVとOLSが有効化されていることを確認</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">parameter</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$OPTION</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">PARAMETER</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Oracle Database Vault&#39;</span><span class="p">,</span><span class="s1">&#39;Oracle Label Security&#39;</span><span class="p">);</span>
+<span class="ss">&quot;PARAMETER&quot;</span><span class="w">            </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span>
+<span class="ss">&quot;Oracle Label Security&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span>
+<span class="ss">&quot;Oracle Database Vault&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span>
+</pre></div>
+</div>
+</div>
 </section>
-<section id="pdb">
-<h2>(PDB) 設定の確認<a class="headerlink" href="#pdb" title="Link to this heading">#</a></h2>
-<p>PDBに接続し、改めてオプションの有効・無効を確認します。
-DVでは、OLSも必要になってきますので、同時に確認しています。
-同時に有効化されるため、OLSの有効化設定は必要ありません。</p>
-<p>SQL&gt; set markup csv on
-SQL&gt; SELECT parameter, VALUE FROM V$OPTION WHERE PARAMETER IN ('Oracle Database Vault','Oracle Label Security');
-&quot;PARAMETER&quot;,&quot;VALUE&quot;
-&quot;Oracle Label Security&quot;,&quot;FALSE&quot;
-&quot;Oracle Database Vault&quot;,&quot;FALSE&quot;</p>
-<p>PDBのdatabase Vaultのステータスを確認します。</p>
-<p>SQL&gt; SELECT * FROM DBA_DV_STATUS;
-&quot;NAME&quot;,&quot;STATUS&quot;
-&quot;DV_CONFIGURE_STATUS&quot;,&quot;FALSE&quot;
-&quot;DV_ENABLE_STATUS&quot;,&quot;FALSE&quot;
-&quot;DV_APP_PROTECTION&quot;,&quot;NOT CONFIGURED&quot;</p>
-<p>FREEPDB1に接続し、DVを構成します。SYSユーザーで大丈夫です。</p>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>CONFIGURE_DV (</dt><dd><p>dvowner_uname        =&gt; 'C##DVOWNER',
-dvacctmgr_uname      =&gt; 'C##DVACCTMGR');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
-<blockquote>
-<div><p>SQL&gt; SELECT * FROM DBA_DV_STATUS;
-&quot;NAME&quot;,&quot;STATUS&quot;
-&quot;DV_CONFIGURE_STATUS&quot;,&quot;TRUE&quot;
-&quot;DV_ENABLE_STATUS&quot;,&quot;FALSE&quot;
-&quot;DV_APP_PROTECTION&quot;,&quot;NOT CONFIGURED&quot;</p>
-</div></blockquote>
-<p>構成がTRUEになったことが確認できます。</p>
+<section id="pdb-database-vault">
+<h2>(PDB) Database Vaultの構成と有効化<a class="headerlink" href="#pdb-database-vault" title="Link to this heading">#</a></h2>
+<p>FREEPDB1に接続し、改めてPDBのオプションの状況を確認します。</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">PDB</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">markup</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="k">on</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">parameter</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$OPTION</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">PARAMETER</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Oracle Database Vault&#39;</span><span class="p">,</span><span class="s1">&#39;Oracle Label Security&#39;</span><span class="p">);</span>
+<span class="ss">&quot;PARAMETER&quot;</span><span class="w">            </span><span class="p">,</span><span class="ss">&quot;VALUE&quot;</span>
+<span class="ss">&quot;Oracle Label Security&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
+<span class="ss">&quot;Oracle Database Vault&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
+
+<span class="c1">-- PDBのdatabase Vaultのステータスを確認します。</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_STATUS</span><span class="p">;</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span>
+<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
+<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
+<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>FREEPDB1にSYSユーザーで接続し、DB Vaultを構成します。</p>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">PDB</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
+<span class="w">    </span><span class="n">CONFIGURE_DV</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">dvowner_uname</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;C##DVOWNER&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">dvacctmgr_uname</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;C##DVACCTMGR&#39;</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+
+<span class="c1">-- 構成ステータスがTRUEになっていることを確認</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_STATUS</span><span class="p">;</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span>
+<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span>
+<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span>
+<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span>
+</pre></div>
+</div>
+</div>
 <p>utlrp.sqlスクリプトを実行し、無効化状態となっているオブジェクトをコンパイルします。</p>
-<blockquote>
-<div><p>SQL&gt; &#64;?/rdbms/admin/utlrp.sql
-...
-&quot;OBJECTS WITH ERRORS&quot;
-0
-...
-&quot;ERRORS DURING RECOMPILATION&quot;
-0
-...</p>
-</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">PDB</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="o">@?/</span><span class="n">rdbms</span><span class="o">/</span><span class="k">admin</span><span class="o">/</span><span class="n">utlrp</span><span class="p">.</span><span class="k">sql</span>
+</pre></div>
+</div>
+</div>
 <p>問題なく、実行が完了することを確認します。</p>
-</section>
-<section id="pdb-dv">
-<h2>(PDB) DVを有効化する<a class="headerlink" href="#pdb-dv" title="Link to this heading">#</a></h2>
-<p>先ほど構成したバックアップDatabase Vault所有者ユーザーとして、PDBに接続します。</p>
-<blockquote>
-<div><p>$ sqlplus <a class="reference external" href="mailto:c##dvowner/Welcome1#Welcome1#&#37;&#52;&#48;localhost">c##dvowner/Welcome1#Welcome1#<span>&#64;</span>localhost</a>:1521/FREEPDB1</p>
-<p>SQL&gt; show user con_name
-USER is &quot;C##DVOWNER&quot;</p>
-<p>FREEPDB1</p>
-</div></blockquote>
-<p>DVを有効化します</p>
-<blockquote>
-<div><p>SQL&gt; EXEC DBMS_MACADM.ENABLE_DV;</p>
-<p>PL/SQL procedure successfully completed.</p>
-</div></blockquote>
+<p>先ほど構成したDB Vault所有者ユーザーとして、PDBに接続します。</p>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">PDB</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="err">$</span><span class="w"> </span><span class="n">sqlplus</span><span class="w"> </span><span class="k">c</span><span class="o">##</span><span class="n">dvowner</span><span class="o">/&lt;</span><span class="n">password</span><span class="o">&gt;@</span><span class="n">localhost</span><span class="p">:</span><span class="mi">1521</span><span class="o">/</span><span class="n">FREEPDB1</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">con_name</span>
+<span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;C##DVOWNER&quot;</span>
+
+<span class="n">CON_NAME</span>
+<span class="c1">------------------------------</span>
+<span class="n">FREEPDB1</span>
+
+<span class="c1">-- DB Vaultを有効化</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ENABLE_DV</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
 <p>CDBにSYSユーザーで接続し、PDBを再起動します。</p>
-<blockquote>
-<div><p>SQL&gt; conn / as sysdba
-Connected.
-SQL&gt; show user con_name
-USER is &quot;SYS&quot;</p>
-<p>CDB$ROOT</p>
-<p>SQL&gt; alter pluggable database freepdb1 close immediate;</p>
-<p>SQL&gt; alter pluggable database freepdb1 open;</p>
-</div></blockquote>
-<p>DVおよびOLSが有効化されたことを確認します</p>
-<blockquote>
-<div><p>SQL&gt; SELECT * FROM DBA_DV_STATUS;</p>
-<p>NAME                STATUS
-------------------- --------------
-DV_CONFIGURE_STATUS TRUE
-DV_ENABLE_STATUS    TRUE
-DV_APP_PROTECTION   NOT CONFIGURED</p>
-<p>SQL&gt; col DESCRIPTION for a40
-SQL&gt; SELECT * FROM DBA_OLS_STATUS;</p>
-<p>NAME                 STATU DESCRIPTION
--------------------- ----- ----------------------------------------
-OLS_CONFIGURE_STATUS TRUE  Determines if OLS is configured
-OLS_ENABLE_STATUS    TRUE  Determines if OLS is enabled</p>
-</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">CDB</span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">conn</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">sysdba</span>
+<span class="n">Connected</span><span class="p">.</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">con_name</span>
+<span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;SYS&quot;</span>
+
+<span class="n">CON_NAME</span>
+<span class="c1">------------------------------</span>
+<span class="n">CDB$ROOT</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">close</span><span class="w"> </span><span class="k">immediate</span><span class="p">;</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">open</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>DB VaultおよびOLSが有効化されたことを確認します</p>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">PDB</span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_STATUS</span><span class="p">;</span>
+
+<span class="n">NAME</span><span class="w">                </span><span class="n">STATUS</span>
+<span class="c1">------------------- --------------</span>
+<span class="n">DV_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">TRUE</span>
+<span class="n">DV_ENABLE_STATUS</span><span class="w">    </span><span class="k">TRUE</span>
+<span class="n">DV_APP_PROTECTION</span><span class="w">   </span><span class="k">NOT</span><span class="w"> </span><span class="n">CONFIGURED</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">description</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a40</span>
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_OLS_STATUS</span><span class="p">;</span>
+
+<span class="n">NAME</span><span class="w">                 </span><span class="n">STATU</span><span class="w"> </span><span class="n">DESCRIPTION</span>
+<span class="c1">-------------------- ----- ----------------------------------------</span>
+<span class="n">OLS_CONFIGURE_STATUS</span><span class="w"> </span><span class="k">TRUE</span><span class="w">  </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">configured</span>
+<span class="n">OLS_ENABLE_STATUS</span><span class="w">    </span><span class="k">TRUE</span><span class="w">  </span><span class="n">Determines</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">OLS</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 
@@ -639,7 +670,7 @@ OLS_ENABLE_STATUS    TRUE  Determines if OLS is enabled</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">2. Database Vaultの準備</p>
+        <p class="prev-next-title">2. Database Vaultの準備 (レルムの作成と認可)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -660,12 +691,11 @@ OLS_ENABLE_STATUS    TRUE  Determines if OLS is enabled</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dv">DVの構成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdb-root-dv">(CDB$ROOT) DV管理者ユーザーを作成する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">(CDB$ROOT) DVの構成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">(CDB$ROOT) DVを有効化する</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pdb">(PDB) 設定の確認</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pdb-dv">(PDB) DVを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Database Vault の構成前確認</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdb-root-database-vault">(CDB$ROOT) Database Vault管理者ユーザーの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">(CDB$ROOT) Database Vaultの構成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">(CDB$ROOT) Database Vaultを有効化する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pdb-database-vault">(PDB) Database Vaultの構成と有効化</a></li>
 </ul>
   </nav></div>
 

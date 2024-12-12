@@ -1,143 +1,160 @@
 ############################################
-5. OLSの設定を削除する
+5. OLS設定の削除手順
 ############################################
 
+以下の手順では、OLSのデモで設定したポリシー、ラベル、レベル、ユーザーアクセス権を削除し、そしてOLSを無効化します。
 
 **実施内容**
 
-+ VPD関数の削除
-+ VPDポリシーの削除
++ ポリシーの無効化とスキーマからの削除
++ ユーザーラベルの削除
++ ラベルの削除
++ レベルの削除
++ ポリシーの削除
++ OLSの無効化とPDBの再起動
 
 
-後のデモ内容と競合する可能性があるため、OLSデモで設定した関数・ポリシーを削除します。
-
-いきなり表を削除してもいいですが、念のためこれまでと逆の手順を踏む形で進めていきます。
-
-
-*************************
-ポリシーの無効化
-*************************
+************************************
+ ポリシーの無効化とスキーマからの削除
+************************************
 指定したポリシーをスキーマから削除します。
 
-ポリシーはスキーマ内のすべての表から削除され、オプションでポリシーのラベル列がすべての表から削除されます。
+スキーマ内のすべての表からポリシーを削除し、ラベル列もオプションで削除します。
 
 
-BEGIN
-    SA_POLICY_ADMIN.REMOVE_SCHEMA_POLICY(
-        policy_name      => 'OLS_POL_DEMO',
-        schema_name      => 'HR',
-        drop_column      => TRUE);
-END;
-/
+.. code-block:: sql
+
+    BEGIN
+        SA_POLICY_ADMIN.REMOVE_SCHEMA_POLICY(
+            policy_name      => 'OLS_POL_DEMO',
+            schema_name      => 'HR',
+            drop_column      => TRUE);
+    END;
+    /
+
 
 *************************
 ユーザーラベルの削除
 *************************
 
-指定したユーザーからOracle Label Securityのすべての認可と権限を削除します。
+指定したユーザーから、OLSポリシーに関連するすべての認可を削除します。
 
-BEGIN
-    SA_USER_ADMIN.DROP_USER_ACCESS (
-        policy_name   => 'OLS_POL_DEMO',
-        user_name     => 'HR'); 
+.. code-block:: sql
 
-    SA_USER_ADMIN.DROP_USER_ACCESS (
-        policy_name   => 'OLS_POL_DEMO',
-        user_name     => 'SALES_APP'); 
-END;
-/
+    BEGIN
+        SA_USER_ADMIN.DROP_USER_ACCESS (
+            policy_name   => 'OLS_POL_DEMO',
+            user_name     => 'HR'); 
+
+        SA_USER_ADMIN.DROP_USER_ACCESS (
+            policy_name   => 'OLS_POL_DEMO',
+            user_name     => 'SALES_APP'); 
+    END;
+    /
 
 *************************
 ラベルの削除
 *************************
 
-BEGIN
-    SA_LABEL_ADMIN.DROP_LABEL (
-        policy_name  => 'OLS_POL_DEMO',
-        label_value  => 'SENS');
+ポリシー内で作成されたラベルを削除します。
 
-    SA_LABEL_ADMIN.DROP_LABEL (
-        policy_name  => 'OLS_POL_DEMO',
-        label_value  => 'CONF');
+.. code-block:: sql
 
-    SA_LABEL_ADMIN.DROP_LABEL (
-        policy_name  => 'OLS_POL_DEMO',
-        label_value  => 'INTL');
-END;
-/
+    BEGIN
+        SA_LABEL_ADMIN.DROP_LABEL (
+            policy_name  => 'OLS_POL_DEMO',
+            label_value  => 'SENS');
 
+        SA_LABEL_ADMIN.DROP_LABEL (
+            policy_name  => 'OLS_POL_DEMO',
+            label_value  => 'CONF');
+
+        SA_LABEL_ADMIN.DROP_LABEL (
+            policy_name  => 'OLS_POL_DEMO',
+            label_value  => 'INTL');
+    END;
+    /
 
 
 *************************
 レベルの削除
 *************************
 
-BEGIN
-    SA_COMPONENTS.DROP_LEVEL (
-    policy_name => 'OLS_POL_DEMO',
-    short_name  => 'SENS');
+ポリシーで使用されているレベルを削除します。ただし、データまたはユーザーラベルで使用中のレベルは削除できません。
 
-    SA_COMPONENTS.DROP_LEVEL (
-    policy_name => 'OLS_POL_DEMO',
-    short_name  => 'CONF');
+.. code-block:: sql
 
-    SA_COMPONENTS.DROP_LEVEL (
-    policy_name => 'OLS_POL_DEMO',
-    short_name  => 'INTL');
-END;
-/
+    BEGIN
+        SA_COMPONENTS.DROP_LEVEL (
+        policy_name => 'OLS_POL_DEMO',
+        short_name  => 'SENS');
 
-注意：データ・ラベルまたはユーザー・ラベルで使用されているレベルは削除できません。
+        SA_COMPONENTS.DROP_LEVEL (
+        policy_name => 'OLS_POL_DEMO',
+        short_name  => 'CONF');
+
+        SA_COMPONENTS.DROP_LEVEL (
+        policy_name => 'OLS_POL_DEMO',
+        short_name  => 'INTL');
+    END;
+    /
 
 
 *************************
 ポリシーの削除
 *************************
 
-無効化するプロシージャもありますが、削除する前に無効化する必要はありませんので、いきなり削除します。
+ポリシーを削除します。削除の前に無効化する必要はありません。
 
-BEGIN
-    SA_SYSDBA.DROP_POLICY ( 
-        policy_name  => 'OLS_POL_DEMO',
-        drop_column  => True);
-END;
-/
+.. code-block:: sql
+
+    BEGIN
+        SA_SYSDBA.DROP_POLICY ( 
+            policy_name  => 'OLS_POL_DEMO',
+            drop_column  => True);
+    END;
+    /
 
 
 
 
 *************************
-OLSを無効化する
+OLSの無効化とPDBの再起動
 *************************
 
-Database Vaultを使用している場合は無効化しないでください。
+OLSポリシーの施行を無効にします。
+ただし、Database Vaultを使用している場合は無効化しないでください。
 
+.. code-block:: sql
+    
+    EXEC LBACSYS.OLS_ENFORCEMENT.DISABLE_OLS;
 
-EXEC LBACSYS.OLS_ENFORCEMENT.DISABLE_OLS;
+状態を確認します。
 
+.. code-block:: sql
 
-SQL> col status for a20
-SQL> col DESCRIPTION for a50
-SQL> set lines 100
-SQL> SELECT * FROM DBA_OLS_STATUS;
+    SQL> col status for a20
+    SQL> col description for a50
+    SQL> set lines 100
+    SQL> SELECT * FROM DBA_OLS_STATUS;
 
-NAME                 STATUS               DESCRIPTION
--------------------- -------------------- --------------------------------------------------
-OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
-OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled
+    NAME                 STATUS               DESCRIPTION
+    -------------------- -------------------- --------------------------------------------------
+    OLS_CONFIGURE_STATUS TRUE                 Determines if OLS is configured
+    OLS_ENABLE_STATUS    FALSE                Determines if OLS is enabled
 
 
 FALSEとなり、無効化されたことが分かります。
 
 設定を完全に反映させるためにPDBの再起動を行います。
 
-SQL> alter pluggable database freepdb1 close immediate;
+.. code-block:: sql
+    :caption: CDBにて実行
 
-Pluggable database altered.
+    SQL> alter pluggable database freepdb1 close immediate;
 
-SQL> alter pluggable database freepdb1 open;
+    SQL> alter pluggable database freepdb1 open;
 
-Pluggable database altered.
 
 
 以上でOracle Label Securityのデモは終了です。
