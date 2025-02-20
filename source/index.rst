@@ -67,7 +67,8 @@ dbsec-demo
    /dv/1_setup
    /dv/2_authRealm
    /dv/3_checkDv
-   /dv/4_cleanup
+   /dv/4_twoPersonIntegrity
+   /dv/5_cleanup
 
 .. toctree::
    :maxdepth: 2
