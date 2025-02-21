@@ -223,13 +223,13 @@ TPI_BOSSがログインしている場合のみ、TPI_USERがログインでき�
 .. code-block:: sql
     :caption: 端末Ａにて
 
-    SQL> conn tpi_user/Welcome1#Welcome1#@localhost:1521/FREEPDB1
+    SQL> conn tpi_user/<password>@localhost:1521/FREEPDB1
     ERROR:
     ORA-47306: 20000: DV_Error: Access restricted unless both Boss is logged in.
     Help: https://docs.oracle.com/error-help/db/ora-47306/
 
     -- 他のユーザーではログインできる(以下はAPPユーザーを作成している例)
-    SQL> conn app/Welcome1#Welcome1#@localhost:1521/FREEPDB1
+    SQL> conn app/<password>@localhost:1521/FREEPDB1
     Connected.
 
 設定したエラーメッセージが表示され、ルールが正しく検知できていることが確認できます。
@@ -239,7 +239,7 @@ TPI_BOSSがログインしている場合のみ、TPI_USERがログインでき�
 .. code-block:: sql
     :caption: 端末Bにて
 
-    SQL> conn tpi_boss/Welcome1#Welcome1#@localhost:1521/FREEPDB1
+    SQL> conn tpi_boss/<password>@localhost:1521/FREEPDB1
     Connected.
 
 再びtpi_userユーザーでログインを行います。
@@ -247,7 +247,7 @@ TPI_BOSSがログインしている場合のみ、TPI_USERがログインでき�
 .. code-block:: sql
     :caption: 端末Ａにて
 
-    SQL> conn tpi_user/Welcome1#Welcome1#@localhost:1521/FREEPDB1
+    SQL> conn tpi_user/<password>@localhost:1521/FREEPDB1
     Connected.
 
 この動作により、TPI_BOSSがログインしている間のみTPI_USERがログインできることが確認できました。

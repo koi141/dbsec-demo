@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../_static/documentation_options.js?v=1cf7f4d9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -55,7 +58,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. 通信の暗号化を確認する" href="2_encryption.html" />
-    <link rel="prev" title="2. TDE 表領域を暗号化する" href="../tde/2_encryption.html" />
+    <link rel="prev" title="3. キーストアを自動でオープンするようにする" href="../tde/3_autoWalletOpen.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -154,6 +157,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../tde/1_setup.html">1. TDEの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tde/2_encryption.html">2. TDE 表領域を暗号化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tde/3_autoWalletOpen.html">3. キーストアを自動でオープンするようにする</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="current nav bd-sidenav">
@@ -185,9 +189,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../dv/1_setup.html">1. Database Vaultの有効化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dv/2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dv/3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dv/4_cleanup.html">4. Database Vaultを無効化する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dv/n_two.html">(応用) 二人制整合性を使用してみる</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="../dv/4_twoPersonIntegrity.html">4. 二人制整合性を使用してみる</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/5_cleanup.html">5. Database Vaultを無効化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dv/99_checkComponent.html">（おまけ）各コンポーネントの確認クエリ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -431,12 +435,12 @@ warranty<span class="p">;</span><span class="w"> </span>not<span class="w"> </sp
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../tde/2_encryption.html"
+       href="../tde/3_autoWalletOpen.html"
        title="前のページ">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">前へ</p>
-        <p class="prev-next-title">2. TDE 表領域を暗号化する</p>
+        <p class="prev-next-title">3. キーストアを自動でオープンするようにする</p>
       </div>
     </a>
     <a class="right-next"

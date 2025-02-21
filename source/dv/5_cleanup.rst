@@ -128,6 +128,16 @@ Database Vaultで設定したレルムおよび関連する認可、オブジェ
     /
 
 ********************************
+ルール・セットの削除
+********************************
+ルール・セットを削除します。
+
+.. code-block:: sql
+    :caption: C##DVOWNERユーザー
+
+    EXEC DBMS_MACADM.DELETE_RULE_SET('Ruleset for APP'); 
+
+********************************
 Database Vaultの無効化
 ********************************
 
@@ -137,11 +147,12 @@ Database Vaultの無効化
 
     EXEC DBMS_MACADM.DISABLE_DV;
 
+    -- 無効化されたことを確認する
     SQL> SELECT * FROM CDB_DV_STATUS;
-    "NAME","STATUS","CON_ID"
-    "DV_CONFIGURE_STATUS","TRUE",3
-    "DV_ENABLE_STATUS","FALSE",3
-    "DV_APP_PROTECTION","NOT CONFIGURED",3
+    "NAME"               ,"STATUS"        ,"CON_ID"
+    "DV_CONFIGURE_STATUS","TRUE"          ,3
+    "DV_ENABLE_STATUS"   ,"FALSE"         ,3
+    "DV_APP_PROTECTION"  ,"NOT CONFIGURED",3
 
 CDBに接続し、PDBを再起動します。
 
@@ -152,7 +163,7 @@ CDBに接続し、PDBを再起動します。
 
     SQL> alter pluggable database freepdb1 open;
 
-SYSユーザーでDBユーザーが作成できるようになり、DB Vaultが無効化されたことを確認します。
+SYSユーザーでDBユーザーが作成できるようになり、DB Vaultが無効化されたことが分かります。
 
 .. code-block:: sql
     :caption: SYSユーザー
@@ -171,5 +182,6 @@ SYSユーザーでDBユーザーが作成できるようになり、DB Vaultが�
     SQL> drop user test;
 
     User dropped.
+
 
 以上でDB Vaultのデモは終了です。

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>5. (応用) 二人制整合性を使用してみる &#8212; dbsec-demo  ドキュメント</title>
+    <title>（おまけ）各コンポーネントの確認クエリ &#8212; dbsec-demo  ドキュメント</title>
   
   
   
@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../_static/documentation_options.js?v=1cf7f4d9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -51,9 +54,11 @@
     <script src="../_static/translations.js?v=4755f45a"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'dv/5_two';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dv/99_checkComponent';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. Oracle Label Securityの準備" href="../ols/1_setup.html" />
+    <link rel="prev" title="5. Database Vaultを無効化する" href="5_cleanup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
   <meta name="docsearch:version" content="" />
@@ -105,8 +110,6 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -154,6 +157,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../tde/1_setup.html">1. TDEの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tde/2_encryption.html">2. TDE 表領域を暗号化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tde/3_autoWalletOpen.html">3. キーストアを自動でオープンするようにする</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="nav bd-sidenav">
@@ -181,11 +185,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../sqlfirewall/4_checkFirewall.html">4. SQL Firewallの動作を確認する</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Vault:</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_setup.html">1. Database Vaultの有効化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_authRealm.html">2. Database Vaultの準備 (レルムの作成と認可)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_cleanup.html">4. Database Vaultを無効化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_twoPersonIntegrity.html">4. 二人制整合性を使用してみる</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_cleanup.html">5. Database Vaultを無効化する</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">（おまけ）各コンポーネントの確認クエリ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -253,7 +259,7 @@
       
       
       
-      <li><a href="../_sources/dv/5_two.rst" target="_blank"
+      <li><a href="../_sources/dv/99_checkComponent.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="ソースファイルをダウンロード"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -329,7 +335,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>5. (応用) 二人制整合性を使用してみる</h1>
+    <h1>（おまけ）各コンポーネントの確認クエリ</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -339,9 +345,10 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ルールの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ルール・セット</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ルール</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">コマンド・ルール</a></li>
 </ul>
             </nav>
         </div>
@@ -354,49 +361,90 @@
                 <article class="bd-article">
                   
   <section id="id1">
-<h1>5. (応用) 二人制整合性を使用してみる<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>認可に二人のユーザーが必要になります。
-あるユーザーがタスクを開始するには、別のユーザーがそのユーザーに対するセーフティ・チェックを行います。
-二人制整合性では、危険を伴う可能性のあるアクションに対して、追加のセキュリティの層が用意されます。
-このタイプのシナリオは、データベース・パッチの更新などのタスクに使用されることが多く、このチュートリアルでもこのタスクを使用します。
-ユーザーpatch_userがデータベース・パッチのアップグレードを実行するにはログインが必要ですが、このユーザーがログインするにはマネージャpatch_bossがログインしている必要があります。
-patch_userがログイン可能かどうかを制御するファンクション、ルール、ルール・セットおよびコマンド・ルールを作成します。</p>
-<p><strong>実施内容</strong></p>
-<ul class="simple">
-<li><p>ユーザーの作成</p></li>
-<li><p>ユーザーの削除</p></li>
-</ul>
+<h1>（おまけ）各コンポーネントの確認クエリ<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>各コンポーネントを確認するコマンドを示します。</p>
+<p>ルールやルール・セット、レルム等多くのコンポーネントが出てきますので、自身で作成したものの確認や、削除忘れがないかなどの確認にご活用下さい。</p>
+<dl class="simple">
+<dt>参照するビューについての詳細はこちらも参考にしてください</dt><dd><p><a class="reference external" href="https://docs.oracle.com/cd/G11854_01/dvadm/oracle-database-vault-data-dictionary-views.html">https://docs.oracle.com/cd/G11854_01/dvadm/oracle-database-vault-data-dictionary-views.html</a></p>
+</dd>
+</dl>
 <section id="id2">
-<h2>ユーザーの作成<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>ここでは別途2人のユーザーを作成します。このページの最後で削除します。</p>
+<h2>レルム<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>関連するビューは以下の通りです。</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">DBA_DV_REALMビュー</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>レルム一覧</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">DBA_DV_REALM_AUTHビュー</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>レルム内にアクセスできるユーザー一覧</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">DBA_DV_REALM_OBJECTビュー</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>レルム内にて保護されているオブジェクト一覧</p>
+</dd>
+</dl>
+<p>特定のレルムの結果に絞りたい場合、 WHERE句でを付けて使用してください。</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">レルム一覧を出す</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">ENABLED</span><span class="p">,</span><span class="w"> </span><span class="n">COMMON</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_REALM</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">NAME</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">レルムにアクセスできるユーザーを出す</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">REALM_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">GRANTEE</span><span class="p">,</span><span class="w"> </span><span class="n">AUTH_RULE_SET_NAME</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_REALM_AUTH</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">REALM_NAME</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>AUTH_RULE_SET_NAME列: 認可の際にチェックされるルール・セット名</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">レルム内にあるオブジェクト一覧を出す</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">REALM_NAME</span><span class="p">,</span><span class="w"> </span><span class="k">OWNER</span><span class="p">,</span><span class="w"> </span><span class="n">OBJECT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">COMMON_REALM</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_REALM_OBJECT</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">REALM_NAME</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>COMMON_REALM列: レルムが共通かローカルかを示す。</p>
 <ul class="simple">
-<li><p>dual_auth_admin_1</p></li>
-<li><p>dual_auth_admin_2</p></li>
+<li><p>共通: <code class="docutils literal notranslate"><span class="pre">YES</span></code></p></li>
+<li><p>ローカル: <code class="docutils literal notranslate"><span class="pre">NO</span></code></p></li>
 </ul>
 </section>
 <section id="id3">
-<h2>ユーザーの作成<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>database vaultが有効化されているとsysユーザーでは新規ユーザーを作成することができないので、DVを有効化する際に指定した、ユーザー管理のためのアカウント、C##ACCTMGRを使用します。</p>
-<p>-- ログイン
-sqlplus c##dvacctmgr/&lt;password&gt;&#64;localhost:1521/FREEPDB1</p>
-<p>-- 2人のユーザーを作成
-SQL&gt; grant create session to dual_auth_admin_1 identified by &lt;password&gt;;
-SQL&gt; grant create session to dual_auth_admin_2 identified by &lt;password&gt;;</p>
-<p>-- sysユーザーに切り替えます
-SQL&gt; conn sys/&lt;password&gt;&#64;localhost:1521/freepdb1 as sysdba</p>
+<h2>ルール・セット<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>以下のビューを使います。
+:<code class="docutils literal notranslate"><span class="pre">DBA_DV_RULE_SETビュー</span></code>: 作成済みのルール・セット一覧
+:<code class="docutils literal notranslate"><span class="pre">DBA_DV_RULE_SET_RULE</span></code>: ルールセットに関連付けられているルール一覧</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">作成済みのルール・セット一覧を出す</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">RULE_SET_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">DESCRIPTION</span><span class="p">,</span><span class="w"> </span><span class="n">ENABLED</span><span class="p">,</span><span class="w"> </span><span class="n">FAIL_MESSAGE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_RULE_SET</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">ルールセットに関連付けられているルールを確認する</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">RULE_SET_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">RULE_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">RULE_EXPR</span><span class="p">,</span><span class="w"> </span><span class="n">ENABLED</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_RULE_SET_RULE</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id4">
-<h2>ルールの作成<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<dl class="simple">
-<dt>BEGIN</dt><dd><dl class="simple">
-<dt>DBMS_MACADM.CREATE_RULE(</dt><dd><p>rule_name =&gt; 'Check if Boss Is Logged In',
-rule_expr =&gt; 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') = ''PATCH_USER'' and sec_admin_owen.check_boss_logged_in =  ''TRUE'' ');</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>END;
-/</p>
+<h2>ルール<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DBA_DV_RULEビュー</span></code> を使用します。</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">定義済みのルール一覧を出す</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">RULE_EXPR</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_RULE</span><span class="w"> </span><span class="n">OEDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">NAME</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h2>コマンド・ルール<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DBA_DV_COMMAND_RULEビュー</span></code> を使用します。</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">作成済みのルール・セット一覧を出す</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">COMMAND</span><span class="p">,</span><span class="w"> </span><span class="n">RULE_SET_NAME</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_DV_COMMAND_RULE</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 
@@ -411,6 +459,24 @@ rule_expr =&gt; 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') = ''PATCH_USER'' and 
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="5_cleanup.html"
+       title="前のページ">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">前へ</p>
+        <p class="prev-next-title">5. Database Vaultを無効化する</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../ols/1_setup.html"
+       title="次ページ">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">次へ</p>
+        <p class="prev-next-title">1. Oracle Label Securityの準備</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -428,9 +494,10 @@ rule_expr =&gt; 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') = ''PATCH_USER'' and 
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザーの作成</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ルールの作成</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ルール・セット</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ルール</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">コマンド・ルール</a></li>
 </ul>
   </nav></div>
 

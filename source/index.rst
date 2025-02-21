@@ -25,6 +25,7 @@ dbsec-demo
    
    /tde/1_setup
    /tde/2_encryption
+   /tde/3_autoWalletOpen
 
 .. toctree::
    :maxdepth: 2
@@ -69,6 +70,7 @@ dbsec-demo
    /dv/3_checkDv
    /dv/4_twoPersonIntegrity
    /dv/5_cleanup
+   /dv/99_checkComponent
 
 .. toctree::
    :maxdepth: 2

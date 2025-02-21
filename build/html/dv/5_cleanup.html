@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../_static/documentation_options.js?v=1cf7f4d9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -54,7 +57,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'dv/5_cleanup';</script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. Oracle Label Securityの準備" href="../ols/1_setup.html" />
+    <link rel="next" title="（おまけ）各コンポーネントの確認クエリ" href="99_checkComponent.html" />
     <link rel="prev" title="4. 二人制整合性を使用してみる" href="4_twoPersonIntegrity.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ja"/>
@@ -154,6 +157,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../tde/1_setup.html">1. TDEの準備</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tde/2_encryption.html">2. TDE 表領域を暗号化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tde/3_autoWalletOpen.html">3. キーストアを自動でオープンするようにする</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ネイティブ・ネットワーク暗号化:</span></p>
 <ul class="nav bd-sidenav">
@@ -187,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="3_checkDv.html">3. Database Vaultの動作を確認する</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_twoPersonIntegrity.html">4. 二人制整合性を使用してみる</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Database Vaultを無効化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="99_checkComponent.html">（おまけ）各コンポーネントの確認クエリ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Oracle Label Security:</span></p>
 <ul class="nav bd-sidenav">
@@ -344,7 +349,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルム認可の削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルムからオブジェクトを削除する</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レルムの削除</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Database Vaultの無効化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ルール・セットの削除</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Database Vaultの無効化</a></li>
 </ul>
             </nav>
         </div>
@@ -370,8 +376,8 @@
 <section id="id1">
 <h2>レルムの無効化<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>作成したレルム (Realm for demo) を無効化します。</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
 <span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">UPDATE_REALM</span><span class="p">(</span>
 <span class="w">        </span><span class="n">realm_name</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">,</span>
@@ -385,8 +391,8 @@
 <section id="id2">
 <h2>レルム認可の削除<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>レルム内のオブジェクトへのアクセス権を付与した認可を削除します。</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- HRユーザーの認可を削除</span>
 <span class="k">BEGIN</span>
 <span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">DELETE_AUTH_FROM_REALM</span><span class="p">(</span>
@@ -417,8 +423,8 @@
 </div>
 </div>
 <p>完全に削除されたことを確認します。</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">realm_name</span><span class="p">,</span><span class="w"> </span><span class="n">grantee</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">DVSYS</span><span class="p">.</span><span class="n">DBA_DV_REALM_AUTH</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">realm_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">;</span>
 
 <span class="k">no</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span>
@@ -429,8 +435,8 @@
 <section id="id3">
 <h2>レルムからオブジェクトを削除する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>レルムに登録されていたオブジェクト (COUNTRIES表とREGIONS表) を削除します。</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- COUNTRIES表をレルムから削除</span>
 <span class="k">BEGIN</span>
 <span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">DELETE_OBJECT_FROM_REALM</span><span class="p">(</span>
@@ -454,8 +460,8 @@
 </div>
 </div>
 <p>オブジェクトがレルムから削除されたことを確認します。</p>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">REALM_NAME</span><span class="p">,</span><span class="w"> </span><span class="k">OWNER</span><span class="p">,</span><span class="w"> </span><span class="n">OBJECT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">OBJECT_TYPE</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">DVSYS</span><span class="p">.</span><span class="n">DBA_DV_REALM_OBJECT</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">realm_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">;</span>
 
 <span class="k">no</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">selected</span>
@@ -466,8 +472,8 @@
 <section id="id4">
 <h2>レルムの削除<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p>最後にレルム自体を削除します。</p>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span>
 <span class="w">    </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">DELETE_REALM</span><span class="p">(</span><span class="n">realm_name</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">&#39;Realm for demo&#39;</span><span class="p">);</span>
 <span class="k">END</span><span class="p">;</span>
@@ -477,31 +483,42 @@
 </div>
 </section>
 <section id="id5">
-<h2>Database Vaultの無効化<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<h2>ルール・セットの削除<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>ルール・セットを削除します。</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">DELETE_RULE_SET</span><span class="p">(</span><span class="s1">&#39;Ruleset for APP&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id6">
+<h2>Database Vaultの無効化<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">DISABLE_DV</span><span class="p">;</span>
 
+<span class="c1">-- 無効化されたことを確認する</span>
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">CDB_DV_STATUS</span><span class="p">;</span>
-<span class="ss">&quot;NAME&quot;</span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
-<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span><span class="p">,</span><span class="mi">3</span>
-<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span><span class="p">,</span><span class="mi">3</span>
-<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span><span class="p">,</span><span class="mi">3</span>
+<span class="ss">&quot;NAME&quot;</span><span class="w">               </span><span class="p">,</span><span class="ss">&quot;STATUS&quot;</span><span class="w">        </span><span class="p">,</span><span class="ss">&quot;CON_ID&quot;</span>
+<span class="ss">&quot;DV_CONFIGURE_STATUS&quot;</span><span class="p">,</span><span class="ss">&quot;TRUE&quot;</span><span class="w">          </span><span class="p">,</span><span class="mi">3</span>
+<span class="ss">&quot;DV_ENABLE_STATUS&quot;</span><span class="w">   </span><span class="p">,</span><span class="ss">&quot;FALSE&quot;</span><span class="w">         </span><span class="p">,</span><span class="mi">3</span>
+<span class="ss">&quot;DV_APP_PROTECTION&quot;</span><span class="w">  </span><span class="p">,</span><span class="ss">&quot;NOT CONFIGURED&quot;</span><span class="p">,</span><span class="mi">3</span>
 </pre></div>
 </div>
 </div>
 <p>CDBに接続し、PDBを再起動します。</p>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">C##DVOWNERユーザー</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">close</span><span class="w"> </span><span class="k">immediate</span><span class="p">;</span>
 
 <span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="n">pluggable</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">freepdb1</span><span class="w"> </span><span class="k">open</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
-<p>SYSユーザーでDBユーザーが作成できるようになり、DB Vaultが無効化されたことを確認します。</p>
-<div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-text">SYSユーザー</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<p>SYSユーザーでDBユーザーが作成できるようになり、DB Vaultが無効化されたことが分かります。</p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">SYSユーザー</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">con_name</span>
 <span class="k">USER</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ss">&quot;SYS&quot;</span>
 
@@ -544,11 +561,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="../ols/1_setup.html"
+       href="99_checkComponent.html"
        title="次ページ">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">次へ</p>
-        <p class="prev-next-title">1. Oracle Label Securityの準備</p>
+        <p class="prev-next-title">（おまけ）各コンポーネントの確認クエリ</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -573,7 +590,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">レルム認可の削除</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">レルムからオブジェクトを削除する</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レルムの削除</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Database Vaultの無効化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ルール・セットの削除</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Database Vaultの無効化</a></li>
 </ul>
   </nav></div>
 

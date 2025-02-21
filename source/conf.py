@@ -13,7 +13,7 @@ author = 'koi141'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinxcontrib.seqdiag', 'sphinx_togglebutton', 'sphinx.ext.githubpages']
+extensions = ['sphinxcontrib.seqdiag', 'sphinx_togglebutton', 'sphinx.ext.githubpages', 'sphinx_copybutton']
 
 templates_path = ['_templates']
 exclude_patterns = []
