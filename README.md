@@ -1,6 +1,7 @@
-# dbsec-demo
+# 注意
+サイトは以下のリンクに変更しました。
+```
+https://koi141.github.io/demo-dbsec/
+```
 
-サイトはこちら
-```
-https://koi141.github.io/dbsec-demo/
-```
+2025年3月末にはこちらのレポジトリは削除予定ですのでご注意ください
